@@ -10,8 +10,8 @@
       "Bash(mkdir -p data/raw/tcas1 data/raw/curriculum data/processed src/kuru/ingestion src/kuru/db src/kuru/rag src/kuru/scripts db)",
       "Bash(uv sync:*)",
       "Bash(uv run:*)",
-      "Bash(git add *)",
-      "Bash(git rebase *)"
+      "Bash(git *)",
+      "Bash(python *)"
     ]
   }
 }
