@@ -73,9 +73,10 @@ Set up a production-ready Next.js frontend foundation for KUru with a strong des
 **Agent:** frontend-dev  
 **File(s):** frontend/src/app/globals.css  
 **Spec ref:** personas.md §1, personas.md §5  
-**Description:** Add CSS variables, baseline typography, spacing scale, and accessibility-friendly defaults for mobile-first UI.  
+**Description:** Add CSS variables, baseline typography, spacing scale, and accessibility-friendly defaults for mobile-first UI, including navbar-specific tokens derived from the approved design.  
 **Acceptance criteria:**
 - [ ] Global token variables exist for primary, secondary, surface, text, and status colors.
+- [ ] Navbar tokens exist for header height, translucent background, blur strength, and shadow.
 - [ ] Base styles support readable typography and touch-friendly spacing on 375px width.
 **Blocked by:** TASK-006
 
@@ -109,24 +110,48 @@ Set up a production-ready Next.js frontend foundation for KUru with a strong des
 - [ ] Utility is imported by at least one layout or UI component.
 **Blocked by:** TASK-009
 
-### TASK-011: Create App Shell Layout Component
+### TASK-033: Implement TopNavBar Container Component
+**Agent:** frontend-dev  
+**File(s):** frontend/src/components/layout/TopNavBar.tsx  
+**Spec ref:** architecture.md §2, personas.md §1  
+**Description:** Create a dedicated TopNavBar wrapper component matching the design structure: relative container, vertical flex alignment, centered content region, and mount point for navigation content.  
+**Acceptance criteria:**
+- [ ] Container uses a top header height of 76px.
+- [ ] Desktop layout supports a centered content region with 1280px max width.
+- [ ] Mobile behavior remains full-width and touch-friendly.
+**Blocked by:** TASK-007
+
+### TASK-034: Add TopNavBar Visual Style Layer with Blur Fallback
+**Agent:** frontend-dev  
+**File(s):** frontend/src/components/layout/TopNavBar.module.css  
+**Spec ref:** architecture.md §2, personas.md §1  
+**Description:** Implement the exact visual treatment for the header: semi-transparent white surface, soft shadow, and blur background, with graceful fallback for limited backdrop-filter support.  
+**Acceptance criteria:**
+- [ ] Background is rgba(255, 255, 255, 0.8).
+- [ ] Shadow is 0px 12px 32px rgba(25, 28, 27, 0.04).
+- [ ] Backdrop blur uses 6px with fallback behavior when unsupported.
+**Blocked by:** TASK-033
+
+### TASK-011: Integrate TopNavBar into App Shell
 **Agent:** frontend-dev  
 **File(s):** frontend/src/components/layout/AppShell.tsx  
 **Spec ref:** KUru.md §4, personas.md §1  
-**Description:** Build shared responsive shell wrapper to make route-level screens consistent and easier to develop.  
+**Description:** Mount TopNavBar once at the top of the shared shell and wire layout slots so all route pages inherit the same header structure.  
 **Acceptance criteria:**
-- [ ] AppShell supports mobile-first layout and desktop expansion.
-- [ ] Route pages can mount inside shell without duplicated structure.
-**Blocked by:** TASK-008
+- [ ] App shell renders TopNavBar consistently across route groups.
+- [ ] Header area preserves desktop and mobile spacing without duplicated layout logic.
+**Blocked by:** TASK-008, TASK-034
 
 ### TASK-012: Create Shared Navigation Component
 **Agent:** frontend-dev  
 **File(s):** frontend/src/components/layout/MainNav.tsx  
 **Spec ref:** KUru.md §4, personas.md §1  
-**Description:** Implement top-level navigation links for Chat, Explore, RIASEC, and Portfolio areas.  
+**Description:** Implement navigation content to match the approved header composition: left brand area, centered primary links, and right utility actions (language, profile, menu).  
 **Acceptance criteria:**
-- [ ] Navigation exposes all MVP feature entry points.
-- [ ] Navigation is usable on mobile and desktop layouts.
+- [ ] Navigation exposes all MVP entry points: Chat, Explore, RIASEC, and Portfolio.
+- [ ] Desktop presents left/center/right grouping consistent with the design.
+- [ ] Active item state includes a clear underline indicator.
+- [ ] Mobile keeps utility actions accessible and supports menu-first navigation behavior.
 **Blocked by:** TASK-011
 
 ### TASK-013: Configure i18n Routing
