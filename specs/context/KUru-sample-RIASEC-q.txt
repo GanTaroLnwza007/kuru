@@ -1,0 +1,162 @@
+{
+  "testName": "KUru RIASEC Interest Assessment",
+  "totalSteps": 5,
+  "description": "Short 3-5 minute test to understand your interests and recommend suitable KU programs",
+  "instructions": "เลือกว่าประโยคแต่ละข้อตรงกับตัวคุณมากแค่ไหน",
+  "scale": {
+    "1": "Strongly Disagree",
+    "2": "Disagree",
+    "3": "Neutral",
+    "4": "Agree",
+    "5": "Strongly Agree"
+  },
+  "questions": {
+    "step1": {
+      "type": "rating",
+      "description": "Rate how much each statement reflects you",
+      "items": [
+        {
+          "id": "q1",
+          "text": "I enjoy working with my hands or making things.",
+          "dimension": "R",
+          "type": "rating"
+        },
+        {
+          "id": "q2",
+          "text": "I feel satisfied when I complete practical tasks or fix something.",
+          "dimension": "R",
+          "type": "rating"
+        },
+        {
+          "id": "q3",
+          "text": "I like exploring new ideas and understanding how things work.",
+          "dimension": "I",
+          "type": "rating"
+        },
+        {
+          "id": "q4",
+          "text": "I enjoy solving complex problems or puzzles.",
+          "dimension": "I",
+          "type": "rating"
+        },
+        {
+          "id": "q5",
+          "text": "I enjoy expressing my ideas through drawing, writing, or design.",
+          "dimension": "A",
+          "type": "rating"
+        },
+        {
+          "id": "q6",
+          "text": "I like creating original or beautiful things.",
+          "dimension": "A",
+          "type": "rating"
+        },
+        {
+          "id": "q7",
+          "text": "I like helping and supporting other people.",
+          "dimension": "S",
+          "type": "rating"
+        },
+        {
+          "id": "q8",
+          "text": "I enjoy working together with others as a team.",
+          "dimension": "S",
+          "type": "rating"
+        },
+        {
+          "id": "q9",
+          "text": "I like taking the lead or organizing activities.",
+          "dimension": "E",
+          "type": "rating"
+        },
+        {
+          "id": "q10",
+          "text": "I feel excited when I get to start something new.",
+          "dimension": "E",
+          "type": "rating"
+        },
+        {
+          "id": "q11",
+          "text": "I prefer having clear plans and organized information.",
+          "dimension": "C",
+          "type": "rating"
+        },
+        {
+          "id": "q12",
+          "text": "I feel comfortable when tasks follow clear steps and rules.",
+          "dimension": "C",
+          "type": "rating"
+        }
+      ]
+    },
+    "pairwise": {
+      "type": "pairwise",
+      "description": "Which one do you prefer more?",
+      "items": [
+        {
+          "id": "p1",
+          "optionA": "Working with tools and building things",
+          "optionB": "Analyzing data and solving complex problems",
+          "dimensionA": "R",
+          "dimensionB": "I"
+        },
+        {
+          "id": "p2",
+          "optionA": "Creating designs or artwork freely",
+          "optionB": "Helping and supporting other people",
+          "dimensionA": "A",
+          "dimensionB": "S"
+        },
+        {
+          "id": "p3",
+          "optionA": "Taking the lead and organizing a group",
+          "optionB": "Following clear steps and keeping things organized",
+          "dimensionA": "E",
+          "dimensionB": "C"
+        },
+        {
+          "id": "p4",
+          "optionA": "Exploring new scientific ideas",
+          "optionB": "Starting a new project or business idea",
+          "dimensionA": "I",
+          "dimensionB": "E"
+        }
+      ]
+    },
+    "scenarios": {
+      "type": "scenario",
+      "description": "In this situation, which role would you enjoy most?",
+      "items": [
+        {
+          "id": "s1",
+          "scenario": "In a school project, which role would you enjoy the most?",
+          "options": [
+            { "text": "Building or assembling the physical parts", "dimension": "R" },
+            { "text": "Researching and analyzing the information", "dimension": "I" },
+            { "text": "Designing the presentation or visuals", "dimension": "A" },
+            { "text": "Helping coordinate the team and supporting members", "dimension": "S" },
+            { "text": "Presenting and persuading the audience", "dimension": "E" },
+            { "text": "Organizing the schedule and documents", "dimension": "C" }
+          ]
+        },
+        {
+          "id": "s2",
+          "scenario": "If you had a free weekend, which activity would you choose?",
+          "options": [
+            { "text": "Fixing or building something", "dimension": "R" },
+            { "text": "Learning something new through reading or experimenting", "dimension": "I" },
+            { "text": "Drawing, writing, or creating content", "dimension": "A" },
+            { "text": "Volunteering or helping friends", "dimension": "S" },
+            { "text": "Organizing an event or selling something", "dimension": "E" },
+            { "text": "Planning your schedule and organizing your things", "dimension": "C" }
+          ]
+        }
+      ]
+    }
+  },
+  "scoring": {
+    "dimensions": ["R", "I", "A", "S", "E", "C"],
+    "maxPerDimension": 20,
+    "normalization": "L2"
+  }
+}
