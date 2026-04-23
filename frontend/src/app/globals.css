@@ -1,26 +1,147 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --kuru-surface-base: #fafaf9;
+  --kuru-surface-card: #ffffff;
+  --kuru-surface-muted: #f9faf8;
+  --kuru-surface-subtle: #f3f4f2;
+
+  --kuru-color-primary: #006b32;
+  --kuru-color-primary-strong: #008740;
+  --kuru-color-primary-foreground: #f7fff3;
+
+  --kuru-color-secondary: #059669;
+  --kuru-color-secondary-foreground: #047857;
+
+  --kuru-text-primary: #191c1b;
+  --kuru-text-secondary: #57534e;
+  --kuru-text-muted: #64748b;
+  --kuru-text-inverse: #ffffff;
+
+  --kuru-status-success: #008740;
+  --kuru-status-warning: #cc8b1b;
+  --kuru-status-danger: #ba1a1a;
+  --kuru-status-info: #006b32;
+
+  --navbar-height: 76px;
+  --navbar-bg-translucent: rgba(255, 255, 255, 0.8);
+  --navbar-blur-strength: 6px;
+  --navbar-shadow: 0 12px 32px rgba(25, 28, 27, 0.04);
+
+  --border-subtle: #e7e8e6;
+  --focus-ring: #008740;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: var(--kuru-surface-base);
+  --color-foreground: var(--kuru-text-primary);
+
+  --color-surface: var(--kuru-surface-card);
+  --color-surface-muted: var(--kuru-surface-muted);
+  --color-surface-subtle: var(--kuru-surface-subtle);
+
+  --color-primary: var(--kuru-color-primary);
+  --color-primary-strong: var(--kuru-color-primary-strong);
+  --color-primary-foreground: var(--kuru-color-primary-foreground);
+
+  --color-secondary: var(--kuru-color-secondary);
+  --color-secondary-foreground: var(--kuru-color-secondary-foreground);
+
+  --color-text-primary: var(--kuru-text-primary);
+  --color-text-secondary: var(--kuru-text-secondary);
+  --color-text-muted: var(--kuru-text-muted);
+  --color-text-inverse: var(--kuru-text-inverse);
+
+  --color-success: var(--kuru-status-success);
+  --color-warning: var(--kuru-status-warning);
+  --color-danger: var(--kuru-status-danger);
+  --color-info: var(--kuru-status-info);
+
+  --font-sans: var(--font-kuru-thai);
+  --font-mono: var(--font-kuru-en);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  border-color: var(--border-subtle);
+}
+
+html,
+body {
+  min-height: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--kuru-surface-base);
+  color: var(--kuru-text-primary);
+  font-family: var(--font-kuru-thai), "Sarabun", "Noto Sans Thai", sans-serif;
+  font-weight: 400;
+  font-size: clamp(1rem, 0.95rem + 0.2vw, 1.0625rem);
+  line-height: 1.6;
+  letter-spacing: 0.005em;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+:lang(en) {
+  font-family: var(--font-kuru-en), "Inter", "Segoe UI", sans-serif;
+  letter-spacing: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-kuru-thai), "Sarabun", "Noto Sans Thai", sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--kuru-text-primary);
+}
+
+:lang(en) h1,
+:lang(en) h2,
+:lang(en) h3,
+:lang(en) h4,
+:lang(en) h5,
+:lang(en) h6,
+h1:lang(en),
+h2:lang(en),
+h3:lang(en),
+h4:lang(en),
+h5:lang(en),
+h6:lang(en) {
+  font-family: var(--font-kuru-en), "Inter", "Segoe UI", sans-serif;
+  font-weight: 600;
+}
+
+a {
+  color: inherit;
+  text-underline-offset: 0.2em;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button,
+[role="button"],
+input[type="button"],
+input[type="submit"] {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+#app-shell {
+  width: min(100%, 1280px);
+  margin-inline: auto;
+  padding-inline: clamp(0.875rem, 2.4vw, 2rem);
 }
