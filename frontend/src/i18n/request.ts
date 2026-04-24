@@ -21,7 +21,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
     locale,
     messages: await loadMessages(locale),
     now: new Date(),
-    // timeZone configured via TZ environment variable
-    timeZone: process.env.TZ || "Asia/Bangkok",
+    // Always use Asia/Bangkok timezone
+    timeZone: "Asia/Bangkok",
   };
 });
