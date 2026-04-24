@@ -12,7 +12,10 @@ export default defineConfig({
     baseURL: process.env.PLAYWRIGHT_BASE_URL ?? "http://127.0.0.1:3000",
     trace: "on-first-retry",
   },
-  webServer: process.env.CI
+  // Disable webServer when PLAYWRIGHT_BASE_URL is set
+  webServer: process.env.PLAYWRIGHT_BASE_URL 
+    ? undefined
+    : process.env.CI
     ? undefined
     : {
         command: "npm run dev",

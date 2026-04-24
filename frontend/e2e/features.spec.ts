@@ -38,10 +38,10 @@ test.describe("Feature Shells & Content", () => {
     expect(await inputs.count()).toBeGreaterThanOrEqual(0);
   });
 
-  test("root path redirects to /chat", async ({ page }) => {
+  test("root path renders landing page", async ({ page }) => {
     await page.goto("/");
-    await expect(page).toHaveURL(/\/chat$/);
-    await expect(page.getByTestId("chat-shell")).toBeVisible();
+    await expect(page).toHaveURL("/");
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   });
 
   test("invalid route renders gracefully", async ({ page }) => {
