@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { cn } from "@/lib/cn";
+import KuruLogo from "@/components/ui/KuruLogo";
 
 type NavItem = {
   href: string;
@@ -12,6 +13,7 @@ type NavItem = {
 };
 
 function isActivePath(pathname: string, href: string): boolean {
+  if (href === "/") return pathname === "/";
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
@@ -23,10 +25,11 @@ export default function MainNav() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems: NavItem[] = [
-    { href: "/chat", label: t("chat") },
+    { href: "/", label: t("home") },
     { href: "/explore", label: t("explore") },
     { href: "/riasec", label: t("riasec") },
     { href: "/portfolio", label: t("portfolio") },
+    { href: "/chat", label: t("chat") },
   ];
 
   const nextLocale = locale === "th" ? "en" : "th";
@@ -39,12 +42,8 @@ export default function MainNav() {
   return (
     <nav className="flex h-full w-full items-center justify-between gap-3">
       <div className="flex min-w-0 flex-1 items-center">
-        <Link
-          href="/chat"
-          className="truncate text-lg font-bold tracking-tight text-primary"
-          aria-label="KUru"
-        >
-          KUru
+        <Link href="/" aria-label="KUru Home">
+          <KuruLogo size="md" />
         </Link>
       </div>
 
