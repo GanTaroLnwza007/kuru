@@ -14,6 +14,8 @@ KUru's primary users are **Grade 12 (M6) Thai students** in the pre-admission wi
 - Limited understanding of what PLOs or credit systems mean in practice
 - Influenced by parents, peers, and perceived job market signals
 - Familiar with LINE, TikTok, and short-form content — expect fast, scannable answers
+- Expect AI-like interaction (search, chat, instant answers)
+- Prefer typing natural language instead of navigating menus
 
 ---
 
@@ -21,8 +23,36 @@ KUru's primary users are **Grade 12 (M6) Thai students** in the pre-admission wi
 
 ---
 
+KUru uses **two layers of personas**:
+
+1. **Archetypes (A–E)** → used by AI system & behavior detection  
+2. **Named Personas (Mew, Bank, etc.)** → used for UX/UI design
+
+| Archetype | Named Persona | Description |
+|----------|--------------|------------|
+| A — Undecided | Mew (เมว) | Doesn’t know what to study |
+| B — Focused | (Mew - later stage) | Has target program |
+| C — Portfolio | Bank (แบงค์) | Preparing TCAS portfolio |
+| D — Parent | Parent Proxy | Parent/guardian |
+| E — Scrambler | Last-minute student | Urgent TCAS decisions |
+| Secondary | Teacher Aom (ครูอ้อม) | Counselor / helper |
+
 ### Persona A — "The Undecided"
-**Thai archetype name:** น้องยังไม่รู้เลย (Nong Yang Mai Roo Loei)
+**Thai archetype name:** น้องยังไม่รู้เลย  
+**Representative persona:** Mew (เมว)
+
+**Profile:**
+- 17 years old, M6 (Science-Math)
+- Does not know what to study
+- Feels pressure to already have an answer
+
+**Behavior:**
+- Mobile-first (90%)
+- Uses LINE, TikTok
+- Prefers typing or asking casually
+
+**Quote:**
+"ฉันไม่อยากเรียนอะไรที่ไม่ชอบ แต่ฉันไม่รู้จะเลือกยังไง"
 
 **Profile:**
 - Has no strong preference for any field
@@ -84,7 +114,13 @@ KUru's primary users are **Grade 12 (M6) Thai students** in the pre-admission wi
 ---
 
 ### Persona C — "The Portfolio Stressor"
-**Thai archetype name:** น้องกังวลพอร์ต (Nong Kangwon Port)
+**Thai archetype name:** น้องกังวลพอร์ต  
+**Representative persona:** Bank (แบงค์)
+
+**Additional traits:**
+- Prefers fast, visual UI (TikTok-like)
+- Avoids long reading or long tests
+- Wants instant feedback
 
 **Profile:**
 - Applying via TCAS Round 1 (Portfolio round)
@@ -179,6 +215,31 @@ KUru's primary users are **Grade 12 (M6) Thai students** in the pre-admission wi
 
 ---
 
+### Persona F — "The Counselor"
+**Thai archetype name:** ครูแนะแนว (Teacher Aom)
+
+**Profile:**
+- 30–40 years old teacher or counselor
+- Helps multiple students make decisions
+
+**Primary goals:**
+- Quickly understand KU programs
+- Share reliable info with students & parents
+
+**Pain points:**
+- Needs trustworthy, cited data
+- Lacks time to explain everything manually
+
+**KUru touchpoints:**
+- Program Explorer
+- Shareable links
+- RAG chatbot (fact-checking)
+
+**Tone:**
+- Clear, structured, trustworthy
+
+---
+
 ## 3. Tone & Language Guidelines by Persona
 
 | Persona | Thai register | English level | Response length | Key avoid |
@@ -216,3 +277,4 @@ Regardless of persona, KUru must always:
 2. **Be honest about uncertainty.** If data is incomplete or unverified, say so clearly. False confidence is worse than admitted uncertainty.
 3. **Respect their autonomy.** Recommendations are offered as options, not prescriptions. The student decides.
 4. **Acknowledge the stakes.** TCAS is a high-stakes decision. KUru should feel like a knowledgeable friend, not a cold search engine.
+
