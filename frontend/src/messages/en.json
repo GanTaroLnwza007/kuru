@@ -1,0 +1,42 @@
+{
+  "nav": {
+    "chat": "Chat",
+    "explore": "Explore",
+    "riasec": "RIASEC",
+    "portfolio": "Portfolio",
+    "profile": "Profile",
+    "menu": "Menu"
+  },
+  "common": {
+    "loading": "Loading data...",
+    "empty": "No data yet",
+    "retry": "Try again",
+    "comingSoon": "Content coming soon"
+  },
+  "chat": {
+    "title": "KUru Chat",
+    "emptyStateTitle": "Start asking about your study path",
+    "emptyStateDescription": "KUru summarizes KU programs, careers, and TCAS guidance with visible source references.",
+    "loading": "Preparing response...",
+    "sources": "Sources",
+    "fallbackWarning": "This information was not found in the KU database. Please verify at admissions.ku.ac.th"
+  },
+  "explore": {
+    "title": "Program Explorer",
+    "searchPlaceholder": "Search by program name, interests, or skills you want to develop",
+    "resultsTitle": "Closest matches",
+    "emptyState": "No results yet. Try another query"
+  },
+  "riasec": {
+    "title": "RIASEC Assessment",
+    "step": "Step",
+    "of": "of",
+    "progressPlaceholder": "Adaptive question flow placeholder",
+    "resultPlaceholder": "Your Holland Code and matched programs will appear here"
+  },
+  "portfolio": {
+    "title": "Portfolio Coach",
+    "uploadPlaceholder": "Portfolio input placeholder",
+    "statusPlaceholder": "Analysis status will update automatically"
+  }
+}

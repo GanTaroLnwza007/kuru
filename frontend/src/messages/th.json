@@ -1,0 +1,42 @@
+{
+  "nav": {
+    "chat": "แชต",
+    "explore": "สำรวจหลักสูตร",
+    "riasec": "แบบทดสอบ RIASEC",
+    "portfolio": "โค้ชพอร์ต",
+    "profile": "โปรไฟล์",
+    "menu": "เมนู"
+  },
+  "common": {
+    "loading": "กำลังโหลดข้อมูล...",
+    "empty": "ยังไม่มีข้อมูล",
+    "retry": "ลองอีกครั้ง",
+    "comingSoon": "กำลังเตรียมข้อมูล"
+  },
+  "chat": {
+    "title": "KUru Chat",
+    "emptyStateTitle": "เริ่มถามคำถามเกี่ยวกับการเรียนต่อได้เลย",
+    "emptyStateDescription": "KUru จะช่วยสรุปข้อมูลหลักสูตร อาชีพ และ TCAS โดยแสดงแหล่งอ้างอิงประกอบ",
+    "loading": "กำลังเตรียมคำตอบ...",
+    "sources": "แหล่งอ้างอิง",
+    "fallbackWarning": "ข้อมูลนี้ไม่พบในฐานข้อมูล KU กรุณาตรวจสอบที่ admissions.ku.ac.th"
+  },
+  "explore": {
+    "title": "Program Explorer",
+    "searchPlaceholder": "ลองพิมพ์ชื่อสาขา ความสนใจ หรือทักษะที่อยากพัฒนา",
+    "resultsTitle": "ผลลัพธ์ที่ใกล้เคียง",
+    "emptyState": "ยังไม่มีผลลัพธ์ ลองพิมพ์คำค้นใหม่อีกครั้ง"
+  },
+  "riasec": {
+    "title": "แบบทดสอบ RIASEC",
+    "step": "ขั้นตอน",
+    "of": "จาก",
+    "progressPlaceholder": "พื้นที่สำหรับคำถามแบบปรับตามคำตอบ",
+    "resultPlaceholder": "ผลลัพธ์ Holland Code และหลักสูตรที่เหมาะสมจะแสดงที่นี่"
+  },
+  "portfolio": {
+    "title": "Portfolio Coach",
+    "uploadPlaceholder": "พื้นที่อัปโหลดข้อมูลพอร์ต",
+    "statusPlaceholder": "สถานะการวิเคราะห์จะแสดงแบบอัปเดตอัตโนมัติ"
+  }
+}
