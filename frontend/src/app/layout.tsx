@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import { getLocale, getMessages } from "next-intl/server";
 import { Inter, Sarabun } from "next/font/google";
+import { Providers } from "@/app/providers";
+import AppShell from "@/components/layout/AppShell";
 import { cn } from "@/lib/cn";
-import "@/lib/env";
 import "./globals.css";
 
 const thaiFont = Sarabun({
@@ -27,24 +29,23 @@ export const metadata: Metadata = {
     "ผู้ช่วยแนะแนวการศึกษาสำหรับนักเรียนไทย ค้นหาเส้นทางการเรียนต่อและอาชีพจากข้อมูล KU อย่างมีแหล่งอ้างอิง",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
     <html
-      lang="th"
+      lang={locale}
       className={cn(thaiFont.variable, enFont.variable, "h-full antialiased")}
     >
       <body className="min-h-full bg-background text-foreground">
-        <div id="app-providers" className="min-h-full">
-          <div id="app-shell" className="flex min-h-full flex-col">
-            <main id="app-content" className="flex-1">
-              {children}
-            </main>
-          </div>
-        </div>
+        <Providers locale={locale} messages={messages}>
+          <AppShell>{children}</AppShell>
+        </Providers>
       </body>
     </html>
   );
