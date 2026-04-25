@@ -58,7 +58,7 @@ jobs:
       run:
         working-directory: backend
     # Skip gracefully when the backend directory doesn't exist yet
-    if: ${{ hashFiles('backend/pyproject.toml', 'backend/requirements*.txt') != '' }}
+    if: hashFiles('backend/pyproject.toml', 'backend/requirements*.txt') != ''
     steps:
       - uses: actions/checkout@v4
 
@@ -81,7 +81,7 @@ jobs:
     defaults:
       run:
         working-directory: backend
-    if: ${{ hashFiles('backend/pyproject.toml', 'backend/requirements*.txt') != '' }}
+    if: hashFiles('backend/pyproject.toml', 'backend/requirements*.txt') != ''
     steps:
       - uses: actions/checkout@v4
 
@@ -101,7 +101,7 @@ jobs:
     defaults:
       run:
         working-directory: backend
-    if: ${{ hashFiles('backend/pyproject.toml', 'backend/requirements*.txt') != '' }}
+    if: hashFiles('backend/pyproject.toml', 'backend/requirements*.txt') != ''
     steps:
       - uses: actions/checkout@v4
 
