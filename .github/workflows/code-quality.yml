@@ -51,70 +51,71 @@ jobs:
         run: npm run lint
 
   # ── Backend ───────────────────────────────────────────────────────────────
-  backend-ruff:
-    name: "Backend — Ruff lint + format check"
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: backend
-    # Skip gracefully when the backend directory doesn't exist yet
-    if: hashFiles('backend/pyproject.toml', 'backend/requirements*.txt') != ''
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Install Ruff
-        run: pip install ruff
-
-      - name: Ruff lint
-        run: ruff check .
-
-      - name: Ruff format check
-        run: ruff format --check .
-
-  backend-black:
-    name: "Backend — Black format check"
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: backend
-    if: hashFiles('backend/pyproject.toml', 'backend/requirements*.txt') != ''
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Install Black
-        run: pip install black
-
-      - name: Black format check
-        run: black --check .
-
-  backend-mypy:
-    name: "Backend — mypy type check"
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: backend
-    if: hashFiles('backend/pyproject.toml', 'backend/requirements*.txt') != ''
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-          cache: "pip"
-
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt 2>/dev/null || \
-          pip install -r requirements-dev.txt 2>/dev/null || true
-          pip install mypy
-
-      - name: mypy type check
-        run: mypy . --ignore-missing-imports
+  # TODO: Uncomment when backend directory is created
+  # backend-ruff:
+  #   name: "Backend — Ruff lint + format check"
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       working-directory: backend
+  #   # Skip gracefully when the backend directory doesn't exist yet
+  #   if: hashFiles('backend/pyproject.toml', 'backend/requirements*.txt') != ''
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #
+  #     - uses: actions/setup-python@v5
+  #       with:
+  #         python-version: "3.12"
+  #
+  #     - name: Install Ruff
+  #       run: pip install ruff
+  #
+  #     - name: Ruff lint
+  #       run: ruff check .
+  #
+  #     - name: Ruff format check
+  #       run: ruff format --check .
+  #
+  # backend-black:
+  #   name: "Backend — Black format check"
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       working-directory: backend
+  #   if: hashFiles('backend/pyproject.toml', 'backend/requirements*.txt') != ''
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #
+  #     - uses: actions/setup-python@v5
+  #       with:
+  #         python-version: "3.12"
+  #
+  #     - name: Install Black
+  #       run: pip install black
+  #
+  #     - name: Black format check
+  #       run: black --check .
+  #
+  # backend-mypy:
+  #   name: "Backend — mypy type check"
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       working-directory: backend
+  #   if: hashFiles('backend/pyproject.toml', 'backend/requirements*.txt') != ''
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #
+  #     - uses: actions/setup-python@v5
+  #       with:
+  #         python-version: "3.12"
+  #         cache: "pip"
+  #
+  #     - name: Install dependencies
+  #       run: |
+  #         pip install -r requirements.txt 2>/dev/null || \
+  #         pip install -r requirements-dev.txt 2>/dev/null || true
+  #         pip install mypy
+  #
+  #     - name: mypy type check
+  #       run: mypy . --ignore-missing-imports
