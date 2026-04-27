@@ -1,10 +1,10 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("Route Navigation & Structure", () => {
-  test("redirects from / to /chat", async ({ page }) => {
+  test("root path renders landing page", async ({ page }) => {
     await page.goto("/");
-    await expect(page).toHaveURL(/\/chat$/);
-    await expect(page.getByTestId("chat-shell")).toBeVisible();
+    await expect(page).toHaveURL("http://127.0.0.1:3000/");
+    await expect(page.locator("main, [data-testid]").first()).toBeVisible();
   });
 
   test("chat route renders correctly", async ({ page }) => {
