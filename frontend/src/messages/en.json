@@ -1,0 +1,95 @@
+{
+  "nav": {
+    "home": "Home",
+    "chat": "Chat with KUru",
+    "explore": "Find",
+    "riasec": "Explore",
+    "portfolio": "Portfolio Coach",
+    "profile": "Profile",
+    "menu": "Menu"
+  },
+  "landing": {
+    "hero": {
+      "headline": "Find the right faculty for you at Kasetsart University in just 3 minutes",
+      "searchPlaceholder": "⭐ Which faculty interests you? Or ask 'Recommend programs and faculties'",
+      "cta": "✨ Start Free RIASEC Test"
+    },
+    "features": {
+      "heading": "Why M6 students love KUru",
+      "card1": {
+        "title": "Super Easy",
+        "body": "No repetitive forms. Just take a short test and our AI will analyze everything automatically."
+      },
+      "card2": {
+        "title": "Real Data",
+        "body": "Pulls curriculum and admission requirements directly from Kasetsart University. 100% reliable."
+      },
+      "card3": {
+        "title": "Actually Helpful",
+        "body": "Gives personalized recommendations based on your traits and interests, addressing your faculty selection concerns."
+      }
+    },
+    "programs": {
+      "heading": "Popular programs for students like you",
+      "subheading": "Based on your latest interest analysis",
+      "viewAll": "View All",
+      "match": "{pct}% Match"
+    },
+    "howItWorks": {
+      "heading": "How KUru Works",
+      "subheading": "Just a few simple steps to discover your path",
+      "step1": {
+        "title": "Share Interests",
+        "body": "Take the RIASEC test to reveal your interests and personality."
+      },
+      "step2": {
+        "title": "AI Analysis",
+        "body": "Our AI clusters and matches you with the most suitable curriculum data."
+      },
+      "step3": {
+        "title": "Get Recommendations",
+        "body": "Receive a ranked list of faculties and programs best suited for you."
+      },
+      "step4": {
+        "title": "Prepare to Apply",
+        "body": "Access the latest TCAS data and get help preparing your portfolio."
+      }
+    },
+    "cta": {
+      "headline": "Ready to start your university journey?",
+      "button": "Start Using KUru for Free Now"
+    }
+  },
+  "common": {
+    "loading": "Loading data...",
+    "empty": "No data yet",
+    "retry": "Try again",
+    "comingSoon": "Content coming soon"
+  },
+  "chat": {
+    "title": "KUru Chat",
+    "emptyStateTitle": "Start asking about your study path",
+    "emptyStateDescription": "KUru summarizes KU programs, careers, and TCAS guidance with visible source references.",
+    "loading": "Preparing response...",
+    "sources": "Sources",
+    "fallbackWarning": "This information was not found in the KU database. Please verify at admissions.ku.ac.th"
+  },
+  "explore": {
+    "title": "Program Explorer",
+    "searchPlaceholder": "Search by program name, interests, or skills you want to develop",
+    "resultsTitle": "Closest matches",
+    "emptyState": "No results yet. Try another query"
+  },
+  "riasec": {
+    "title": "RIASEC Assessment",
+    "step": "Step",
+    "of": "of",
+    "progressPlaceholder": "Adaptive question flow placeholder",
+    "resultPlaceholder": "Your Holland Code and matched programs will appear here"
+  },
+  "portfolio": {
+    "title": "Portfolio Coach",
+    "uploadPlaceholder": "Portfolio input placeholder",
+    "statusPlaceholder": "Analysis status will update automatically"
+  }
+}
