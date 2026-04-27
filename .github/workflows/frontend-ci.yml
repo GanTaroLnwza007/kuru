@@ -98,6 +98,14 @@ jobs:
       - name: Build frontend
         run: npm run build
 
+      - name: Start frontend server
+        run: npm run start &
+        env:
+          PORT: 3000
+
+      - name: Wait for server to be ready
+        run: npx wait-on http://127.0.0.1:3000 --timeout 60000
+
       - name: Run E2E tests (mobile viewport)
         run: npx playwright test --project=mobile-375
 
