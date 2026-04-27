@@ -135,9 +135,6 @@ test.describe("Navigation & Bilingual UI", () => {
     await page.goto("/chat");
     await expect(page.getByTestId("chat-shell")).toBeVisible();
 
-    // Store initial dimensions
-    const initialSize = await page.viewportSize();
-
     // Resize to mobile
     await page.setViewportSize({ width: 375, height: 667 });
     await expect(page.getByTestId("chat-shell")).toBeVisible();
