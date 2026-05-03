@@ -66,19 +66,35 @@
     "retry": "Try again",
     "comingSoon": "Content coming soon"
   },
+  "explore": {
+    "title": "Program Explorer",
+    "subtitle": "Find KU Bang Khen programs that match your interests",
+    "searchPlaceholder": "Search by program name, faculty, or interests",
+    "emptyState": "No programs found. Try a different search.",
+    "loading": "Loading programs...",
+    "errorFetch": "Failed to load programs. Please try again.",
+    "cardCta": "View details",
+    "vibeHeading": "Year-by-year vibe",
+    "plosHeading": "Program Learning Outcomes (PLOs)",
+    "tcasHeading": "TCAS Admission Info",
+    "tcasQuota": "Seats",
+    "tcasMinScore": "Min. score",
+    "tcasNoScore": "Not specified",
+    "chatCtaDescription": "Have questions about this program? Ask KUru.",
+    "chatCtaButton": "Ask about {name}"
+  },
   "chat": {
     "title": "KUru Chat",
     "emptyStateTitle": "Start asking about your study path",
     "emptyStateDescription": "KUru summarizes KU programs, careers, and TCAS guidance with visible source references.",
-    "loading": "Preparing response...",
+    "inputPlaceholder": "Type your question... (Enter to send, Shift+Enter for newline)",
+    "contextBanner": "Asking about {name}",
+    "typingIndicator": "KUru is typing...",
+    "mockBadge": "⚠️ Demo mode",
     "sources": "Sources",
+    "errorSend": "Failed to send. Please try again.",
+    "loading": "Preparing response...",
     "fallbackWarning": "This information was not found in the KU database. Please verify at admissions.ku.ac.th"
-  },
-  "explore": {
-    "title": "Program Explorer",
-    "searchPlaceholder": "Search by program name, interests, or skills you want to develop",
-    "resultsTitle": "Closest matches",
-    "emptyState": "No results yet. Try another query"
   },
   "riasec": {
     "title": "RIASEC Assessment",

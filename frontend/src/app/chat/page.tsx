@@ -1,40 +1,117 @@
-import { getTranslations } from "next-intl/server";
+"use client";
 
-export default async function ChatPage() {
-  const t = await getTranslations("chat");
-  const common = await getTranslations("common");
+import { useCallback, useEffect, useRef } from "react";
+import { useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useAppStore } from "@/lib/store";
+import { apiClient } from "@/lib/api";
+import { MessageList } from "@/components/chat/MessageList";
+import { ChatInput } from "@/components/chat/ChatInput";
+
+function generateId(): string {
+  return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+}
+
+export default function ChatPage() {
+  const t = useTranslations("chat");
+  const searchParams = useSearchParams();
+
+  const programId = searchParams.get("program_id");
+  const programName = searchParams.get("program_name");
+
+  const messages = useAppStore((s) => s.chat.messages);
+  const sessionId = useAppStore((s) => s.chat.sessionId);
+  const isLoading = useAppStore((s) => s.chat.isLoading);
+  const addMessage = useAppStore((s) => s.chat.addMessage);
+  const setSessionId = useAppStore((s) => s.chat.setSessionId);
+  const setLoading = useAppStore((s) => s.chat.setLoading);
+
+  const autoSentRef = useRef(false);
+
+  const sendMessage = useCallback(
+    async (text: string) => {
+      if (isLoading) return;
+
+      addMessage({
+        id: generateId(),
+        role: "user",
+        content: text,
+        createdAt: new Date().toISOString(),
+      });
+
+      setLoading(true);
+
+      try {
+        const response = await apiClient.chat({
+          message: text,
+          program_context_id: programId ?? undefined,
+          session_id: sessionId ?? undefined,
+        });
+
+        const data = response.data;
+        const isMock = "isMock" in response && response.isMock === true;
+
+        setSessionId(data.session_id);
+
+        addMessage({
+          id: generateId(),
+          role: "assistant",
+          content: data.answer,
+          createdAt: new Date().toISOString(),
+          sources: response.sources as import("@/lib/api").SourceChunk[],
+          isMock,
+        });
+      } catch {
+        addMessage({
+          id: generateId(),
+          role: "assistant",
+          content: t("errorSend"),
+          createdAt: new Date().toISOString(),
+        });
+      } finally {
+        setLoading(false);
+      }
+    },
+    [isLoading, sessionId, programId, addMessage, setSessionId, setLoading, t]
+  );
+
+  // Auto-send first message when arriving from Program Explorer
+  useEffect(() => {
+    if (programId && programName && !autoSentRef.current && messages.length === 0) {
+      autoSentRef.current = true;
+      sendMessage(`ช่วยแนะนำโปรแกรม ${programName} ให้หน่อยได้ไหม`);
+    }
+  }, [programId, programName, messages.length, sendMessage]);
 
   return (
-    <section className="mx-auto flex w-full max-w-3xl flex-col gap-4" data-testid="chat-shell">
-      <header className="space-y-1">
-        <h1 className="text-2xl font-bold text-text-primary">{t("title")}</h1>
-        <p className="text-sm text-text-secondary">{t("emptyStateDescription")}</p>
-      </header>
-
-      <article className="rounded-card border border-surface-subtle bg-surface p-4">
-        <h2 className="text-base font-semibold text-text-primary">{t("emptyStateTitle")}</h2>
-        <p className="mt-2 text-sm text-text-secondary">{common("empty")}</p>
-      </article>
-
-      <article className="rounded-card border border-surface-subtle bg-surface p-4" aria-live="polite">
-        <div className="space-y-2">
-          <div className="h-4 w-2/3 animate-pulse rounded bg-surface-subtle" />
-          <div className="h-4 w-full animate-pulse rounded bg-surface-subtle" />
-          <div className="h-4 w-5/6 animate-pulse rounded bg-surface-subtle" />
+    <section
+      className="mx-auto flex h-[calc(100dvh-var(--navbar-height))] w-full max-w-3xl flex-col"
+      data-testid="chat-shell"
+    >
+      {/* Context banner */}
+      {programName && (
+        <div className="shrink-0 rounded-xl bg-primary/10 px-4 py-2 text-sm font-medium text-primary">
+          💬 {t("contextBanner", { name: programName })}
         </div>
-        <p className="mt-3 text-xs font-medium text-text-muted">{t("loading")}</p>
-      </article>
+      )}
 
-      <article className="rounded-card border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
-        {t("fallbackWarning")}
-      </article>
+      {/* Message list — grows to fill space */}
+      <MessageList
+        messages={messages}
+        isLoading={isLoading}
+        sourcesLabel={t("sources")}
+        mockBadgeLabel={t("mockBadge")}
+        typingIndicatorLabel={t("typingIndicator")}
+      />
 
-      <article className="rounded-card border border-surface-subtle bg-surface p-4">
-        <h3 className="text-sm font-semibold text-text-primary">{t("sources")}</h3>
-        <ol className="mt-2 list-decimal space-y-1 pl-4 text-sm text-text-secondary">
-          <li>Source footnotes will render here as expandable items.</li>
-        </ol>
-      </article>
+      {/* Input bar — pinned to bottom */}
+      <div className="shrink-0 pb-2 pt-1">
+        <ChatInput
+          onSend={sendMessage}
+          disabled={isLoading}
+          placeholder={t("inputPlaceholder")}
+        />
+      </div>
     </section>
   );
 }

@@ -1,39 +1,85 @@
-type ProgramDetailPageProps = {
-  params: Promise<{
-    programId: string;
-  }>;
+import { getTranslations } from "next-intl/server";
+import { notFound } from "next/navigation";
+import { apiClient } from "@/lib/api";
+import { PloList } from "@/components/explore/PloList";
+import { TcasRoundsCards } from "@/components/explore/TcasRoundsCards";
+import { ChatAboutButton } from "@/components/explore/ChatAboutButton";
+
+type Props = {
+  params: Promise<{ programId: string }>;
 };
 
-export default async function ProgramDetailPage({ params }: ProgramDetailPageProps) {
+export default async function ProgramDetailPage({ params }: Props) {
   const { programId } = await params;
+  const t = await getTranslations("explore");
+
+  let program;
+  try {
+    const response = await apiClient.getProgramDetail(programId);
+    program = response.data;
+  } catch {
+    notFound();
+  }
+
+  if (!program) notFound();
 
   return (
-    <section className="mx-auto flex w-full max-w-4xl flex-col gap-4" data-testid="explore-detail-shell">
-      <header className="rounded-card border border-surface-subtle bg-surface p-4">
-        <p className="text-xs font-semibold uppercase tracking-wide text-text-muted">Program ID</p>
-        <h1 className="mt-1 text-xl font-bold text-text-primary">{programId}</h1>
-        <p className="mt-2 text-sm text-text-secondary">
-          Program overview, admission highlights, and skills developed will appear in this section.
-        </p>
+    <article
+      className="mx-auto flex w-full max-w-4xl flex-col gap-8"
+      data-testid="explore-detail-shell"
+    >
+      {/* 1 — Hero header */}
+      <header className="space-y-3">
+        <span className="inline-block rounded-full bg-surface-subtle px-3 py-1 text-xs font-bold uppercase tracking-widest text-text-muted">
+          {program.faculty_en}
+        </span>
+        <h1 className="text-3xl font-extrabold text-text-primary">{program.name_th}</h1>
+        <p className="text-base text-text-secondary">{program.name_en}</p>
+        <div className="flex flex-wrap gap-2">
+          <span className="rounded-full bg-surface-subtle px-3 py-1 text-xs font-medium text-text-muted">
+            {program.degree}
+          </span>
+          <span className="rounded-full bg-surface-subtle px-3 py-1 text-xs font-medium text-text-muted">
+            {program.campus}
+          </span>
+        </div>
       </header>
 
-      <section className="rounded-card border border-surface-subtle bg-surface p-4">
-        <h2 className="text-base font-semibold text-text-primary">Year-by-year vibe</h2>
-        <div className="mt-3 space-y-3">
-          <article className="rounded-lg border border-surface-subtle bg-background p-3">
-            <p className="text-xs font-semibold text-primary">Year 1</p>
-            <p className="mt-1 text-sm text-text-secondary">Foundation learning and orientation placeholder.</p>
-          </article>
-          <article className="rounded-lg border border-surface-subtle bg-background p-3">
-            <p className="text-xs font-semibold text-primary">Year 2-3</p>
-            <p className="mt-1 text-sm text-text-secondary">Skill development and project work placeholder.</p>
-          </article>
-          <article className="rounded-lg border border-surface-subtle bg-background p-3">
-            <p className="text-xs font-semibold text-primary">Year 4</p>
-            <p className="mt-1 text-sm text-text-secondary">Advanced electives and capstone placeholder.</p>
-          </article>
-        </div>
+      {/* 2 — Year-by-year vibe */}
+      {program.year_by_year_vibe && (
+        <section className="rounded-2xl bg-surface-subtle p-5">
+          <p className="mb-1 text-xs font-bold uppercase tracking-wider text-primary">
+            {t("vibeHeading")}
+          </p>
+          <p className="text-sm leading-relaxed text-text-primary">{program.year_by_year_vibe}</p>
+        </section>
+      )}
+
+      {/* 3 — PLOs */}
+      {program.plos.length > 0 && (
+        <PloList heading={t("plosHeading")} items={program.plos} />
+      )}
+
+      {/* 4 — TCAS rounds */}
+      {program.tcas_rounds.length > 0 && (
+        <TcasRoundsCards
+          heading={t("tcasHeading")}
+          rounds={program.tcas_rounds}
+          quotaLabel={t("tcasQuota")}
+          minScoreLabel={t("tcasMinScore")}
+          noScoreLabel={t("tcasNoScore")}
+        />
+      )}
+
+      {/* 5 — Chat CTA */}
+      <section className="rounded-2xl border border-surface-subtle bg-surface p-5">
+        <p className="mb-3 text-sm text-text-secondary">{t("chatCtaDescription")}</p>
+        <ChatAboutButton
+          programId={program.id}
+          programName={program.name_th}
+          label={t("chatCtaButton", { name: program.name_th })}
+        />
       </section>
-    </section>
+    </article>
   );
 }
