@@ -55,6 +55,17 @@ class ProgramDetail(ProgramSummary):
     tcas_rounds: list[TcasRound] = Field(description="TCAS admission rounds")
 
 
+class ConversationTurn(BaseModel):
+    role: str = Field(description="'user' or 'assistant'")
+    content: str = Field(description="Message content")
+
+
+class ChatSourceChunk(BaseModel):
+    source_file: str = Field(description="Source filename")
+    section_type: str = Field(description="Section type (e.g. 'tcas', 'overview')")
+    similarity: float = Field(description="Cosine similarity score (0–1)")
+
+
 class ChatRequest(BaseModel):
     message: str = Field(description="User's message")
     program_context_id: str | None = Field(
@@ -65,8 +76,22 @@ class ChatRequest(BaseModel):
         default=None,
         description="Session ID for multi-turn continuity",
     )
+    conversation_history: list[ConversationTurn] = Field(
+        default_factory=list,
+        description="Last N turns of conversation for multi-turn context (max 5)",
+    )
 
 
 class ChatResponse(BaseModel):
     answer: str = Field(description="Assistant's grounded answer")
     session_id: str = Field(description="Session ID for follow-up messages")
+    confidence_level: str = Field(description="'high', 'medium', or 'low'")
+    sources: list[ChatSourceChunk] = Field(default_factory=list, description="Source chunks used")
+    used_tcas_data: bool = Field(default=False, description="Whether TCAS structured data was used")
+
+
+class FeedbackRequest(BaseModel):
+    session_id: str = Field(description="Session ID the answer belongs to")
+    question: str = Field(description="The question that was asked")
+    answer: str = Field(description="The answer that was given")
+    rating: int = Field(description="1 = helpful, -1 = not helpful")

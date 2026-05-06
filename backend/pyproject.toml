@@ -10,7 +10,11 @@ dependencies = [
     "pydantic-settings>=2.6.0",
     "supabase>=2.10.0",
     "python-dotenv>=1.0.0",
+    "kuru-pipeline",
 ]
+
+[tool.uv.sources]
+kuru-pipeline = { path = "../../kuru-pipeline", editable = true }
 
 [tool.uv]
 dev-dependencies = [
