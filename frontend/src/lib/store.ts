@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import type { SourceChunk } from "./api/schemas.generated";
+import type { RiasecScores } from "./riasec";
 
 export type ChatRole = "user" | "assistant";
 
@@ -36,10 +37,12 @@ type RiasecSlice = {
   totalSteps: number;
   answers: Record<string, RiasecAnswerValue>;
   result: RiasecResult | null;
+  scores: RiasecScores | null;
   setSessionId: (sessionId: string | null) => void;
   setStep: (step: number) => void;
   setAnswer: (questionId: string, value: RiasecAnswerValue) => void;
   setResult: (result: RiasecResult | null) => void;
+  setScores: (scores: RiasecScores | null) => void;
   resetRiasec: () => void;
 };
 
@@ -50,13 +53,14 @@ type AppStore = {
 
 const initialRiasecState: Pick<
   RiasecSlice,
-  "sessionId" | "currentStep" | "totalSteps" | "answers" | "result"
+  "sessionId" | "currentStep" | "totalSteps" | "answers" | "result" | "scores"
 > = {
   sessionId: null,
   currentStep: 1,
   totalSteps: 5,
   answers: {},
   result: null,
+  scores: null,
 };
 
 export const useAppStore = create<AppStore>((set) => ({
@@ -87,6 +91,8 @@ export const useAppStore = create<AppStore>((set) => ({
       })),
     setResult: (result) =>
       set((state) => ({ riasec: { ...state.riasec, result } })),
+    setScores: (scores) =>
+      set((state) => ({ riasec: { ...state.riasec, scores } })),
     resetRiasec: () =>
       set((state) => ({ riasec: { ...state.riasec, ...initialRiasecState } })),
   },

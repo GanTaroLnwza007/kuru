@@ -234,6 +234,11 @@ export function getMockProgramById(id: string): ProgramDetail | undefined {
   return MOCK_PROGRAMS.find((p) => p.id === id);
 }
 
+export const MOCK_PROGRAM_NAMES: Record<string, { name_th: string; faculty_th: string }> =
+  Object.fromEntries(
+    MOCK_PROGRAMS.map((p) => [p.id, { name_th: p.name_th, faculty_th: p.faculty_th }]),
+  );
+
 export function searchMockPrograms(q: string, faculty?: string): ProgramSummary[] {
   const query = q.trim().toLowerCase();
   let results: ProgramDetail[] = MOCK_PROGRAMS;
