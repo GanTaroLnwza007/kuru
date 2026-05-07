@@ -1,6 +1,28 @@
 @import "tailwindcss";
 
 :root {
+  /* ── Design v2 tokens ── */
+  --ink: #0A1F14;
+  --ink-2: #2E3D34;
+  --ink-3: #6B7770;
+  --ink-4: #9CA59F;
+  --paper: #FAFAF6;
+  --cream: #F5F0E6;
+  --cream-2: #EDE5D3;
+  --line: #E8EAE2;
+  --line-soft: #F0F2EB;
+  --d-green: #00A651;
+  --d-green-deep: #006D35;
+  --d-green-soft: #E6F5EC;
+  --d-green-pop: #3DDC84;
+  --d-peach: #F4B68C;
+  --d-peach-soft: #FFF1E6;
+  --d-rust: #B85B2E;
+  --d-sky: #2A5C86;
+  --d-sky-soft: #EAF3FB;
+  --d-amber: #E8A93B;
+
+  /* ── Legacy tokens (app pages) ── */
   --kuru-surface-base: #fafaf9;
   --kuru-surface-card: #ffffff;
   --kuru-surface-muted: #f9faf8;
@@ -37,6 +59,7 @@
   --color-foreground: var(--kuru-text-primary);
 
   --color-surface: var(--kuru-surface-card);
+  --color-surface-base: var(--kuru-surface-base);
   --color-surface-muted: var(--kuru-surface-muted);
   --color-surface-subtle: var(--kuru-surface-subtle);
 
@@ -56,6 +79,26 @@
   --color-warning: var(--kuru-status-warning);
   --color-danger: var(--kuru-status-danger);
   --color-info: var(--kuru-status-info);
+
+  /* Design token palette — ensures Tailwind v4 generates all utilities */
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-ink-4: var(--ink-4);
+  --color-paper: var(--paper);
+  --color-cream: var(--cream);
+  --color-cream-2: var(--cream-2);
+  --color-line: var(--line);
+  --color-line-soft: var(--line-soft);
+  --color-dgreen: var(--d-green);
+  --color-dgreen-deep: var(--d-green-deep);
+  --color-dgreen-soft: var(--d-green-soft);
+  --color-dgreen-pop: var(--d-green-pop);
+  --color-peach: var(--d-peach);
+  --color-peach-soft: var(--d-peach-soft);
+  --color-rust: var(--d-rust);
+  --color-sky: var(--d-sky);
+  --color-sky-soft: var(--d-sky-soft);
 
   --font-sans: var(--font-kuru-thai);
   --font-mono: var(--font-kuru-en);
@@ -140,8 +183,35 @@ input[type="submit"] {
   outline-offset: 2px;
 }
 
+/* Width/padding removed — each page/section manages its own container */
 #app-content-region {
-  width: min(100%, 1280px);
-  margin-inline: auto;
-  padding-inline: clamp(0.875rem, 2.4vw, 2rem);
+  width: 100%;
 }
+
+/* ── Animations ── */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+/* ── Scroll reveal ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 800ms cubic-bezier(.2,.7,.2,1), transform 800ms cubic-bezier(.2,.7,.2,1);
+}
+.reveal.in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Float card animation ── */
+.float-anim { animation: float 5s ease-in-out infinite; }

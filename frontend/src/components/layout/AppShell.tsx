@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import MainNav from "./MainNav";
 import TopNavBar from "./TopNavBar";
 import Footer from "./Footer";
+import RevealInit from "./RevealInit";
 
 type AppShellProps = {
   children: ReactNode;
@@ -19,6 +20,7 @@ export default function AppShell({ children }: AppShellProps) {
       </main>
 
       <Footer />
+      <RevealInit />
     </div>
   );
 }

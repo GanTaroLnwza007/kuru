@@ -3,66 +3,73 @@ type KuruLogoSize = "sm" | "md" | "lg";
 type KuruLogoProps = {
   size?: KuruLogoSize;
   iconOnly?: boolean;
+  /** "dark" uses ink background (default), "light" uses white */
+  variant?: "dark" | "light";
 };
 
-const sizeMap: Record<KuruLogoSize, { iconPx: number; textClass: string }> = {
-  sm: { iconPx: 20, textClass: "text-lg" },
-  md: { iconPx: 28, textClass: "text-2xl" },
-  lg: { iconPx: 36, textClass: "text-3xl" },
+const sizeMap: Record<KuruLogoSize, { markPx: number; textClass: string; radiusPx: number }> = {
+  sm: { markPx: 24, textClass: "text-lg",  radiusPx: 7  },
+  md: { markPx: 32, textClass: "text-xl",  radiusPx: 10 },
+  lg: { markPx: 40, textClass: "text-2xl", radiusPx: 12 },
 };
 
 export default function KuruLogo({
   size = "md",
   iconOnly = false,
+  variant = "dark",
 }: KuruLogoProps) {
-  const { iconPx, textClass } = sizeMap[size];
+  const { markPx, textClass, radiusPx } = sizeMap[size];
+  const markBg = variant === "dark" ? "var(--ink, #0A1F14)" : "#fff";
+  const markText = variant === "dark" ? "#fff" : "var(--ink, #0A1F14)";
+  const logoText = variant === "dark" ? "var(--ink, #0A1F14)" : "#fff";
 
   return (
-    <span
-      className="inline-flex items-center gap-1.5"
-      aria-label="KUru"
-    >
-      <svg
-        width={iconPx}
-        height={iconPx}
-        viewBox="0 0 24 24"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
+    <span className="inline-flex items-center gap-2.5" aria-label="KUru">
+      {/* Logo mark: dark rounded square with italic "K" */}
+      <span
+        style={{
+          width: markPx,
+          height: markPx,
+          borderRadius: radiusPx,
+          background: markBg,
+          color: markText,
+          display: "grid",
+          placeItems: "center",
+          position: "relative",
+          overflow: "hidden",
+          flexShrink: 0,
+        }}
         aria-hidden="true"
-        style={{ color: "var(--color-primary)" }}
       >
-        {/* Mortarboard cap top (diamond shape) */}
-        <path
-          d="M12 3L22 8L12 13L2 8L12 3Z"
-          fill="currentColor"
-          opacity="0.15"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinejoin="round"
+        {/* green-pop radial glow */}
+        <span
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: "radial-gradient(circle at 30% 30%, var(--d-green-pop, #3DDC84) 0%, transparent 60%)",
+            opacity: 0.8,
+          }}
         />
-        {/* Board base */}
-        <path
-          d="M7 10.5V15.5C7 15.5 9 17.5 12 17.5C15 17.5 17 15.5 17 15.5V10.5"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        {/* Tassel string */}
-        <path
-          d="M22 8V12"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-        />
-        {/* Tassel ball */}
-        <circle cx="22" cy="13" r="1" fill="currentColor" />
-      </svg>
+        <span
+          style={{
+            position: "relative",
+            fontFamily: "var(--font-serif, 'Source Serif 4', Georgia, serif)",
+            fontStyle: "italic",
+            fontSize: markPx * 0.56,
+            lineHeight: 1,
+            fontWeight: 400,
+          }}
+        >
+          K
+        </span>
+      </span>
 
       {!iconOnly && (
-        <span className={`${textClass} leading-none tracking-tight`}>
-          <span className="font-extrabold text-primary">KU</span>
-          <span className="font-bold text-primary/80">ru</span>
+        <span
+          className={`${textClass} font-extrabold leading-none tracking-tight font-display`}
+          style={{ color: logoText }}
+        >
+          KUru
         </span>
       )}
     </span>
