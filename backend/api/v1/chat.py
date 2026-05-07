@@ -64,7 +64,7 @@ async def chat_feedback(request: FeedbackRequest) -> JSONResponse:
     from core.config import settings
     from supabase import create_client
 
-    sb = create_client(settings.supabase_url, settings.supabase_anon_key)
+    sb = create_client(settings.supabase_url, settings.supabase_key)
     sb.table("feedback").insert({
         "session_id": request.session_id,
         "question": request.question,
