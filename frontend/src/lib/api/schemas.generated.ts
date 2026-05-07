@@ -52,15 +52,30 @@ export const programDetailResponseSchema = createKuruResponseSchema(programDetai
 
 // ---------- Chat ----------
 
+export const conversationTurnSchema = z.object({
+  role: z.enum(["user", "assistant"]),
+  content: z.string(),
+});
+
 export const chatRequestSchema = z.object({
   message: z.string().min(1),
   program_context_id: z.string().nullable().optional(),
   session_id: z.string().nullable().optional(),
+  conversation_history: z.array(conversationTurnSchema).default([]),
+});
+
+export const chatSourceChunkSchema = z.object({
+  source_file: z.string(),
+  section_type: z.string(),
+  similarity: z.number(),
 });
 
 export const chatDataSchema = z.object({
   answer: z.string(),
   session_id: z.string(),
+  confidence_level: z.enum(["high", "medium", "low"]).default("low"),
+  sources: z.array(chatSourceChunkSchema).default([]),
+  used_tcas_data: z.boolean().default(false),
 });
 
 export const chatResponseSchema = createKuruResponseSchema(chatDataSchema);
@@ -73,5 +88,7 @@ export type TcasRound = z.infer<typeof tcasRoundSchema>;
 export type ProgramSummary = z.infer<typeof programSummarySchema>;
 export type ProgramSearchResult = z.infer<typeof programSearchResultSchema>;
 export type ProgramDetail = z.infer<typeof programDetailSchema>;
+export type ConversationTurn = z.infer<typeof conversationTurnSchema>;
+export type ChatSourceChunk = z.infer<typeof chatSourceChunkSchema>;
 export type ChatRequest = z.infer<typeof chatRequestSchema>;
 export type ChatData = z.infer<typeof chatDataSchema>;
