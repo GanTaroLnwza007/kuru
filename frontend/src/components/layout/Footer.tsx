@@ -42,10 +42,10 @@ export default function Footer() {
               Resources
             </h5>
             <ul className="flex flex-col gap-2.5 text-sm">
-              <li><span className="cursor-default">TCAS68 Guide</span></li>
-              <li><span className="cursor-default">Reviews นักศึกษาปัจจุบัน</span></li>
-              <li><span className="cursor-default">Blog</span></li>
-              <li><span className="cursor-default">FAQ</span></li>
+              <li><Link href="/riasec" className="hover:text-white transition-colors">TCAS68 Guide</Link></li>
+              <li><Link href="/explore" className="hover:text-white transition-colors">Reviews นักศึกษาปัจจุบัน</Link></li>
+              <li><Link href="/chat"    className="hover:text-white transition-colors">Blog</Link></li>
+              <li><Link href="/chat"    className="hover:text-white transition-colors">FAQ</Link></li>
             </ul>
           </div>
 
@@ -55,10 +55,26 @@ export default function Footer() {
               Contact
             </h5>
             <ul className="flex flex-col gap-2.5 text-sm">
-              <li><span className="cursor-default">contact@kuru.ku.ac.th</span></li>
-              <li><span className="cursor-default">Line @kuru-ku</span></li>
-              <li><span className="cursor-default">Facebook</span></li>
-              <li><span className="cursor-default">Privacy Policy</span></li>
+              <li>
+                <a href="mailto:contact@kuru.ku.ac.th" className="hover:text-white transition-colors">
+                  contact@kuru.ku.ac.th
+                </a>
+              </li>
+              <li>
+                <a href="https://line.me/R/ti/p/@kuru-ku" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                  Line @kuru-ku
+                </a>
+              </li>
+              <li>
+                <a href="https://www.facebook.com/kuruku" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                  Facebook
+                </a>
+              </li>
+              <li>
+                <Link href="/privacy" className="hover:text-white transition-colors">
+                  Privacy Policy
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

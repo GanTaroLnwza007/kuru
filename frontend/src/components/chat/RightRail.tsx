@@ -2,20 +2,16 @@
 
 import Link from "next/link";
 import { cn } from "@/lib/cn";
+import { RIASEC_DIMS } from "@/lib/riasec";
 
-const RIASEC_LABELS: Record<string, string> = {
-  R: "ช่างฝีมือ",
-  I: "นักวิเคราะห์",
-  A: "ศิลปิน",
-  S: "นักช่วยเหลือ",
-  E: "ผู้นำ",
-  C: "ระเบียบ",
-};
+function codeLabel(key: string): string {
+  return (RIASEC_DIMS as Record<string, { th: string }>)[key]?.th ?? key;
+}
 
 function codeDescription(code: string): string {
   return code
     .split("")
-    .map((c) => RIASEC_LABELS[c] ?? c)
+    .map(codeLabel)
     .join(" + ");
 }
 
@@ -84,10 +80,11 @@ export function RightRail({ hollandCode }: Props) {
         </h5>
 
         {PINNED_PROGRAMS.map((item) => (
-          <div
+          <Link
             key={item.id}
+            href="/explore"
             className={cn(
-              "flex cursor-pointer items-start gap-2.5 rounded-xl px-3 py-2.5 text-[13.5px] leading-snug transition-all",
+              "flex items-start gap-2.5 rounded-xl px-3 py-2.5 text-[13.5px] leading-snug transition-all",
               item.active ? "bg-paper text-ink" : "text-ink-2 hover:bg-paper hover:text-ink"
             )}
           >
@@ -103,7 +100,7 @@ export function RightRail({ hollandCode }: Props) {
               <strong className="font-bold text-ink">{item.name}</strong>
               <div className="mt-0.5 text-[11.5px] text-ink-3">{item.meta}</div>
             </div>
-          </div>
+          </Link>
         ))}
 
         <Link

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useAppStore } from "@/lib/store";
@@ -31,6 +31,7 @@ export default function ChatPage() {
   const riasecResult = useAppStore((s) => s.riasec.result);
 
   const autoSentRef = useRef(false);
+  const [saved, setSaved] = useState(false);
 
   const sendMessage = useCallback(
     async (text: string) => {
@@ -178,9 +179,20 @@ export default function ChatPage() {
               </button>
               <button
                 type="button"
-                className="inline-flex h-9 min-h-0 items-center rounded-full border border-line bg-white/70 px-4 font-display text-[13.5px] font-bold text-ink transition-all hover:border-ink hover:bg-white"
+                onClick={() => {
+                  if (!messages.length) return;
+                  const text = messages
+                    .map((m) => `${m.role === "user" ? "น้อง" : "KUru"}: ${m.content}`)
+                    .join("\n\n");
+                  navigator.clipboard.writeText(text).then(() => {
+                    setSaved(true);
+                    setTimeout(() => setSaved(false), 2000);
+                  });
+                }}
+                disabled={messages.length === 0}
+                className="inline-flex h-9 min-h-0 items-center rounded-full border border-line bg-white/70 px-4 font-display text-[13.5px] font-bold text-ink transition-all hover:border-ink hover:bg-white disabled:cursor-not-allowed disabled:opacity-40"
               >
-                บันทึก
+                {saved ? "✓ คัดลอกแล้ว" : "บันทึก"}
               </button>
             </div>
           </div>
