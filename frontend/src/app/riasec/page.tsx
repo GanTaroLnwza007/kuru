@@ -18,19 +18,40 @@ import { useAppStore } from "@/lib/store";
 import { RadarChart } from "@/components/riasec/RadarChart";
 import { Icon } from "@/components/ui/Icon";
 
-// ── tiny progress bar ──────────────────────────────────────────
-function ProgressBar({ value }: { value: number }) {
+// ── Background textures ────────────────────────────────────────
+function BgMesh() {
   return (
-    <div className="h-1.5 w-full overflow-hidden rounded-full bg-line-soft">
+    <>
       <div
-        className="h-full rounded-full bg-dgreen transition-all duration-700 ease-out"
-        style={{ width: `${value}%` }}
+        className="pointer-events-none absolute inset-0 z-0"
+        style={{
+          background: [
+            "radial-gradient(ellipse 700px 500px at 88% 18%, rgba(0,166,81,.18) 0%, transparent 60%)",
+            "radial-gradient(ellipse 500px 500px at 12% 80%, rgba(244,182,140,.18) 0%, transparent 60%)",
+          ].join(", "),
+        }}
       />
-    </div>
+      <svg
+        className="pointer-events-none absolute inset-0 z-0 opacity-55 mix-blend-multiply"
+        preserveAspectRatio="none"
+        style={{ width: "100%", height: "100%" }}
+      >
+        <filter id="quiz-grain">
+          <feTurbulence
+            type="fractalNoise"
+            baseFrequency="0.85"
+            numOctaves="2"
+            stitchTiles="stitch"
+          />
+          <feColorMatrix values="0 0 0 0 0.05  0 0 0 0 0.1  0 0 0 0 0.07  0 0 0 0 0.04 0" />
+        </filter>
+        <rect width="100%" height="100%" filter="url(#quiz-grain)" />
+      </svg>
+    </>
   );
 }
 
-// ── score bar (used in results) ────────────────────────────────
+// ── Score bar (results screen) ─────────────────────────────────
 function ScoreBar({ value, color }: { value: number; color: string }) {
   return (
     <div className="h-1.5 w-full overflow-hidden rounded-full" style={{ background: color + "22" }}>
@@ -47,39 +68,57 @@ function ScoreBar({ value, color }: { value: number; color: string }) {
 // ─────────────────────────────────────────────────────────────
 function IntroScreen({ onStart }: { onStart: () => void }) {
   return (
-    <div className="mx-auto max-w-2xl px-4 pb-24 pt-8 sm:px-6 sm:pt-12">
-      <p className="mb-3 text-xs font-bold uppercase tracking-widest text-dgreen">
-        ทดสอบ · 3-5 นาที · 24 ข้อ
-      </p>
-      <h1 className="mb-4 text-3xl font-extrabold leading-tight tracking-tight text-ink sm:text-5xl">
-        ตอบจากใจคุณก็พอ<br />
-        ไม่มีคำตอบที่ถูกหรือผิด
+    <div className="mx-auto max-w-[760px] px-5 pb-24 pt-8 sm:px-8 sm:pt-12">
+      {/* Eyebrow badge */}
+      <div
+        className="mb-5 inline-flex items-center gap-2 rounded-full border border-line-soft bg-white px-3 py-1.5 font-display text-xs font-bold text-ink-2"
+        style={{ boxShadow: "0 8px 20px -8px rgba(15,27,20,.08)" }}
+      >
+        <span
+          className="h-1.5 w-1.5 rounded-full bg-dgreen"
+          style={{ animation: "pulse 1.6s infinite" }}
+        />
+        RIASEC · 24 ข้อ · 3-5 นาที
+      </div>
+
+      <h1
+        className="mb-5 font-display font-extrabold leading-none tracking-tight text-ink"
+        style={{ fontSize: "clamp(44px, 5.6vw, 72px)" }}
+      >
+        ตอบจากใจคุณก็พอ
+        <br />
+        <span className="font-serif font-normal italic" style={{ color: "var(--d-green)" }}>
+          ไม่มีคำตอบที่ถูกหรือผิด
+        </span>
       </h1>
-      <p className="mb-8 text-base leading-relaxed text-ink-2 sm:text-lg">
-        KUru ใช้ RIASEC — ทฤษฎีบุคลิกอาชีพของ John Holland ที่นักจิตวิทยาทั่วโลกใช้กว่า 60 ปี
-        เราจะค่อย ๆ ถามด้วยคำถามที่หลากหลาย ตอบโดยใช้สัญชาตญาณแรกได้เลย
+
+      <p className="mb-8 max-w-[560px] text-lg leading-relaxed text-ink-2">
+        KUru ใช้ <em className="font-serif not-italic">RIASEC</em> — ทฤษฎีบุคลิกอาชีพของ John Holland
+        ที่นักจิตวิทยาทั่วโลกใช้กว่า 60 ปี เราจะค่อย ๆ ถามด้วยคำถามที่หลากหลาย
+        ตอบโดยใช้สัญชาตญาณแรกได้เลย
       </p>
 
-      <div className="mb-8 space-y-3">
+      {/* Dim cards */}
+      <div className="mb-8 grid gap-2.5">
         {(Object.values(RIASEC_DIMS) as (typeof RIASEC_DIMS)[RiasecDim][]).map((d) => (
           <div
             key={d.key}
-            className="flex items-center gap-4 rounded-2xl border border-line-soft bg-surface p-4"
+            className="flex items-center gap-4 rounded-[20px] border border-line-soft bg-white px-5 py-[18px] transition-all duration-[240ms] hover:translate-x-1 hover:border-ink"
           >
             <div
-              className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl"
-              style={{ background: d.color + "22", color: d.color }}
+              className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl font-serif text-[22px] font-semibold italic"
+              style={{ background: d.bg, color: d.color }}
             >
-              <Icon name={d.icon} size={20} />
+              {d.key}
             </div>
-            <div>
-              <p className="text-sm font-bold text-ink">
-                <span style={{ color: d.color }} className="mr-2">
+            <div className="flex-1">
+              <p className="font-display text-base font-bold text-ink">
+                <span className="mr-2 font-serif font-semibold italic" style={{ color: d.color }}>
                   {d.key}
                 </span>
                 {d.th}
               </p>
-              <p className="mt-0.5 text-xs text-ink-3">{d.desc}</p>
+              <p className="mt-0.5 text-[13px] leading-relaxed text-ink-3">{d.desc}</p>
             </div>
           </div>
         ))}
@@ -87,13 +126,36 @@ function IntroScreen({ onStart }: { onStart: () => void }) {
 
       <button
         onClick={onStart}
-        className="flex h-14 w-full items-center justify-center gap-3 rounded-2xl bg-dgreen text-base font-bold text-white shadow-lg transition-transform hover:bg-dgreen-deep active:scale-[0.98]"
-        style={{ boxShadow: "0 1px 2px rgba(0,166,81,0.12), 0 12px 28px -10px rgba(0,166,81,0.32)" }}
+        className="relative flex h-[60px] w-full items-center justify-center gap-2.5 overflow-hidden rounded-full font-display text-base font-bold text-white"
+        style={{
+          background: "var(--ink)",
+          boxShadow: "0 8px 24px -8px rgba(10,31,20,.5), inset 0 1px 0 rgba(255,255,255,.1)",
+        }}
+        onMouseMove={(e) => {
+          const r = e.currentTarget.getBoundingClientRect();
+          e.currentTarget.style.setProperty("--mx", ((e.clientX - r.left) / r.width * 100) + "%");
+          e.currentTarget.style.setProperty("--my", ((e.clientY - r.top) / r.height * 100) + "%");
+        }}
       >
-        <Icon name="play" size={18} color="white" />
-        เริ่มทดสอบ
+        <span
+          className="pointer-events-none absolute inset-0 rounded-full opacity-0 transition-opacity duration-300 hover:opacity-60"
+          style={{
+            background: "radial-gradient(circle at var(--mx,30%) var(--my,50%), var(--d-green) 0%, transparent 50%)",
+          }}
+        />
+        <svg
+          className="relative z-10"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+        >
+          <path d="M8 5v14l11-7z" />
+        </svg>
+        <span className="relative z-10">เริ่มทดสอบ</span>
       </button>
-      <p className="mt-4 text-center text-xs text-ink-4">
+
+      <p className="mt-3.5 text-center text-[12.5px] text-ink-3">
         🔒 ข้อมูลของคุณปลอดภัย ไม่ใช้กับใครเด็ดขาด
       </p>
     </div>
@@ -105,45 +167,41 @@ function IntroScreen({ onStart }: { onStart: () => void }) {
 // ─────────────────────────────────────────────────────────────
 type QuizAnswer = AnswerRecord;
 
-function SliderQuestion({
-  onAnswer,
-  dim,
-}: {
-  onAnswer: (a: QuizAnswer) => void;
-  dim: RiasecDim;
-}) {
+function SliderQuestion({ onAnswer, dim }: { onAnswer: (a: QuizAnswer) => void; dim: RiasecDim }) {
   const [val, setVal] = useState(50);
   const labels = ["ไม่ใช่ฉันเลย", "ค่อนข้างไม่ใช่", "ตรงกลาง", "ค่อนข้างใช่", "ใช่ฉันเลย!"];
   const idx = Math.min(4, Math.floor(val / 20.01));
 
   return (
-    <div className="px-1">
+    <div className="slider-block px-1">
       <p
-        className="mb-6 h-7 text-center text-lg font-bold text-dgreen transition-all duration-200"
+        className="mb-7 h-8 text-center font-display text-[22px] font-extrabold transition-all duration-200"
+        style={{ color: "var(--d-green)" }}
       >
         {labels[idx]}
       </p>
-      <div className="relative mb-8 h-14 px-3">
+      <div className="relative mb-4 h-[60px] px-[18px]">
         {/* track */}
         <div
-          className="absolute inset-x-3 top-6 h-2 rounded-full"
+          className="absolute inset-x-[18px] top-[26px] h-2 rounded-full"
           style={{ background: "var(--d-green-soft)" }}
         />
         {/* fill */}
         <div
-          className="absolute top-6 h-2 rounded-full transition-all duration-75"
+          className="absolute top-[26px] h-2 rounded-full transition-[width] duration-[80ms]"
           style={{
-            left: "0.75rem",
-            width: `calc(${val}% - 24px * ${val / 100})`,
-            background: "var(--d-green)",
+            left: "18px",
+            width: `calc(${val}% * (100% - 36px) / 100%)`,
+            background: "linear-gradient(90deg, var(--d-green), var(--d-green-pop))",
           }}
         />
         {/* thumb */}
         <div
-          className="pointer-events-none absolute top-3.5 h-7 w-7 rounded-full bg-white shadow-md transition-all duration-75"
+          className="pointer-events-none absolute top-[16px] h-7 w-7 rounded-full bg-white transition-[left] duration-[80ms]"
           style={{
-            left: `calc(${val}% - 16px * ${val / 50 - 1})`,
+            left: `calc(${val}% - 14px)`,
             border: "3px solid var(--d-green)",
+            boxShadow: "0 6px 16px -4px rgba(0,166,81,.4)",
           }}
         />
         <input
@@ -154,24 +212,52 @@ function SliderQuestion({
           value={val}
           onChange={(e) => setVal(Number(e.target.value))}
           className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-          style={{ WebkitAppearance: "none", appearance: "none" }}
         />
       </div>
-      <div className="mb-6 flex justify-between text-xs text-ink-4">
-        <span>{labels[0]}</span>
-        <span>{labels[4]}</span>
+      <div className="mb-7 flex justify-between text-[12.5px] text-ink-3">
+        <span>ไม่ใช่ฉันเลย</span>
+        <span>ใช่ฉันเลย!</span>
       </div>
       <button
         onClick={() => onAnswer({ dim, val: (val - 50) / 25 })}
-        className="flex h-13 w-full items-center justify-center gap-2 rounded-2xl bg-dgreen font-bold text-white transition-transform hover:bg-dgreen-deep active:scale-[0.98]"
-        style={{ height: 52, boxShadow: "0 1px 2px rgba(0,166,81,0.12), 0 12px 28px -10px rgba(0,166,81,0.32)" }}
+        className="flex h-[60px] w-full items-center justify-center gap-2 rounded-full font-display text-base font-bold text-white transition-transform hover:-translate-y-0.5"
+        style={{
+          background: "var(--ink)",
+          boxShadow: "0 8px 24px -8px rgba(10,31,20,.5)",
+        }}
       >
         ยืนยันคำตอบ
-        <Icon name="arrow-right" size={18} color="white" />
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+        >
+          <path d="M5 12h14M13 6l6 6-6 6" />
+        </svg>
       </button>
     </div>
   );
 }
+
+const AGREE_OPTS = [
+  { val: -2, label: "ไม่เห็นด้วยอย่างยิ่ง", dots: 1 },
+  { val: -1, label: "ไม่เห็นด้วย", dots: 2 },
+  { val: 0, label: "เฉย ๆ", dots: 3 },
+  { val: 1, label: "เห็นด้วย", dots: 4 },
+  { val: 2, label: "เห็นด้วยอย่างยิ่ง", dots: 5 },
+] as const;
+
+const ENCOURAGEMENTS = [
+  "คุณทำได้ดี ✨",
+  "ค่อย ๆ คิดได้นะ 🌱",
+  "ครึ่งทางแล้ว ไม่ต้องรีบ",
+  "อีกนิดเดียวเอง 💚",
+  "เก่งมากเลย ใกล้เสร็จแล้ว ✨",
+];
 
 function QuizScreen({
   onComplete,
@@ -188,8 +274,7 @@ function QuizScreen({
   const q = RIASEC_QUESTIONS[idx];
   const dim = RIASEC_DIMS[q.dim];
   const progress = (idx / total) * 100;
-  const messages = ["คุณทำได้ดี", "ค่อย ๆ คิดได้นะ", "อีกนิดเดียวเอง", "เก่งมากเลย"];
-  const encouragement = messages[Math.min(messages.length - 1, Math.floor(idx / 6))];
+  const encouragement = ENCOURAGEMENTS[Math.min(ENCOURAGEMENTS.length - 1, Math.floor(idx / 5))];
 
   const handleAnswer = useCallback(
     (a: QuizAnswer) => {
@@ -197,7 +282,7 @@ function QuizScreen({
       next[idx] = a;
       setAnswers(next);
       if (idx < total - 1) {
-        setTimeout(() => setIdx(idx + 1), 150);
+        setTimeout(() => setIdx(idx + 1), 120);
       } else {
         const scored = next.filter(Boolean) as QuizAnswer[];
         const scores = computeRiasecScores(scored);
@@ -210,105 +295,247 @@ function QuizScreen({
   const prev = () => idx > 0 && setIdx(idx - 1);
 
   return (
-    <div className="relative min-h-screen">
-      {/* exit button */}
-      <div className="flex justify-end px-4 pb-0 pt-4 sm:px-6 sm:pt-5">
-        <button
-          onClick={onExit}
-          className="flex h-9 items-center gap-1.5 rounded-full border border-line bg-surface px-3 text-sm font-semibold text-ink-2 transition-colors hover:bg-surface-subtle"
-        >
-          <Icon name="close" size={14} />
-          ออก
-        </button>
-      </div>
+    <div className="relative min-h-[calc(100vh-72px)] overflow-hidden py-8 sm:py-10">
+      <BgMesh />
 
-      <div className="mx-auto max-w-2xl px-4 pb-28 pt-3 sm:px-6">
-        {/* progress */}
-        <div className="mb-3 flex items-center gap-3">
+      <div className="relative z-10 mx-auto max-w-[760px] px-5 pb-20 sm:px-8">
+        {/* Header */}
+        <div className="mb-9 flex items-center gap-3.5">
           <button
             onClick={prev}
             disabled={idx === 0}
-            className="flex h-9 w-9 items-center justify-center rounded-xl border border-line bg-surface text-ink-2 transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
+            className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl border border-line bg-white text-ink-2 transition-all hover:border-ink disabled:cursor-not-allowed disabled:opacity-40"
           >
-            <Icon name="arrow-left" size={18} />
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
+              <path d="M19 12H5M11 18l-6-6 6-6" />
+            </svg>
           </button>
           <div className="flex-1">
-            <ProgressBar value={progress} />
+            <div className="mb-2 flex justify-between font-display text-[12px] font-bold uppercase tracking-[.04em] text-ink-3">
+              <span>{dim.name}</span>
+              <span>
+                <span className="tabular-nums text-ink">{idx + 1}</span>
+                <span className="text-ink-4">/{total}</span>
+              </span>
+            </div>
+            <div className="h-1.5 overflow-hidden rounded-full bg-line-soft">
+              <div
+                className="h-full rounded-full transition-all duration-700 ease-out"
+                style={{
+                  width: `${Math.max(4, progress)}%`,
+                  background: "linear-gradient(90deg, var(--d-green), var(--d-green-pop))",
+                }}
+              />
+            </div>
           </div>
-          <span className="text-sm font-bold tabular-nums text-ink-2">
-            {idx + 1}
-            <span className="font-normal text-ink-4">/{total}</span>
-          </span>
+          <button
+            onClick={onExit}
+            className="rounded-full bg-transparent px-3.5 py-2 text-[13px] font-semibold text-ink-3 transition-all hover:bg-ink/[.06] hover:text-ink"
+          >
+            ออก
+          </button>
         </div>
-        <p className="mb-7 text-center text-sm font-semibold text-dgreen">
-          ✨ {encouragement}
+
+        {/* Encouragement */}
+        <p
+          className="mb-7 text-center font-serif italic"
+          style={{ color: "var(--d-green)", fontSize: 16 }}
+        >
+          {encouragement}
         </p>
 
-        {/* dim chip */}
-        <div className="mb-4 flex justify-center">
+        {/* Dim pill */}
+        <div className="mb-2.5 flex justify-center">
           <span
-            className="inline-flex h-7 items-center gap-1.5 rounded-full px-3 text-xs font-bold"
-            style={{ background: dim.color + "1A", color: dim.color }}
+            className="inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 font-display text-[12.5px] font-bold"
+            style={{ background: dim.bg, color: dim.color }}
           >
-            <Icon name={dim.icon} size={13} color={dim.color} />
+            <span className="font-serif italic opacity-70">·</span>
             {dim.th}
+            <span className="font-serif italic opacity-70">·</span>
           </span>
         </div>
 
-        {/* question */}
-        <div key={q.id}>
-          <h2 className="mb-8 text-center text-2xl font-bold leading-snug tracking-tight text-ink sm:text-3xl">
+        {/* Question block */}
+        <div key={q.id} style={{ animation: "slideUp 380ms cubic-bezier(.2,.7,.2,1)" }}>
+          <h2
+            className="mb-9 text-center font-display font-bold leading-[1.2] tracking-[-0.02em] text-ink"
+            style={{ fontSize: "clamp(26px, 3.4vw, 40px)" }}
+          >
             {q.text}
           </h2>
 
+          {/* Agree */}
           {q.format === "agree" && (
-            <div className="space-y-3">
-              {(
-                [
-                  { val: -2, label: "ไม่เห็นด้วยอย่างยิ่ง" },
-                  { val: -1, label: "ไม่เห็นด้วย" },
-                  { val: 0, label: "เฉย ๆ" },
-                  { val: 1, label: "เห็นด้วย" },
-                  { val: 2, label: "เห็นด้วยอย่างยิ่ง" },
-                ] as { val: number; label: string }[]
-              ).map((o) => (
+            <div className="grid gap-2.5">
+              {AGREE_OPTS.map((o) => (
                 <button
                   key={o.val}
                   onClick={() => handleAnswer({ dim: q.dim, val: o.val })}
-                  className="flex w-full items-center justify-between rounded-2xl border border-line-soft bg-surface px-5 py-4 text-left text-base font-semibold text-ink transition-all hover:border-dgreen hover:bg-dgreen-soft/50 active:scale-[0.99]"
+                  className="group flex w-full items-center gap-3.5 rounded-[18px] border border-line-soft bg-white px-[22px] py-4 text-left font-thai text-[15.5px] font-semibold text-ink transition-all duration-200 hover:-translate-y-0.5 hover:border-dgreen"
+                  style={{
+                    boxShadow: "none",
+                    transition: "all 200ms",
+                  }}
                 >
-                  {o.label}
-                  <Icon name="arrow-right" size={18} color="var(--ink-3)" />
+                  {/* Scale dots */}
+                  <span className="flex flex-shrink-0 gap-1">
+                    {[1, 2, 3, 4, 5].map((i) => (
+                      <span
+                        key={i}
+                        className="h-2.5 w-2.5 rounded-full transition-all duration-200"
+                        style={{
+                          background: i <= o.dots ? "var(--d-green)" : "var(--line)",
+                        }}
+                      />
+                    ))}
+                  </span>
+                  <span className="flex-1">{o.label}</span>
                 </button>
               ))}
             </div>
           )}
 
+          {/* Choice */}
           {q.format === "choice" && q.options && (
-            <div className="space-y-3">
+            <div className="grid gap-2.5">
               {q.options.map((o, i) => (
                 <button
                   key={i}
                   onClick={() => handleAnswer({ dim: o.dim, val: 2 })}
-                  className="flex w-full items-center gap-3 rounded-2xl border border-line-soft bg-surface px-5 py-4 text-left text-base font-semibold text-ink transition-all hover:border-dgreen hover:bg-dgreen-soft/50 hover:-translate-y-0.5 active:scale-[0.99]"
+                  className="group relative flex w-full items-center justify-between gap-3.5 overflow-hidden rounded-[18px] border border-line-soft bg-white px-[22px] py-[18px] text-left font-thai text-base font-semibold text-ink transition-all duration-200 hover:-translate-y-0.5 hover:border-dgreen"
+                  style={{ boxShadow: "none" }}
                 >
-                  <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-surface-subtle text-xs font-bold text-ink-2">
-                    {["A", "B", "C", "D"][i]}
+                  {/* Hover sweep */}
+                  <span
+                    className="pointer-events-none absolute inset-y-0 left-0 w-0 transition-[width] duration-[240ms] group-hover:w-full"
+                    style={{
+                      background: "linear-gradient(90deg, var(--d-green-soft), transparent)",
+                    }}
+                  />
+                  <span className="relative z-10 flex flex-1 items-center gap-3.5">
+                    <span
+                      className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg font-display text-[13px] font-extrabold text-ink-2 transition-all duration-200 group-hover:bg-dgreen group-hover:text-white"
+                      style={{ background: "var(--paper)" }}
+                    >
+                      {"ABCD"[i]}
+                    </span>
+                    <span className="leading-snug">{o.label}</span>
                   </span>
-                  <span className="flex-1 leading-snug">{o.label}</span>
+                  <span
+                    className="relative z-10 text-ink-4 transition-all duration-200 group-hover:translate-x-1 group-hover:text-dgreen"
+                  >
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    >
+                      <path d="M5 12h14M13 6l6 6-6 6" />
+                    </svg>
+                  </span>
                 </button>
               ))}
             </div>
           )}
 
-          {q.format === "slider" && (
-            <SliderQuestion dim={q.dim} onAnswer={handleAnswer} />
-          )}
+          {/* Slider */}
+          {q.format === "slider" && <SliderQuestion dim={q.dim} onAnswer={handleAnswer} />}
         </div>
 
-        <p className="mt-7 text-center text-sm text-ink-4">
-          ตอบจากสัญชาตญาณแรก ไม่ต้องคิดเยอะ ✨
+        <p className="mt-8 text-center text-[13px] text-ink-4">
+          ตอบจากสัญชาตญาณแรก ไม่ต้องคิดเยอะ
         </p>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────
+// COMPLETE SCREEN
+// ─────────────────────────────────────────────────────────────
+function CompleteScreen({ onView }: { onView: () => void }) {
+  return (
+    <div className="relative min-h-[calc(100vh-72px)] overflow-hidden">
+      <BgMesh />
+      <div className="relative z-10 mx-auto max-w-[760px] px-5 py-16 sm:px-8">
+        <div
+          className="rounded-[28px] border border-line-soft bg-white p-8 text-center"
+          style={{ boxShadow: "0 1px 2px rgba(15,27,20,.04)" }}
+        >
+          {/* Check icon */}
+          <div
+            className="mx-auto mb-6 flex h-[88px] w-[88px] items-center justify-center rounded-[28px]"
+            style={{
+              background: "var(--d-green)",
+              boxShadow: "0 20px 40px -10px rgba(0,166,81,.4)",
+              animation: "pop 600ms cubic-bezier(.2,.7,.2,1)",
+            }}
+          >
+            <svg
+              width="44"
+              height="44"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="white"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="m5 12 5 5L20 7" />
+            </svg>
+          </div>
+
+          <p className="mb-3.5 font-display text-xs font-extrabold uppercase tracking-[.18em] text-dgreen">
+            เสร็จแล้ว
+          </p>
+          <h2
+            className="mb-3.5 font-display font-extrabold leading-none tracking-tight text-ink"
+            style={{ fontSize: "clamp(36px, 4.6vw, 64px)" }}
+          >
+            ทำได้{" "}
+            <span className="font-serif font-normal italic" style={{ color: "var(--d-green)" }}>
+              ยอดเยี่ยม
+            </span>
+            <br />
+            มาดูผลกัน
+          </h2>
+          <p className="mx-auto mb-8 max-w-[480px] text-lg leading-relaxed text-ink-2">
+            KUru กำลังจับคู่บุคลิกของคุณกับหลักสูตร 47 หลักสูตรของ ม.เกษตรศาสตร์
+          </p>
+          <button
+            onClick={onView}
+            className="inline-flex h-[60px] items-center gap-2 rounded-full px-7 font-display text-base font-bold text-white transition-transform hover:-translate-y-0.5"
+            style={{
+              background: "var(--ink)",
+              boxShadow: "0 8px 24px -8px rgba(10,31,20,.5)",
+            }}
+          >
+            ดูผลของฉัน
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
+              <path d="M5 12h14M13 6l6 6-6 6" />
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -330,7 +557,6 @@ function ResultsScreen({
   const top3Code = getTop3Code(scores);
   const topDim = RIASEC_DIMS[sorted[0][0]];
 
-  // Sort programs by RIASEC fit
   const scoredPrograms = Object.values(RICH_PROGRAMS)
     .map((p) => ({
       ...p,
@@ -381,7 +607,7 @@ function ResultsScreen({
                     <div className="flex items-center gap-2">
                       <span
                         className="inline-flex h-6 w-6 items-center justify-center rounded-lg text-xs font-black"
-                        style={{ background: d.color + "22", color: d.color }}
+                        style={{ background: d.bg, color: d.color }}
                       >
                         {d.key}
                       </span>
@@ -443,7 +669,10 @@ function ResultsScreen({
                 <span
                   key={dk}
                   className="rounded-full px-2 py-0.5 text-[10px] font-bold"
-                  style={{ background: RIASEC_DIMS[dk].color + "1A", color: RIASEC_DIMS[dk].color }}
+                  style={{
+                    background: RIASEC_DIMS[dk].bg,
+                    color: RIASEC_DIMS[dk].color,
+                  }}
                 >
                   {RIASEC_DIMS[dk].th}
                 </span>
@@ -488,7 +717,7 @@ function ResultsScreen({
 // ─────────────────────────────────────────────────────────────
 // PAGE
 // ─────────────────────────────────────────────────────────────
-type Phase = "intro" | "quiz" | "results";
+type Phase = "intro" | "quiz" | "complete" | "results";
 
 export default function RiasecPage() {
   const [phase, setPhase] = useState<Phase>("intro");
@@ -499,7 +728,7 @@ export default function RiasecPage() {
     (s: RiasecScores) => {
       setScoresLocal(s);
       setScores(s);
-      setPhase("results");
+      setPhase("complete");
     },
     [setScores],
   );
@@ -517,6 +746,7 @@ export default function RiasecPage() {
         onExit={() => setPhase("intro")}
       />
     );
+  if (phase === "complete") return <CompleteScreen onView={() => setPhase("results")} />;
   if (phase === "results" && scores)
     return <ResultsScreen scores={scores} onRetake={handleRetake} />;
 

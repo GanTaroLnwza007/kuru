@@ -6,6 +6,7 @@ export type RiasecDimInfo = {
   th: string;
   desc: string;
   color: string;
+  bg: string;
   icon: string;
 };
 
@@ -30,49 +31,55 @@ export const RIASEC_DIMS: Record<RiasecDim, RiasecDimInfo> = {
   R: {
     key: "R",
     name: "Realistic",
-    th: "นักลงมือทำ",
-    desc: "ชอบงานที่ใช้มือ เครื่องมือ เครื่องจักร และทำงานกลางแจ้ง",
-    color: "#7A9E7E",
+    th: "ลงมือทำ",
+    desc: "ชอบงานที่ใช้มือ เครื่องมือ เครื่องจักร กลางแจ้ง",
+    color: "#B85B2E",
+    bg: "#FFF1E6",
     icon: "flag",
   },
   I: {
     key: "I",
     name: "Investigative",
-    th: "นักค้นคว้า",
-    desc: "ชอบคิด วิเคราะห์ ตั้งคำถาม และค้นคว้าหาคำตอบ",
-    color: "#7BB7E8",
+    th: "นักวิเคราะห์",
+    desc: "ชอบคิด วิเคราะห์ ทดลอง หาคำตอบเชิงลึก",
+    color: "#2A5C86",
+    bg: "#EAF3FB",
     icon: "brain",
   },
   A: {
     key: "A",
     name: "Artistic",
-    th: "นักสร้างสรรค์",
-    desc: "ชอบงานที่มีอิสระ คิดต่าง และแสดงออกผ่านศิลปะ",
-    color: "#D88BB0",
+    th: "ศิลปิน",
+    desc: "ชอบสร้างสรรค์ แสดงออก ออกแบบ เล่าเรื่อง",
+    color: "#7A5FBF",
+    bg: "#F1ECFB",
     icon: "palette",
   },
   S: {
     key: "S",
     name: "Social",
-    th: "นักช่วยเหลือ",
-    desc: "ชอบช่วยเหลือผู้อื่น สอน ดูแล และทำงานกับคน",
-    color: "#FFB088",
+    th: "ช่วยเหลือคน",
+    desc: "ชอบสอน ดูแล ช่วยเหลือผู้อื่น ทำงานร่วมกัน",
+    color: "#C04D5C",
+    bg: "#FCEBEE",
     icon: "heart",
   },
   E: {
     key: "E",
     name: "Enterprising",
-    th: "นักนำ",
-    desc: "ชอบโน้มน้าว นำทีม ตัดสินใจ และเริ่มต้นสิ่งใหม่",
-    color: "#E8A93B",
+    th: "นักริเริ่ม",
+    desc: "ชอบนำ จูงใจ ทำธุรกิจ บริหาร ลงทุน",
+    color: "#D49419",
+    bg: "#FFF6E2",
     icon: "rocket",
   },
   C: {
     key: "C",
     name: "Conventional",
-    th: "นักจัดระเบียบ",
-    desc: "ชอบความชัดเจน เป็นระบบ ใส่ใจรายละเอียด",
-    color: "#9A87D6",
+    th: "ระเบียบ",
+    desc: "ชอบความเป็นระบบ ตรวจสอบ จัดการข้อมูล",
+    color: "#006D35",
+    bg: "#E6F5EC",
     icon: "list",
   },
 };
