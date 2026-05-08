@@ -151,21 +151,41 @@ Currently always `""`. Displayed as the card's short description.
 
 ### 2. PLOs and TCAS rounds on the detail page
 
-Currently served from `PROGRAM_STUBS` in `backend/api/v1/programs.py` — a hardcoded dict for only 10 programs.
+Currently served from `PROGRAM_STUBS` in `backend/api/v1/programs.py` — a hardcoded dict keyed
+by short names like `"ske"`, `"cpe"`. These keys **never match** the real DB IDs (`"bangkhen_xxxx"`
+format), so the detail page always returns empty PLOs and TCAS rounds regardless of the program.
 
-**To fix:** the `programs.plos` JSONB column and `tcas_records` table already have real data from ingestion. The detail endpoint needs to read them instead:
+**To fix:** the `programs.plos` JSONB column and `tcas_records` table already have real data from
+ingestion. Replace the `PROGRAM_STUBS` lookup in `get_program()` with direct DB reads:
 
 ```python
 # In get_program(), replace the PROGRAM_STUBS lookup with:
+sb = get_supabase()   # already imported — reuse or call again
+
 plos_raw = row.get("plos") or []          # already a list from JSONB
 plos = [PloItem(**p) for p in plos_raw]
 
-tcas_raw = db.get_tcas_records(client, program_id=program_id)
+_ROUND_LABEL = {"round1": "Portfolio", "round3": "Admission"}
+
+tcas_data = (
+    sb.table("tcas_records")
+    .select("round,quota,gpax_min")
+    .eq("program_id", program_id)
+    .execute()
+    .data or []
+)
 tcas_rounds = [
-    TcasRound(round=r["round"], quota=r.get("quota") or 0, min_score=r.get("gpax_min"))
-    for r in tcas_raw
+    TcasRound(
+        round=_ROUND_LABEL.get(r["round"], r["round"]),
+        quota=r.get("quota") or 0,
+        min_score=r.get("gpax_min"),
+    )
+    for r in tcas_data
 ]
 ```
+
+> **Note on `round` values:** the `tcas_records` table stores `"round1"` / `"round3"` (not
+> `"Portfolio"` / `"Admission"`). The `_ROUND_LABEL` map above translates them for the frontend.
 
 ### 3. `RICH_PROGRAMS` — RIASEC tags, salary, careers, year-by-year cards
 
@@ -207,7 +227,7 @@ curl "http://localhost:8000/api/v1/programs/search" | python -m json.tool | grep
 | `name_th` / `name_en` | ✅ 34 programs, cleaned |
 | `faculty_th` / `faculty_en` | ✅ Derived from `name_en` |
 | `degree` / `campus` | ✅ |
-| `plos` (detail page) | ⚠️ Only 10 programs have stub data; real JSONB data exists but isn't wired up |
-| `tcas_rounds` (detail page) | ⚠️ Same — 2,524 records in DB but endpoint uses stubs |
+| `plos` (detail page) | ⚠️ Stub keys don't match DB IDs so always empty; real JSONB data exists but isn't wired up |
+| `tcas_rounds` (detail page) | ⚠️ Same — 2,524 records in DB but endpoint uses stubs with wrong keys |
 | `year_by_year_vibe` | ❌ Empty for all programs |
 | RIASEC tags / salary / careers | ⚠️ Only defined for programs in `RICH_PROGRAMS` |
