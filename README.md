@@ -4,15 +4,12 @@ Thai-first bilingual chatbot that answers questions about KU programs, TCAS admi
 
 ## Repository structure
 
-KUru is split across two sibling repositories that **must** live in the same parent folder:
-
 ```
-parent/
-├── kuru/           ← this repo  (Next.js frontend + FastAPI backend)
-└── kuru-pipeline/  ← RAG engine (embeddings, vector DB, Gemini generation)
+kuru/
+├── frontend/    Next.js 14 — chat UI, RIASEC test, Program Explorer
+├── backend/     FastAPI — chat, programs, feedback endpoints
+└── pipeline/    RAG engine — PDF ingestion, embeddings, Gemini generation
 ```
-
-The backend's Python environment pulls `kuru-pipeline` as a local editable dependency (`../../kuru-pipeline`), so the relative path must be exact.
 
 ---
 
@@ -23,130 +20,98 @@ The backend's Python environment pulls `kuru-pipeline` as a local editable depen
 | Python | 3.12+ | [python.org](https://python.org) |
 | uv | latest | `pip install uv` |
 | Node.js | 18+ | [nodejs.org](https://nodejs.org) |
-| npm | 9+ | bundled with Node |
 
 ---
 
-## 1 — Clone both repos
+## Setup
+
+### 1. Backend
 
 ```bash
-git clone <kuru-pipeline-url> kuru-pipeline
-git clone <kuru-url>          kuru
-```
-
-Both folders must share the same parent directory.
-
----
-
-## 2 — Backend setup
-
-```bash
-cd kuru/backend
-
-# Install Python dependencies (includes kuru-pipeline from ../../kuru-pipeline)
+cd backend
 uv sync
-
-# Create .env from the example
-cp .env.example .env
+cp .env.example .env   # fill in credentials (see below)
 ```
 
-Edit `.env` and fill in:
-
-```env
-GEMINI_API_KEY=...      # Gemini API key (for LLM generation + OCR)
-SUPABASE_URL=...        # https://your-project.supabase.co
-SUPABASE_KEY=...        # Supabase anon or service-role key
-```
-
-The `SUPABASE_URL` and `SUPABASE_KEY` values are the same ones used in `kuru-pipeline/.env`.
-
-> **Neo4j / Redis** are optional — leave them blank. The chatbot works without them.
-
-### Start the backend
+### 2. Frontend
 
 ```bash
-uv run uvicorn main:app --reload
-```
-
-> **Windows — "trampoline failed" error?** Delete and recreate the venv:
-> ```powershell
-> Remove-Item -Recurse -Force .venv; uv sync
-> ```
-
-The API will be available at `http://localhost:8000`. Verify with:
-
-```bash
-curl http://localhost:8000/api/v1/health
-```
-
----
-
-## 3 — Frontend setup
-
-```bash
-cd kuru/frontend
-
-# Install dependencies
+cd frontend
 npm install
-
-# Create local env file
 cp .env.example .env.local
 ```
 
-`.env.local` should contain:
-
+`.env.local`:
 ```env
 NEXT_PUBLIC_API_BASE_URL=http://localhost:8000/api/v1
 NEXT_PUBLIC_USE_MOCK=false
 ```
 
-### Start the frontend
-
-```bash
-npm run dev
-```
-
-Open `http://localhost:3000`.
-
----
-
-## 4 — Data (already ingested)
-
-The Supabase database is shared — you **do not** need to re-ingest. The vector DB already contains:
-
-- **33 programs** from บางเขน campus (~9,300 chunks)
-- **2,524 TCAS records** (Round 1 + Round 3)
-
-If you need to re-ingest or add data, see `kuru-pipeline/CLAUDE.md` for ingestion commands.
-
 ---
 
 ## Credentials
 
-Ask the project owner for the shared `.env` values:
+Ask the project owner for these values and put them in `backend/.env`:
 
-- `GEMINI_API_KEY`
-- `SUPABASE_URL`
-- `SUPABASE_KEY`
+```env
+GEMINI_API_KEY=...      # Gemini API — LLM generation + OCR
+SUPABASE_URL=...        # https://your-project.supabase.co
+SUPABASE_KEY=...        # Supabase anon or service-role key
+```
 
-Do not commit `.env` or `.env.local` files — they are gitignored.
+Neo4j and Redis are optional — leave them blank.
 
 ---
 
-## Quick-start summary
+## Running
 
 ```bash
-# Terminal 1 — backend
-cd kuru/backend
-uv sync
-cp .env.example .env   # fill in credentials
+# Terminal 1 — backend (http://localhost:8000)
+cd backend
 uv run uvicorn main:app --reload
 
-# Terminal 2 — frontend
-cd kuru/frontend
-npm install
-cp .env.example .env.local
+# Terminal 2 — frontend (http://localhost:3000)
+cd frontend
 npm run dev
 ```
 
-Then open `http://localhost:3000`.
+> **Windows — "trampoline failed" error?** Recreate the venv:
+> ```powershell
+> Remove-Item -Recurse -Force .venv; uv sync
+> ```
+
+Health check: `curl http://localhost:8000/api/v1/health`
+
+---
+
+## Pipeline (RAG / ingestion)
+
+The `pipeline/` folder contains the RAG engine used by the backend and the data ingestion scripts.
+
+```bash
+cd pipeline
+uv run kuru-download        # Download PDFs from Google Drive
+uv run kuru-setup-db        # Create Supabase tables
+uv run kuru-ingest-mko      # Ingest curriculum PDFs (บางเขน)
+uv run kuru-ingest-tcas     # Ingest TCAS admission PDFs
+uv run kuru-demo            # Interactive RAG CLI for testing
+```
+
+See `pipeline/CLAUDE.md` for full architecture and ingestion details.
+
+---
+
+## Data (already ingested — no action needed)
+
+The Supabase database is shared. It already contains:
+- **34 programs** from บางเขน campus (~9,300 vector chunks)
+- **2,524 TCAS records** (Round 1 + Round 3)
+
+---
+
+## Docs
+
+- [`docs/explorer-data-guide.md`](docs/explorer-data-guide.md) — DB fields, API endpoints, what needs to be filled in for the Explorer page
+- [`pipeline/CLAUDE.md`](pipeline/CLAUDE.md) — RAG architecture, ingestion commands, known issues
+- [`backend/README.md`](backend/README.md) — Backend-specific setup and commands
+- [`frontend/README.md`](frontend/README.md) — Frontend architecture and component guide

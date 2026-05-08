@@ -245,3 +245,10 @@ pnpm-debug.log*
 
 # kuru handoff
 /frontend/kuru
+
+# Pipeline — large PDF/data files (stored in cloud, not git)
+pipeline/data/raw/
+pipeline/data/processed/
+pipeline/data/native/
+pipeline/data/*.png
+pipeline/*.png

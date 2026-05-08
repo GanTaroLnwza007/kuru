@@ -782,7 +782,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "fastapi", specifier = ">=0.115.0" },
-    { name = "kuru-pipeline", editable = "../../kuru-pipeline" },
+    { name = "kuru-pipeline", editable = "../pipeline" },
     { name = "pydantic", specifier = ">=2.9.0" },
     { name = "pydantic-settings", specifier = ">=2.6.0" },
     { name = "python-dotenv", specifier = ">=1.0.0" },
@@ -802,7 +802,7 @@ dev = [
 [[package]]
 name = "kuru-pipeline"
 version = "0.1.0"
-source = { editable = "../../kuru-pipeline" }
+source = { editable = "../pipeline" }
 dependencies = [
     { name = "beautifulsoup4" },
     { name = "gdown" },

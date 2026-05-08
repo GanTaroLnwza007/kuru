@@ -14,7 +14,7 @@ dependencies = [
 ]
 
 [tool.uv.sources]
-kuru-pipeline = { path = "../../kuru-pipeline", editable = true }
+kuru-pipeline = { path = "../pipeline", editable = true }
 
 [tool.uv]
 dev-dependencies = [
