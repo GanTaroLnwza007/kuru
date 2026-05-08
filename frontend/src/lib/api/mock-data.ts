@@ -1,4 +1,4 @@
-import type { ProgramDetail, ProgramSummary, SourceChunk } from "./schemas.generated";
+import type { ChatSourceChunk, ProgramDetail, ProgramSummary, SourceChunk } from "./schemas.generated";
 
 export const MOCK_PROGRAMS: ProgramDetail[] = [
   {
@@ -217,17 +217,9 @@ export const MOCK_SEARCH_SOURCES: SourceChunk[] = [
   { table: "programs", row_id: "*", excerpt: "text search over programs table" },
 ];
 
-export const MOCK_CHAT_SOURCES: SourceChunk[] = [
-  {
-    table: "programs",
-    row_id: "cpe",
-    excerpt: "วิศวกรรมคอมพิวเตอร์ คณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์",
-  },
-  {
-    table: "tcas_requirements",
-    row_id: "cpe-round3",
-    excerpt: "รอบ 3 Admission รับ 80 คน คะแนน TGAT/TPAT ขั้นต่ำ 60%",
-  },
+export const MOCK_CHAT_SOURCES: ChatSourceChunk[] = [
+  { source_file: "CPE-69-TCAS3.pdf", section_type: "tcas", similarity: 0.82 },
+  { source_file: "SKE-curriculum-2567.pdf", section_type: "overview", similarity: 0.71 },
 ];
 
 export function getMockProgramById(id: string): ProgramDetail | undefined {
