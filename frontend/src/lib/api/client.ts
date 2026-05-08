@@ -3,34 +3,15 @@ import { getApiBaseUrl } from "@/lib/env";
 import {
   chatRequestSchema,
   chatResponseSchema,
+  programDetailResponseSchema,
+  programSearchResponseSchema,
   type ChatData,
   type ChatRequest,
-  portfolioAnalyzeRequestSchema,
-  portfolioAnalyzeResponseSchema,
-  portfolioStatusRequestSchema,
-  portfolioStatusResponseSchema,
-  programDetailRequestSchema,
-  programDetailResponseSchema,
-  programsSearchRequestSchema,
-  programsSearchResponseSchema,
-  riasecAnswerRequestSchema,
-  riasecAnswerResponseSchema,
-  riasecStartRequestSchema,
-  riasecStartResponseSchema,
-  type PortfolioAnalyzeData,
-  type PortfolioAnalyzeRequest,
-  type PortfolioStatusData,
-  type PortfolioStatusRequest,
-  type ProgramDetailData,
-  type ProgramDetailRequest,
-  type ProgramsSearchData,
-  type ProgramsSearchRequest,
-  type RiasecAnswerData,
-  type RiasecAnswerRequest,
-  type RiasecStartData,
-  type RiasecStartRequest,
+  type ProgramDetail,
+  type ProgramSearchResult,
 } from "./schemas.generated";
 import type { KuruApiError, KuruResponseEnvelope } from "./types";
+import type { SearchProgramsParams } from "./mock-client";
 
 type HttpMethod = "GET" | "POST";
 
@@ -66,7 +47,6 @@ export class ApiClientError extends Error {
 function createAbsoluteUrl(path: string): string {
   const normalizedBase = getApiBaseUrl().replace(/\/$/, "");
   const normalizedPath = path.startsWith("/") ? path.slice(1) : path;
-
   return `${normalizedBase}/${normalizedPath}`;
 }
 
@@ -78,7 +58,6 @@ function normalizeEnvelopeError(
   if (!error) {
     return new ApiClientError("Request failed", { status: fallbackStatus, details });
   }
-
   return new ApiClientError(error.message, {
     status: fallbackStatus,
     code: error.code,
@@ -95,9 +74,7 @@ async function apiRequest<TRequest, TResponse>(
 
   const init: RequestInit = {
     method: config.method,
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
   };
 
   if (config.method !== "GET" && validatedBody !== undefined) {
@@ -109,10 +86,7 @@ async function apiRequest<TRequest, TResponse>(
   try {
     response = await fetch(createAbsoluteUrl(config.path), init);
   } catch (error) {
-    throw new ApiClientError("Network error while contacting API", {
-      status: 0,
-      details: error,
-    });
+    throw new ApiClientError("Network error while contacting API", { status: 0, details: error });
   }
 
   let payload: unknown;
@@ -131,7 +105,7 @@ async function apiRequest<TRequest, TResponse>(
   if (!parsedEnvelope.success) {
     throw new ApiClientError("API response envelope validation failed", {
       status: response.status,
-      details: parsedEnvelope.error.flatten(),
+      details: parsedEnvelope.error.issues,
     });
   }
 
@@ -151,7 +125,28 @@ async function apiRequest<TRequest, TResponse>(
   return envelope.data;
 }
 
-export const apiClient = {
+export const realApiClient = {
+  searchPrograms({ q = "", faculty, limit = 20 }: SearchProgramsParams): Promise<ProgramSearchResult> {
+    const params = new URLSearchParams();
+    if (q) params.set("q", q);
+    if (faculty) params.set("faculty", faculty);
+    params.set("limit", String(limit));
+
+    return apiRequest({
+      path: `/programs/search?${params.toString()}`,
+      method: "GET",
+      responseSchema: programSearchResponseSchema,
+    });
+  },
+
+  getProgramDetail(programId: string): Promise<ProgramDetail> {
+    return apiRequest({
+      path: `/programs/${encodeURIComponent(programId)}`,
+      method: "GET",
+      responseSchema: programDetailResponseSchema,
+    });
+  },
+
   chat(payload: ChatRequest): Promise<ChatData> {
     return apiRequest({
       path: "/chat",
@@ -159,66 +154,6 @@ export const apiClient = {
       requestSchema: chatRequestSchema,
       responseSchema: chatResponseSchema,
       body: payload,
-    });
-  },
-
-  startRiasec(payload: RiasecStartRequest = {}): Promise<RiasecStartData> {
-    return apiRequest({
-      path: "/riasec/start",
-      method: "POST",
-      requestSchema: riasecStartRequestSchema,
-      responseSchema: riasecStartResponseSchema,
-      body: payload,
-    });
-  },
-
-  answerRiasec(payload: RiasecAnswerRequest): Promise<RiasecAnswerData> {
-    return apiRequest({
-      path: "/riasec/answer",
-      method: "POST",
-      requestSchema: riasecAnswerRequestSchema,
-      responseSchema: riasecAnswerResponseSchema,
-      body: payload,
-    });
-  },
-
-  searchPrograms(payload: ProgramsSearchRequest): Promise<ProgramsSearchData> {
-    return apiRequest({
-      path: "/programs/search",
-      method: "POST",
-      requestSchema: programsSearchRequestSchema,
-      responseSchema: programsSearchResponseSchema,
-      body: payload,
-    });
-  },
-
-  getProgramDetail(payload: ProgramDetailRequest): Promise<ProgramDetailData> {
-    const validated = programDetailRequestSchema.parse(payload);
-
-    return apiRequest({
-      path: `/programs/${encodeURIComponent(validated.programId)}`,
-      method: "GET",
-      responseSchema: programDetailResponseSchema,
-    });
-  },
-
-  analyzePortfolio(payload: PortfolioAnalyzeRequest): Promise<PortfolioAnalyzeData> {
-    return apiRequest({
-      path: "/portfolio/analyze",
-      method: "POST",
-      requestSchema: portfolioAnalyzeRequestSchema,
-      responseSchema: portfolioAnalyzeResponseSchema,
-      body: payload,
-    });
-  },
-
-  getPortfolioStatus(payload: PortfolioStatusRequest): Promise<PortfolioStatusData> {
-    const validated = portfolioStatusRequestSchema.parse(payload);
-
-    return apiRequest({
-      path: `/portfolio/status?job_id=${encodeURIComponent(validated.job_id)}`,
-      method: "GET",
-      responseSchema: portfolioStatusResponseSchema,
     });
   },
 };

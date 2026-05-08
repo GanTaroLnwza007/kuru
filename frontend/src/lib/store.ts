@@ -1,4 +1,6 @@
 import { create } from "zustand";
+import type { SourceChunk } from "./api/schemas.generated";
+import type { RiasecScores } from "./riasec";
 
 export type ChatRole = "user" | "assistant";
 
@@ -7,12 +9,18 @@ export type ChatMessage = {
   role: ChatRole;
   content: string;
   createdAt: string;
+  sources?: SourceChunk[];
+  isMock?: boolean;
 };
 
 type ChatSlice = {
   messages: ChatMessage[];
+  sessionId: string | null;
+  isLoading: boolean;
   addMessage: (message: ChatMessage) => void;
   clearMessages: () => void;
+  setSessionId: (sessionId: string | null) => void;
+  setLoading: (loading: boolean) => void;
 };
 
 export type RiasecAnswerValue = string | number | string[];
@@ -29,10 +37,12 @@ type RiasecSlice = {
   totalSteps: number;
   answers: Record<string, RiasecAnswerValue>;
   result: RiasecResult | null;
+  scores: RiasecScores | null;
   setSessionId: (sessionId: string | null) => void;
   setStep: (step: number) => void;
   setAnswer: (questionId: string, value: RiasecAnswerValue) => void;
   setResult: (result: RiasecResult | null) => void;
+  setScores: (scores: RiasecScores | null) => void;
   resetRiasec: () => void;
 };
 
@@ -43,72 +53,47 @@ type AppStore = {
 
 const initialRiasecState: Pick<
   RiasecSlice,
-  "sessionId" | "currentStep" | "totalSteps" | "answers" | "result"
+  "sessionId" | "currentStep" | "totalSteps" | "answers" | "result" | "scores"
 > = {
   sessionId: null,
   currentStep: 1,
   totalSteps: 5,
   answers: {},
   result: null,
+  scores: null,
 };
 
 export const useAppStore = create<AppStore>((set) => ({
   chat: {
     messages: [],
+    sessionId: null,
+    isLoading: false,
     addMessage: (message) =>
       set((state) => ({
-        chat: {
-          ...state.chat,
-          messages: [...state.chat.messages, message],
-        },
+        chat: { ...state.chat, messages: [...state.chat.messages, message] },
       })),
     clearMessages: () =>
-      set((state) => ({
-        chat: {
-          ...state.chat,
-          messages: [],
-        },
-      })),
+      set((state) => ({ chat: { ...state.chat, messages: [], sessionId: null } })),
+    setSessionId: (sessionId) =>
+      set((state) => ({ chat: { ...state.chat, sessionId } })),
+    setLoading: (isLoading) =>
+      set((state) => ({ chat: { ...state.chat, isLoading } })),
   },
   riasec: {
     ...initialRiasecState,
     setSessionId: (sessionId) =>
-      set((state) => ({
-        riasec: {
-          ...state.riasec,
-          sessionId,
-        },
-      })),
+      set((state) => ({ riasec: { ...state.riasec, sessionId } })),
     setStep: (currentStep) =>
-      set((state) => ({
-        riasec: {
-          ...state.riasec,
-          currentStep,
-        },
-      })),
+      set((state) => ({ riasec: { ...state.riasec, currentStep } })),
     setAnswer: (questionId, value) =>
       set((state) => ({
-        riasec: {
-          ...state.riasec,
-          answers: {
-            ...state.riasec.answers,
-            [questionId]: value,
-          },
-        },
+        riasec: { ...state.riasec, answers: { ...state.riasec.answers, [questionId]: value } },
       })),
     setResult: (result) =>
-      set((state) => ({
-        riasec: {
-          ...state.riasec,
-          result,
-        },
-      })),
+      set((state) => ({ riasec: { ...state.riasec, result } })),
+    setScores: (scores) =>
+      set((state) => ({ riasec: { ...state.riasec, scores } })),
     resetRiasec: () =>
-      set((state) => ({
-        riasec: {
-          ...state.riasec,
-          ...initialRiasecState,
-        },
-      })),
+      set((state) => ({ riasec: { ...state.riasec, ...initialRiasecState } })),
   },
 }));

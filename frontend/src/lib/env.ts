@@ -1,9 +1,15 @@
 import { z } from "zod";
 
+export function isUsingMock(): boolean {
+  return process.env.NEXT_PUBLIC_USE_MOCK === "true";
+}
+
 const runtimeEnvSchema = z.object({
   NEXT_PUBLIC_API_BASE_URL: z
     .string()
-    .url("NEXT_PUBLIC_API_BASE_URL must be a valid URL")
+    .refine((value) => { try { new URL(value); return true; } catch { return false; } }, {
+      message: "NEXT_PUBLIC_API_BASE_URL must be a valid URL",
+    })
     .refine((value) => value.includes("/api"), {
       message: "NEXT_PUBLIC_API_BASE_URL must include an API path such as /api/v1",
     }),
@@ -12,6 +18,8 @@ const runtimeEnvSchema = z.object({
 export type RuntimeEnv = z.infer<typeof runtimeEnvSchema>;
 
 function parseRuntimeEnv(): RuntimeEnv | null {
+  if (isUsingMock()) return null;
+
   const result = runtimeEnvSchema.safeParse({
     NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL,
   });
@@ -45,7 +53,6 @@ export function getEnv(): RuntimeEnv {
         "NEXT_PUBLIC_API_BASE_URL is not set. Add it to your .env.local file (see .env.example)."
       );
     }
-
     return cachedEnv;
   }
 
@@ -53,9 +60,13 @@ export function getEnv(): RuntimeEnv {
 
   if (parsed === null) {
     cachedEnv = null;
-    throw new Error(
-      "NEXT_PUBLIC_API_BASE_URL is not set. Add it to your .env.local file (see .env.example)."
-    );
+    if (!isUsingMock()) {
+      throw new Error(
+        "NEXT_PUBLIC_API_BASE_URL is not set. Add it to your .env.local file (see .env.example)."
+      );
+    }
+    // In mock mode, env is intentionally null — callers should not reach getApiBaseUrl()
+    return null as unknown as RuntimeEnv;
   }
 
   cachedEnv = parsed;
@@ -67,6 +78,6 @@ export function getApiBaseUrl(): string {
 }
 
 Object.defineProperty(globalThis, "API_BASE_URL", {
-  get: () => getApiBaseUrl(),
+  get: () => (isUsingMock() ? "mock" : getApiBaseUrl()),
   configurable: true,
 });

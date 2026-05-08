@@ -1,66 +1,92 @@
-import KuruLogo from "@/components/ui/KuruLogo";
+import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-surface-subtle bg-surface-subtle py-10 px-4">
-      <div className="mx-auto max-w-[1280px] grid grid-cols-1 md:grid-cols-3 gap-8">
-        {/* Left: Logo + tagline */}
-        <div>
-          <KuruLogo size="sm" />
-          <p className="text-sm text-text-secondary mt-2 leading-relaxed">
-            เครื่องมือแนะแนวการศึกษาอัจฉริยะที่จะช่วยให้คุณค้นพบ
-            ศักยภาพที่ซ่อนอยู่ และคณะที่เหมาะกับคุณที่สุดในรั้วนนทรี
-          </p>
-        </div>
+    <footer
+      id="about"
+      style={{ background: "var(--ink)", color: "rgba(255,255,255,.7)" }}
+      className="pt-16 pb-8"
+    >
+      <div className="mx-auto max-w-[1320px] px-4 sm:px-8">
+        {/* Grid */}
+        <div className="mb-14 grid grid-cols-2 gap-8 md:grid-cols-4 md:gap-12">
+          {/* Brand */}
+          <div className="col-span-2 md:col-span-1">
+            <div
+              className="mb-4 font-display text-2xl font-extrabold tracking-tight text-white"
+            >
+              KUru
+            </div>
+            <p className="max-w-[280px] text-sm leading-relaxed">
+              AI-powered academic pathway advisor for Kasetsart University.
+              Built with ❤️ for Thai high schoolers.
+            </p>
+          </div>
 
-        {/* Center: Useful links */}
-        <div>
-          <h3 className="font-bold mb-3">ลิ้งค์ที่เป็นประโยชน์</h3>
-          <ul className="flex flex-col gap-2 text-sm text-text-secondary">
-            <li>
-              <span>Team Members &amp; IDs</span>
-            </li>
-            <li>
-              <span>Advisor Information</span>
-            </li>
-            <li>
-              <span>Faculty of Engineering</span>
-            </li>
-          </ul>
-        </div>
+          {/* Product */}
+          <div>
+            <h5 className="mb-4 font-display text-xs font-extrabold uppercase tracking-widest text-white/50">
+              Product
+            </h5>
+            <ul className="flex flex-col gap-2.5 text-sm">
+              <li><Link href="/riasec"    className="hover:text-white transition-colors">RIASEC Test</Link></li>
+              <li><Link href="/explore"   className="hover:text-white transition-colors">Program Explorer</Link></li>
+              <li><Link href="/portfolio" className="hover:text-white transition-colors">Portfolio Coach</Link></li>
+              <li><Link href="/chat"      className="hover:text-white transition-colors">Chatbot</Link></li>
+            </ul>
+          </div>
 
-        {/* Right: Social / follow */}
-        <div>
-          <h3 className="font-bold mb-3">ติดตามข่าวสาร</h3>
-          <div className="flex gap-3">
-            <button
-              type="button"
-              aria-label="รางวัล"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-surface-subtle bg-surface text-lg text-text-secondary transition-colors hover:border-primary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-            >
-              🏆
-            </button>
-            <button
-              type="button"
-              aria-label="แชร์"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-surface-subtle bg-surface text-lg text-text-secondary transition-colors hover:border-primary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-            >
-              ↗
-            </button>
-            <button
-              type="button"
-              aria-label="อีเมล"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-surface-subtle bg-surface text-lg text-text-secondary transition-colors hover:border-primary hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-            >
-              ✉
-            </button>
+          {/* Resources */}
+          <div>
+            <h5 className="mb-4 font-display text-xs font-extrabold uppercase tracking-widest text-white/50">
+              Resources
+            </h5>
+            <ul className="flex flex-col gap-2.5 text-sm">
+              <li><Link href="/riasec" className="hover:text-white transition-colors">TCAS68 Guide</Link></li>
+              <li><Link href="/explore" className="hover:text-white transition-colors">Reviews นักศึกษาปัจจุบัน</Link></li>
+              <li><Link href="/chat"    className="hover:text-white transition-colors">Blog</Link></li>
+              <li><Link href="/chat"    className="hover:text-white transition-colors">FAQ</Link></li>
+            </ul>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <h5 className="mb-4 font-display text-xs font-extrabold uppercase tracking-widest text-white/50">
+              Contact
+            </h5>
+            <ul className="flex flex-col gap-2.5 text-sm">
+              <li>
+                <a href="mailto:contact@kuru.ku.ac.th" className="hover:text-white transition-colors">
+                  contact@kuru.ku.ac.th
+                </a>
+              </li>
+              <li>
+                <a href="https://line.me/R/ti/p/@kuru-ku" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                  Line @kuru-ku
+                </a>
+              </li>
+              <li>
+                <a href="https://www.facebook.com/kuruku" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
+                  Facebook
+                </a>
+              </li>
+              <li>
+                <Link href="/privacy" className="hover:text-white transition-colors">
+                  Privacy Policy
+                </Link>
+              </li>
+            </ul>
           </div>
         </div>
-      </div>
 
-      {/* Copyright bar */}
-      <div className="mx-auto max-w-[1280px] border-t border-surface-subtle mt-8 pt-4 text-center text-sm text-text-secondary">
-        © 2026 KUru Academic Advisor - Senior Project
+        {/* Bottom bar */}
+        <div
+          className="flex flex-wrap items-center justify-between gap-3 border-t pt-7 text-xs"
+          style={{ borderColor: "rgba(255,255,255,.12)" }}
+        >
+          <span>© 2026 KUru · Kasetsart University</span>
+          <span>Made with care in Bangkok 🇹🇭</span>
+        </div>
       </div>
     </footer>
   );

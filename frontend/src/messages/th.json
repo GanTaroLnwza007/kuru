@@ -66,19 +66,35 @@
     "retry": "ลองอีกครั้ง",
     "comingSoon": "กำลังเตรียมข้อมูล"
   },
+  "explore": {
+    "title": "Program Explorer",
+    "subtitle": "ค้นหาหลักสูตรที่เหมาะกับคุณจาก ม.เกษตรศาสตร์ บางเขน",
+    "searchPlaceholder": "ลองพิมพ์ชื่อสาขา คณะ หรือความสนใจ",
+    "emptyState": "ไม่พบโปรแกรมที่ตรงกัน ลองพิมพ์คำค้นใหม่",
+    "loading": "กำลังโหลดหลักสูตร...",
+    "errorFetch": "โหลดข้อมูลไม่สำเร็จ กรุณาลองใหม่",
+    "cardCta": "ดูรายละเอียด",
+    "vibeHeading": "บรรยากาศการเรียนแต่ละปี",
+    "plosHeading": "ผลลัพธ์การเรียนรู้ (PLOs)",
+    "tcasHeading": "ข้อมูลการสมัคร TCAS",
+    "tcasQuota": "รับ (คน)",
+    "tcasMinScore": "คะแนนขั้นต่ำ",
+    "tcasNoScore": "ไม่ระบุ",
+    "chatCtaDescription": "มีคำถามเกี่ยวกับหลักสูตรนี้? ถาม KUru ได้เลย",
+    "chatCtaButton": "ถามเกี่ยวกับ{name}"
+  },
   "chat": {
     "title": "KUru Chat",
     "emptyStateTitle": "เริ่มถามคำถามเกี่ยวกับการเรียนต่อได้เลย",
     "emptyStateDescription": "KUru จะช่วยสรุปข้อมูลหลักสูตร อาชีพ และ TCAS โดยแสดงแหล่งอ้างอิงประกอบ",
-    "loading": "กำลังเตรียมคำตอบ...",
+    "inputPlaceholder": "พิมพ์คำถามของคุณ... (Enter เพื่อส่ง, Shift+Enter ขึ้นบรรทัดใหม่)",
+    "contextBanner": "กำลังถามเกี่ยวกับ {name}",
+    "typingIndicator": "KUru กำลังตอบ...",
+    "mockBadge": "⚠️ โหมดทดสอบ",
     "sources": "แหล่งอ้างอิง",
+    "errorSend": "ส่งข้อความไม่สำเร็จ กรุณาลองใหม่",
+    "loading": "กำลังเตรียมคำตอบ...",
     "fallbackWarning": "ข้อมูลนี้ไม่พบในฐานข้อมูล KU กรุณาตรวจสอบที่ admissions.ku.ac.th"
-  },
-  "explore": {
-    "title": "Program Explorer",
-    "searchPlaceholder": "ลองพิมพ์ชื่อสาขา ความสนใจ หรือทักษะที่อยากพัฒนา",
-    "resultsTitle": "ผลลัพธ์ที่ใกล้เคียง",
-    "emptyState": "ยังไม่มีผลลัพธ์ ลองพิมพ์คำค้นใหม่อีกครั้ง"
   },
   "riasec": {
     "title": "แบบทดสอบ RIASEC",

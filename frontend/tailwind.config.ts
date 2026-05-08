@@ -9,6 +9,24 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        ink: {
+          DEFAULT: "var(--ink)",
+          2: "var(--ink-2)",
+          3: "var(--ink-3)",
+          4: "var(--ink-4)",
+        },
+        paper: "var(--paper)",
+        cream: { DEFAULT: "var(--cream)", 2: "var(--cream-2)" },
+        line: { DEFAULT: "var(--line)", soft: "var(--line-soft)" },
+        dgreen: {
+          DEFAULT: "var(--d-green)",
+          deep: "var(--d-green-deep)",
+          soft: "var(--d-green-soft)",
+          pop: "var(--d-green-pop)",
+        },
+        peach: { DEFAULT: "var(--d-peach)", soft: "var(--d-peach-soft)" },
+        rust: "var(--d-rust)",
+        sky: { DEFAULT: "var(--d-sky)", soft: "var(--d-sky-soft)" },
         primary: {
           DEFAULT: "var(--kuru-color-primary)",
           strong: "var(--kuru-color-primary-strong)",
@@ -46,6 +64,8 @@ const config: Config = {
         en: ["var(--font-kuru-en)", "Inter", "Segoe UI", "sans-serif"],
         heading: ["var(--font-kuru-thai)", "Sarabun", "Noto Sans Thai", "sans-serif"],
         mono: ["var(--font-kuru-en)", "Inter", "monospace"],
+        display: ["var(--font-display)", "Plus Jakarta Sans", "system-ui", "sans-serif"],
+        serif: ["var(--font-serif)", "Source Serif 4", "Georgia", "serif"],
       },
       boxShadow: {
         "navbar-soft": "var(--navbar-shadow)",

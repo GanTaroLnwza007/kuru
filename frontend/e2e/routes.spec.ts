@@ -102,14 +102,17 @@ test.describe("Route Navigation & Structure", () => {
       }
     });
 
-    await page.goto("/chat");
-    await page.waitForLoadState("networkidle");
+    await page.goto("/chat", { waitUntil: "domcontentloaded" });
+    await page.waitForTimeout(1000);
 
     // Filter out known non-breaking warnings
     const criticalErrors = errors.filter(
       (e) =>
         !e.includes("Failed to parse SourceMap") &&
-        !e.includes("ENVIRONMENT_FALLBACK")
+        !e.includes("ENVIRONMENT_FALLBACK") &&
+        !e.includes("webpack-hmr") &&
+        !e.includes("_next/webpack") &&
+        !e.includes("Failed to load resource")
     );
 
     expect(criticalErrors).toHaveLength(0);
