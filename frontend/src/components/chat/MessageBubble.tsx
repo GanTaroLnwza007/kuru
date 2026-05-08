@@ -7,6 +7,7 @@ type Props = {
   sourcesLabel: string;
   mockBadgeLabel: string;
   question: string;
+  isStreaming?: boolean;
 };
 
 function formatTime(iso: string): string {
@@ -67,7 +68,7 @@ function ConfidencePill({ level }: { level: string }) {
   );
 }
 
-export function MessageBubble({ message, sourcesLabel, mockBadgeLabel, question }: Props) {
+export function MessageBubble({ message, sourcesLabel, mockBadgeLabel, question, isStreaming }: Props) {
   const isUser = message.role === "user";
 
   return (
@@ -115,7 +116,7 @@ export function MessageBubble({ message, sourcesLabel, mockBadgeLabel, question 
         )}
 
         {/* Feedback buttons — assistant only, after load */}
-        {!isUser && (
+        {!isUser && !isStreaming && (
           <FeedbackButtons question={question} answer={message.content} />
         )}
 

@@ -127,6 +127,7 @@ export function MessageList({
                   .reverse()
                   .find((m) => m.role === "user")?.content ?? ""
               : "";
+          const isStreaming = isLoading && i === messages.length - 1 && message.role === "assistant";
           return (
             <MessageBubble
               key={message.id}
@@ -134,6 +135,7 @@ export function MessageList({
               sourcesLabel={sourcesLabel}
               mockBadgeLabel={mockBadgeLabel}
               question={question}
+              isStreaming={isStreaming}
             />
           );
         })

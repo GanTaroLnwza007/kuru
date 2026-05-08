@@ -20,6 +20,9 @@ export function FeedbackButtons({ question, answer }: Props) {
     try {
       await apiClient.chatFeedback({ session_id: sessionId, question, answer, rating: value });
       setRating(value);
+    } catch (err) {
+      console.error("chatFeedback failed:", err);
+      // buttons re-enable naturally since setRating is not called
     } finally {
       setSubmitting(false);
     }
@@ -39,7 +42,7 @@ export function FeedbackButtons({ question, answer }: Props) {
             : "border-line text-ink-4 hover:border-ink hover:text-ink disabled:opacity-50"
         }`}
       >
-        👍
+        <span aria-hidden="true">👍</span>
       </button>
       <button
         type="button"
@@ -53,7 +56,7 @@ export function FeedbackButtons({ question, answer }: Props) {
             : "border-line text-ink-4 hover:border-ink hover:text-ink disabled:opacity-50"
         }`}
       >
-        👎
+        <span aria-hidden="true">👎</span>
       </button>
     </div>
   );
