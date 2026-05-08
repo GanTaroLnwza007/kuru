@@ -119,14 +119,24 @@ export function MessageList({
       {messages.length === 0 && !isLoading ? (
         <WelcomeState hollandCode={hollandCode} onQuickPrompt={onQuickPrompt} />
       ) : (
-        messages.map((message) => (
-          <MessageBubble
-            key={message.id}
-            message={message}
-            sourcesLabel={sourcesLabel}
-            mockBadgeLabel={mockBadgeLabel}
-          />
-        ))
+        messages.map((message, i) => {
+          const question =
+            message.role === "assistant"
+              ? messages
+                  .slice(0, i)
+                  .reverse()
+                  .find((m) => m.role === "user")?.content ?? ""
+              : "";
+          return (
+            <MessageBubble
+              key={message.id}
+              message={message}
+              sourcesLabel={sourcesLabel}
+              mockBadgeLabel={mockBadgeLabel}
+              question={question}
+            />
+          );
+        })
       )}
       {isLoading && <TypingIndicator label={typingIndicatorLabel} />}
       <div ref={bottomRef} />
