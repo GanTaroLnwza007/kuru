@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { SourceChunk } from "./api/schemas.generated";
+import type { ChatSourceChunk } from "./api/schemas.generated";
 import type { RiasecScores } from "./riasec";
 
 export type ChatRole = "user" | "assistant";
@@ -9,7 +9,8 @@ export type ChatMessage = {
   role: ChatRole;
   content: string;
   createdAt: string;
-  sources?: SourceChunk[];
+  confidenceLevel?: "high" | "medium" | "low";
+  sources?: ChatSourceChunk[];
   isMock?: boolean;
 };
 

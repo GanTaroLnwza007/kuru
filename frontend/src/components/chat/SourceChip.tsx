@@ -1,36 +1,31 @@
-import type { SourceChunk } from "@/lib/api";
+import type { ChatSourceChunk } from "@/lib/api/schemas.generated";
 
 type Props = {
-  source: SourceChunk;
+  source: ChatSourceChunk;
 };
 
-const MAX_EXCERPT = 40;
-
 export function SourceChip({ source }: Props) {
-  const excerpt =
-    source.excerpt.length > MAX_EXCERPT
-      ? source.excerpt.slice(0, MAX_EXCERPT) + "…"
-      : source.excerpt;
+  const pct = Math.round(source.similarity * 100);
+  const name = source.source_file.replace(/\.[^/.]+$/, "");
+  const display = name.length > 28 ? name.slice(0, 28) + "…" : name;
 
   return (
-    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-surface-subtle bg-surface px-3 py-1 text-xs text-text-secondary">
+    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-line bg-paper px-3 py-1 text-xs text-ink-3">
       <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className="h-3 w-3 shrink-0 text-primary"
-        fill="none"
+        width="11"
+        height="11"
         viewBox="0 0 24 24"
+        fill="none"
         stroke="currentColor"
-        strokeWidth={2}
+        strokeWidth="2"
+        strokeLinecap="round"
         aria-hidden
       >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M3 10h18M3 6h18M3 14h10"
-        />
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+        <polyline points="14 2 14 8 20 8" />
       </svg>
-      <span className="font-medium text-text-muted">{source.table}</span>
-      <span className="text-text-secondary">{excerpt}</span>
+      <span className="font-medium text-ink-2">{display}</span>
+      <span className="text-ink-4">{pct}%</span>
     </span>
   );
 }
