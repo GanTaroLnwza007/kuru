@@ -112,7 +112,7 @@ export default function ChatPage() {
       />
 
       {/* Responsive grid: single column → 3-column at xl */}
-      <div className="relative z-10 mx-auto grid h-full max-w-[1320px] grid-cols-1 gap-6 px-4 py-6 sm:px-8 sm:py-8 xl:grid-cols-[280px_1fr_320px]">
+      <div className="relative z-10 mx-auto grid h-full max-w-[1320px] grid-rows-1 grid-cols-1 gap-6 px-4 py-6 sm:px-8 sm:py-8 xl:grid-cols-[280px_1fr_320px]">
         {/* ── Left rail (hidden below xl) ── */}
         <aside className="hidden max-h-full overflow-y-auto xl:block">
           <LeftRail onQuickPrompt={sendMessage} />

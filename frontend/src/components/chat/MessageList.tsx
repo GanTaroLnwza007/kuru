@@ -115,7 +115,7 @@ export function MessageList({
   }, [messages, isLoading]);
 
   return (
-    <div className="flex flex-1 flex-col gap-[18px] overflow-y-auto px-8 py-7">
+    <div className="flex flex-1 min-h-0 flex-col gap-[18px] overflow-y-auto px-8 py-7">
       {messages.length === 0 && !isLoading ? (
         <WelcomeState hollandCode={hollandCode} onQuickPrompt={onQuickPrompt} />
       ) : (
