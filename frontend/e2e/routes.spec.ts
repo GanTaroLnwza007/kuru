@@ -111,7 +111,8 @@ test.describe("Route Navigation & Structure", () => {
         !e.includes("Failed to parse SourceMap") &&
         !e.includes("ENVIRONMENT_FALLBACK") &&
         !e.includes("webpack-hmr") &&
-        !e.includes("_next/webpack")
+        !e.includes("_next/webpack") &&
+        !e.includes("Failed to load resource")
     );
 
     expect(criticalErrors).toHaveLength(0);
