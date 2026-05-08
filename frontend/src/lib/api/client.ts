@@ -156,4 +156,18 @@ export const realApiClient = {
       body: payload,
     });
   },
+
+  async chatFeedback(payload: {
+    session_id: string;
+    question: string;
+    answer: string;
+    rating: number;
+  }): Promise<void> {
+    const base = getApiBaseUrl().replace(/\/$/, "");
+    await fetch(`${base}/chat/feedback`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+  },
 };

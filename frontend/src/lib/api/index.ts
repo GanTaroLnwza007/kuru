@@ -1,6 +1,6 @@
 import { mockApiClient } from "./mock-client";
 import { realApiClient } from "./client";
-import type { SourceChunk, ProgramSearchResult, ProgramDetail, ChatData, ChatRequest } from "./schemas.generated";
+import type { SourceChunk, ChatSourceChunk, ProgramSearchResult, ProgramDetail, ChatData, ChatRequest } from "./schemas.generated";
 import type { SearchProgramsParams } from "./mock-client";
 
 const useMock = process.env.NEXT_PUBLIC_USE_MOCK === "true";
@@ -38,11 +38,22 @@ export const apiClient = {
     const data = await realApiClient.chat(payload);
     return { data, sources: [], isMock: false };
   },
+
+  async chatFeedback(payload: {
+    session_id: string;
+    question: string;
+    answer: string;
+    rating: number;
+  }): Promise<void> {
+    if (useMock) return; // no-op: feedback not tracked in mock mode
+    return realApiClient.chatFeedback(payload);
+  },
 };
 
 export type { SearchProgramsParams };
 export type {
   SourceChunk,
+  ChatSourceChunk,
   PloItem,
   TcasRound,
   ProgramSummary,

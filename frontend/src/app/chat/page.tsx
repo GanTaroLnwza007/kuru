@@ -37,6 +37,11 @@ export default function ChatPage() {
     async (text: string) => {
       if (isLoading) return;
 
+      // Capture history before the new user message is added to the store
+      const history = messages
+        .slice(-10)
+        .map((m) => ({ role: m.role as "user" | "assistant", content: m.content }));
+
       addMessage({
         id: generateId(),
         role: "user",
@@ -51,6 +56,7 @@ export default function ChatPage() {
           message: text,
           program_context_id: programId ?? undefined,
           session_id: sessionId ?? undefined,
+          conversation_history: history,
         });
 
         const data = response.data;
@@ -63,7 +69,8 @@ export default function ChatPage() {
           role: "assistant",
           content: data.answer,
           createdAt: new Date().toISOString(),
-          sources: response.sources as import("@/lib/api").SourceChunk[],
+          confidenceLevel: data.confidence_level,
+          sources: data.sources,
           isMock,
         });
       } catch {
@@ -77,7 +84,7 @@ export default function ChatPage() {
         setLoading(false);
       }
     },
-    [isLoading, sessionId, programId, addMessage, setSessionId, setLoading, t]
+    [isLoading, messages, sessionId, programId, addMessage, setSessionId, setLoading, t]
   );
 
   useEffect(() => {
