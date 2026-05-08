@@ -40,12 +40,12 @@ export const apiClient = {
   },
 
   async chatFeedback(payload: {
-    session_id: string;
+    session_id: string | null;
     question: string;
     answer: string;
     rating: number;
   }): Promise<void> {
-    if (useMock) return; // no-op: feedback not tracked in mock mode
+    if (useMock) return;
     return realApiClient.chatFeedback(payload);
   },
 };

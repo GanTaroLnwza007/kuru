@@ -158,16 +158,20 @@ export const realApiClient = {
   },
 
   async chatFeedback(payload: {
-    session_id: string;
+    session_id: string | null;
     question: string;
     answer: string;
     rating: number;
   }): Promise<void> {
+    if (!payload.session_id) return; // no session yet — skip silently
     const base = getApiBaseUrl().replace(/\/$/, "");
-    await fetch(`${base}/chat/feedback`, {
+    const res = await fetch(`${base}/chat/feedback`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
+    if (!res.ok) {
+      throw new Error(`chatFeedback failed: ${res.status}`);
+    }
   },
 };
