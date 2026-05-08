@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import { apiClient } from "@/lib/api";
 import type { ProgramDetail } from "@/lib/api";
@@ -168,25 +168,25 @@ function PloBar({ name, score }: { name: string; score: number }) {
 // ─────────────────────────────────────────────────────────────
 export default function ProgramDetailPage() {
   const params = useParams();
-  const router = useRouter();
   const programId = params.programId as string;
 
   const riasecScores = useAppStore((s) => s.riasec.scores);
 
   const [program, setProgram] = useState<ProgramDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isNotFound, setIsNotFound] = useState(false);
 
   useEffect(() => {
     apiClient
       .getProgramDetail(programId)
       .then((r) => setProgram(r.data))
-      .catch(() => router.push("/explore"))
+      .catch(() => setIsNotFound(true))
       .finally(() => setIsLoading(false));
-  }, [programId, router]);
+  }, [programId]);
 
   if (isLoading) {
     return (
-      <div className="mx-auto max-w-5xl px-4 pt-8 sm:px-6">
+      <div data-testid="explore-detail-shell" className="mx-auto max-w-5xl px-4 pt-8 sm:px-6">
         <div className="space-y-4">
           {Array.from({ length: 4 }).map((_, i) => (
             <div key={i} className="h-24 animate-pulse rounded-2xl bg-surface-subtle" />
@@ -196,7 +196,21 @@ export default function ProgramDetailPage() {
     );
   }
 
-  if (!program) return null;
+  if (isNotFound || !program) {
+    return (
+      <div data-testid="explore-detail-shell" className="mx-auto max-w-5xl px-4 pt-16 text-center sm:px-6">
+        <p className="mb-2 text-4xl">🔍</p>
+        <h1 className="mb-3 text-2xl font-extrabold tracking-tight text-ink">ไม่พบหลักสูตรนี้</h1>
+        <p className="mb-6 text-ink-3">รหัสหลักสูตร &ldquo;{programId}&rdquo; ไม่มีในระบบ</p>
+        <Link
+          href="/explore"
+          className="inline-flex h-11 items-center gap-2 rounded-2xl bg-dgreen px-6 text-sm font-bold text-white transition-colors hover:bg-dgreen-deep"
+        >
+          ← กลับไปค้นหาหลักสูตร
+        </Link>
+      </div>
+    );
+  }
 
   const rich: RichProgram | undefined = RICH_PROGRAMS[program.id];
 

@@ -1,5 +1,9 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { beforeAll, describe, expect, it, vi } from "vitest";
+
+beforeAll(() => {
+  Element.prototype.scrollIntoView = vi.fn();
+});
 import ChatPage from "@/app/chat/page";
 import ExplorePage from "@/app/explore/page";
 import ProgramDetailPage from "@/app/explore/[programId]/page";
@@ -70,8 +74,8 @@ vi.mock("@/lib/api", () => ({
 }));
 
 describe("MVP route shells", () => {
-  it("renders chat shell", async () => {
-    render(await ChatPage());
+  it("renders chat shell", () => {
+    render(<ChatPage />);
     expect(screen.getByTestId("chat-shell")).toBeInTheDocument();
   });
 

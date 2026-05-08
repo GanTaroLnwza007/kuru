@@ -738,17 +738,19 @@ export default function RiasecPage() {
     setPhase("intro");
   };
 
-  if (phase === "intro") return <IntroScreen onStart={() => setPhase("quiz")} />;
-  if (phase === "quiz")
-    return (
-      <QuizScreen
-        onComplete={handleComplete}
-        onExit={() => setPhase("intro")}
-      />
-    );
-  if (phase === "complete") return <CompleteScreen onView={() => setPhase("results")} />;
-  if (phase === "results" && scores)
-    return <ResultsScreen scores={scores} onRetake={handleRetake} />;
-
-  return null;
+  return (
+    <div data-testid="riasec-shell">
+      {phase === "intro" && <IntroScreen onStart={() => setPhase("quiz")} />}
+      {phase === "quiz" && (
+        <QuizScreen
+          onComplete={handleComplete}
+          onExit={() => setPhase("intro")}
+        />
+      )}
+      {phase === "complete" && <CompleteScreen onView={() => setPhase("results")} />}
+      {phase === "results" && scores && (
+        <ResultsScreen scores={scores} onRetake={handleRetake} />
+      )}
+    </div>
+  );
 }
