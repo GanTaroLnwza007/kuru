@@ -1,4 +1,4 @@
-import ReactMarkdown from "react-markdown";
+import ReactMarkdown, { type Components } from "react-markdown";
 import type { ChatMessage } from "@/lib/store";
 import { SourceCitationList } from "./SourceCitationList";
 import { FeedbackButtons } from "./FeedbackButtons";
@@ -93,7 +93,7 @@ export function MessageBubble({ message, sourcesLabel, mockBadgeLabel, question,
             <span className="whitespace-pre-wrap">{message.content}</span>
           ) : (
             <ReactMarkdown
-              components={{
+              components={({
                 p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
                 strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
                 ul: ({ children }) => <ul className="mb-2 ml-4 list-disc space-y-0.5">{children}</ul>,
@@ -103,7 +103,7 @@ export function MessageBubble({ message, sourcesLabel, mockBadgeLabel, question,
                 h2: ({ children }) => <h2 className="mb-1 text-base font-bold">{children}</h2>,
                 h3: ({ children }) => <h3 className="mb-1 text-sm font-semibold">{children}</h3>,
                 code: ({ children }) => <code className="rounded bg-black/10 px-1 py-0.5 font-mono text-[13px]">{children}</code>,
-              }}
+              } satisfies Components)}
             >
               {message.content}
             </ReactMarkdown>

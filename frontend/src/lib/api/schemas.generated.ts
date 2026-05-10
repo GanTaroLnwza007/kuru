@@ -26,7 +26,7 @@ export const tcasRoundSchema = z.object({
 
 export const programSummarySchema = z.object({
   id: z.string(),
-  slug: z.string().optional(),
+  slug: z.string(),
   name_th: z.string(),
   name_en: z.string(),
   faculty_th: z.string(),

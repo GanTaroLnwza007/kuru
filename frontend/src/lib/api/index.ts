@@ -4,6 +4,7 @@ import type { SourceChunk, ChatSourceChunk, ProgramSearchResult, ProgramDetail, 
 import type { SearchProgramsParams } from "./mock-client";
 
 const useMock = process.env.NEXT_PUBLIC_USE_MOCK === "true";
+const useMockChat = useMock || process.env.NEXT_PUBLIC_USE_MOCK_CHAT === "true";
 
 export type ClientResponse<T> = {
   data: T;
@@ -31,7 +32,7 @@ export const apiClient = {
   },
 
   async chat(payload: ChatRequest): Promise<ClientResponse<ChatData>> {
-    if (useMock) {
+    if (useMockChat) {
       const r = await mockApiClient.chat(payload);
       return { data: r.data, sources: r.sources, isMock: true };
     }
@@ -45,7 +46,7 @@ export const apiClient = {
     answer: string;
     rating: number;
   }): Promise<void> {
-    if (useMock) return;
+    if (useMockChat) return;
     return realApiClient.chatFeedback(payload);
   },
 };
