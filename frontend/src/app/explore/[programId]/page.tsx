@@ -91,14 +91,13 @@ function YearVibeSwitcher({ years }: { years: YearVibeItem[] }) {
               padding: "14px 12px",
               textAlign: "center" as const,
               background: i === active ? "#fff" : "var(--kuru-surface-subtle)",
-              borderBottom: i === active ? "3px solid var(--d-green)" : "3px solid transparent",
+              borderTop: "none",
+              borderLeft: "none",
+              borderRight: "none",
+              borderBottom: `3px solid ${i === active ? "var(--d-green)" : "transparent"}`,
               cursor: "pointer",
               fontFamily: "inherit",
-              transition: "all 200ms",
-              border: "none",
-              borderBottomWidth: 3,
-              borderBottomStyle: "solid" as const,
-              borderBottomColor: i === active ? "var(--d-green)" : "transparent",
+              transition: "background 200ms, border-color 200ms",
             }}
           >
             <div style={{ fontSize: 10, fontWeight: 600, color: "var(--ink-3)", marginBottom: 2 }}>ปีที่ {yy.year}</div>
