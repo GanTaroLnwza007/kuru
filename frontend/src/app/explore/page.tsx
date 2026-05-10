@@ -70,28 +70,6 @@ const RIASEC_COLORS: Record<RiasecDim, { color: string; bg: string; th: string }
 
 // ── Reusable button primitives ──────────────────────────────────
 
-// .btn.btn-primary style (ink bg, white text, 999px radius)
-const BtnPrimary = ({ children, onClick, className = "", style = {} }: { children: React.ReactNode; onClick?: () => void; className?: string; style?: React.CSSProperties }) => (
-  <button
-    onClick={onClick}
-    className={className}
-    style={{
-      display: "inline-flex", alignItems: "center", gap: 8,
-      height: 50, padding: "0 22px", borderRadius: 999,
-      fontWeight: 700, fontSize: 15, whiteSpace: "nowrap",
-      background: "var(--ink)", color: "#fff", border: "none",
-      boxShadow: "0 8px 24px -8px rgba(10,31,20,.5), inset 0 1px 0 rgba(255,255,255,.1)",
-      transition: "transform 220ms cubic-bezier(.2,.7,.2,1), box-shadow 220ms",
-      cursor: "pointer",
-      ...style,
-    }}
-    onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.transform = "translateY(-2px)"; (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 14px 32px -10px rgba(10,31,20,.6)"; }}
-    onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = ""; (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 8px 24px -8px rgba(10,31,20,.5), inset 0 1px 0 rgba(255,255,255,.1)"; }}
-  >
-    {children}
-  </button>
-);
-
 // .btn.btn-primary.btn-sm (h:40, smaller text)
 const BtnPrimarySm = ({ children, onClick, style = {} }: { children: React.ReactNode; onClick?: () => void; style?: React.CSSProperties }) => (
   <button
