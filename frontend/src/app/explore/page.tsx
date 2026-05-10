@@ -5,7 +5,7 @@ import Link from "next/link";
 import { apiClient } from "@/lib/api";
 import type { ProgramSummary } from "@/lib/api";
 import { RICH_PROGRAMS } from "@/lib/program-rich";
-import { RIASEC_DIMS, computeProgramMatch, type RiasecDim } from "@/lib/riasec";
+import { computeProgramMatch, type RiasecDim } from "@/lib/riasec";
 import { useAppStore } from "@/lib/store";
 
 // ── Match ring ──────────────────────────────────────────────────
