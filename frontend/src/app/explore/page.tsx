@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, useMemo, useRef } from "react";
+import { useEffect, useState, useReducer, useCallback, useMemo, useRef } from "react";
 import Link from "next/link";
 import { apiClient } from "@/lib/api";
 import type { ProgramSummary } from "@/lib/api";
@@ -443,14 +443,27 @@ function CompareModal({ programIds, programs, onClose }: { programIds: string[];
 // ─────────────────────────────────────────────────────────────
 // PAGE
 // ─────────────────────────────────────────────────────────────
+type FetchAction =
+  | { type: "start" }
+  | { type: "success" }
+  | { type: "error"; message: string };
+
+function fetchReducer(
+  _prev: { isLoading: boolean; error: string | null },
+  action: FetchAction,
+): { isLoading: boolean; error: string | null } {
+  if (action.type === "start") return { isLoading: true, error: null };
+  if (action.type === "success") return { isLoading: false, error: null };
+  return { isLoading: false, error: action.message };
+}
+
 export default function ExplorePage() {
   const riasecScores = useAppStore((s) => s.riasec.scores);
 
   const [query, setQuery] = useState("");
   const [inputValue, setInputValue] = useState("");
   const [allPrograms, setAllPrograms] = useState<ProgramSummary[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [{ isLoading, error }, dispatchFetch] = useReducer(fetchReducer, { isLoading: true, error: null });
 
   const [riasecFilter, setRiasecFilter] = useState<RiasecDim | "">("");
   const [sortKey, setSortKey] = useState<SortKey>("match");
@@ -462,14 +475,14 @@ export default function ExplorePage() {
 
   useEffect(() => {
     let cancelled = false;
-    setIsLoading(true);
-    setError(null);
+    dispatchFetch({ type: "start" });
     apiClient.searchPrograms({ q: query }).then((r) => {
-      if (!cancelled) setAllPrograms(r.data.results);
+      if (!cancelled) {
+        setAllPrograms(r.data.results);
+        dispatchFetch({ type: "success" });
+      }
     }).catch(() => {
-      if (!cancelled) setError("โหลดข้อมูลไม่สำเร็จ");
-    }).finally(() => {
-      if (!cancelled) setIsLoading(false);
+      if (!cancelled) dispatchFetch({ type: "error", message: "โหลดข้อมูลไม่สำเร็จ" });
     });
     return () => { cancelled = true; };
   }, [query]);
@@ -610,6 +623,7 @@ export default function ExplorePage() {
             </svg>
             <input
               ref={searchRef}
+              aria-label="ค้นหาหลักสูตร"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
@@ -759,7 +773,7 @@ export default function ExplorePage() {
           <div style={{ textAlign: "center", padding: "72px 32px", background: "#fff", border: "1px dashed var(--line)", borderRadius: 28 }}>
             <div style={{ fontStyle: "italic", fontSize: 96, color: "var(--ink-4)", lineHeight: 0.8 }}>∅</div>
             <h3 style={{ fontWeight: 800, fontSize: 28, letterSpacing: "-0.02em", margin: "16px 0 10px" }}>ยังไม่พบหลักสูตร</h3>
-            <p style={{ color: "var(--ink-3)", fontSize: 15, margin: "0 auto 20px", maxWidth: 380 }}>ลองลบตัวกรองออก หรือค้นด้วยคำอื่นดูนะ — เช่น "เกษตร", "ออกแบบ", "ข้อมูล"</p>
+            <p style={{ color: "var(--ink-3)", fontSize: 15, margin: "0 auto 20px", maxWidth: 380 }}>ลองลบตัวกรองออก หรือค้นด้วยคำอื่นดูนะ — เช่น &quot;เกษตร&quot;, &quot;ออกแบบ&quot;, &quot;ข้อมูล&quot;</p>
             <button onClick={handleResetAll} style={{
               display: "inline-flex", alignItems: "center", gap: 10,
               height: 50, padding: "0 22px", borderRadius: 999,
