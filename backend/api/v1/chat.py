@@ -3,7 +3,12 @@ import uuid
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 
-from kuru.rag.query_engine import query as rag_query
+try:
+    from kuru.rag.query_engine import query as rag_query
+    _RAG_AVAILABLE = True
+except ImportError:
+    _RAG_AVAILABLE = False
+
 from models.schemas import (
     ApiResponse,
     ChatRequest,
@@ -29,6 +34,16 @@ def _confidence_level(sources: list[dict]) -> str:
 @router.post("/chat")
 async def chat(request: ChatRequest) -> JSONResponse:
     session_id = request.session_id or str(uuid.uuid4())
+
+    if not _RAG_AVAILABLE:
+        stub = ChatResponse(
+            answer="ระบบ RAG กำลังอยู่ระหว่างการพัฒนา กรุณากลับมาใหม่เร็วๆ นี้ 🙏",
+            session_id=session_id,
+            confidence_level="low",
+            sources=[],
+            used_tcas_data=False,
+        )
+        return JSONResponse(content=ApiResponse[ChatResponse](data=stub).model_dump())
 
     history = [{"role": t.role, "content": t.content} for t in request.conversation_history[-5:]]
 

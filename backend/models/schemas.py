@@ -23,7 +23,8 @@ class ApiResponse(BaseModel, Generic[T]):
 
 
 class ProgramSummary(BaseModel):
-    id: str = Field(description="Unique program identifier (e.g. 'ske')")
+    id: str = Field(description="Hash-based primary key (e.g. 'bangkhen_ddf705a9')")
+    slug: str = Field(description="URL-friendly identifier (e.g. 'computer-eng')")
     name_th: str = Field(description="Program name in Thai")
     name_en: str = Field(description="Program name in English")
     faculty_th: str = Field(description="Faculty name in Thai")
@@ -31,7 +32,7 @@ class ProgramSummary(BaseModel):
     degree: str = Field(description="Degree type (e.g. ปริญญาตรี)")
     campus: str = Field(description="Campus name")
     match_score: float = Field(description="Relevance score (0–1)", ge=0.0, le=1.0)
-    year_by_year_vibe: str = Field(description="1–2 sentence Thai summary of the program experience")
+    year_by_year_vibe: str = Field(description="Thai summary of year-by-year program experience")
 
 
 class ProgramSearchResult(BaseModel):

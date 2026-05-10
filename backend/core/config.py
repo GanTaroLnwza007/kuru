@@ -1,3 +1,4 @@
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -13,6 +14,13 @@ class Settings(BaseSettings):
     neo4j_password: str = ""
     redis_url: str = ""
     cors_origins: list[str] = ["http://localhost:3000"]
+
+    @field_validator("cors_origins", mode="before")
+    @classmethod
+    def parse_cors(cls, v: object) -> object:
+        if isinstance(v, str):
+            return [o.strip() for o in v.split(",") if o.strip()]
+        return v
 
 
 settings = Settings()
