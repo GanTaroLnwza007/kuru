@@ -228,3 +228,28 @@ input[type="submit"] {
 
 /* ── Float card animation ── */
 .float-anim { animation: float 5s ease-in-out infinite; }
+
+/* ── Slide-in (used by filter panels, modals) ── */
+@keyframes kuruSlideIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.kuru-slide-in { animation: kuruSlideIn 240ms cubic-bezier(.2,.7,.2,1); }
+
+/* ── Pinned bar pop-in ── */
+@keyframes kuruFabIn {
+  0%   { transform: translateX(-50%) scale(0.85); opacity: 0; }
+  60%  { transform: translateX(-50%) scale(1.03); }
+  100% { transform: translateX(-50%) scale(1); opacity: 1; }
+}
+
+/* ── Bar shimmer ── */
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+.bar-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
