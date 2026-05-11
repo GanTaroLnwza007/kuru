@@ -129,6 +129,13 @@ export function MessageBubble({ message, sourcesLabel, mockBadgeLabel, question,
           </span>
         )}
 
+        {/* TCAS structured-data badge */}
+        {!isUser && message.usedTcasData && (
+          <span className="inline-flex items-center gap-1 rounded-full border border-blue-200 bg-blue-50 px-2 py-0.5 text-[10px] font-semibold text-blue-700">
+            📋 TCAS data
+          </span>
+        )}
+
         {/* Source chips */}
         {!isUser && message.sources && message.sources.length > 0 && (
           <SourceCitationList sources={message.sources} label={sourcesLabel} />

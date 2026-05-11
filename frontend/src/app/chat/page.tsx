@@ -72,6 +72,7 @@ export default function ChatPage() {
           confidenceLevel: data.confidence_level,
           sources: data.sources,
           isMock,
+          usedTcasData: data.used_tcas_data,
         });
       } catch {
         addMessage({

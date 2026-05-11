@@ -12,6 +12,7 @@ export type ChatMessage = {
   confidenceLevel?: "high" | "medium" | "low";
   sources?: ChatSourceChunk[];
   isMock?: boolean;
+  usedTcasData?: boolean;
 };
 
 type ChatSlice = {
