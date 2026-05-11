@@ -1,0 +1,38 @@
+{
+  "query": "What courses will I take in Computer Engineering?",
+  "answer": "Great news — I found quite a bit of information about the Computer Engineering curriculum! Here's what I know...\n\nThe Computer Engineering program at Kasetsart University (Bangkhen) covers a strong foundation in both theory and practice. In your first two years, you'll build fundamentals in:\n- Mathematics (Calculus, Linear Algebra, Discrete Math)\n- Physics and Engineering basics\n- Programming fundamentals and data structures\n- Digital circuits and computer organization\n\nIn Years 3–4, core engineering courses include:\n- Algorithm design and analysis\n- Operating systems and computer networks\n- Database systems\n- Software engineering\n- Microprocessor and embedded systems\n- Electives in AI, computer graphics, and cybersecurity\n\nThe program requires 138 credit hours total. [Source: วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf]",
+  "used_tcas_data": false,
+  "debug_info": {
+    "is_tcas_query": false,
+    "is_plo_query": false,
+    "is_listing_query": false,
+    "resolved_program_id": "bangkhen_ddf705a9",
+    "fetched": 15,
+    "above_threshold": 12,
+    "threshold": 0.35,
+    "chunks_used": [
+      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "course", "similarity": 0.724},
+      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "course", "similarity": 0.693},
+      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "course", "similarity": 0.671},
+      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "general", "similarity": 0.648},
+      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "course", "similarity": 0.612}
+    ],
+    "raw_chunks_summary": [
+      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "course", "similarity": 0.724},
+      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "course", "similarity": 0.693},
+      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "course", "similarity": 0.671},
+      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "general", "similarity": 0.648},
+      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "course", "similarity": 0.612},
+      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "plo", "similarity": 0.521},
+      {"source_file": "วิศวกรรมซอฟต์แวร์_bangkhen_mko2.pdf", "section_type": "course", "similarity": 0.489},
+      {"source_file": "วิศวกรรมไฟฟ้า_bangkhen_mko2.pdf", "section_type": "course", "similarity": 0.431},
+      {"source_file": "วิศวกรรมซอฟต์แวร์_bangkhen_mko2.pdf", "section_type": "general", "similarity": 0.412},
+      {"source_file": "วิศวกรรมไฟฟ้า_bangkhen_mko2.pdf", "section_type": "general", "similarity": 0.387},
+      {"source_file": "วิศวกรรมเครื่องกล_bangkhen_mko2.pdf", "section_type": "course", "similarity": 0.361},
+      {"source_file": "วิศวกรรมเคมี_bangkhen_mko2.pdf", "section_type": "course", "similarity": 0.342},
+      {"source_file": "วิศวกรรมโยธา_bangkhen_mko2.pdf", "section_type": "general", "similarity": 0.298},
+      {"source_file": "วิศวกรรมอุตสาหการ_bangkhen_mko2.pdf", "section_type": "course", "similarity": 0.271},
+      {"source_file": "เกษตรศาสตร์_bangkhen_mko2.pdf", "section_type": "general", "similarity": 0.203}
+    ]
+  }
+}

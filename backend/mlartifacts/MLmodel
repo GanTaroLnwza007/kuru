@@ -1,0 +1,35 @@
+artifact_path: kuru_rag_pipeline
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.pyfunc
+    python_version: "3.11.0"
+    artifacts:
+      pipeline_config: pipeline_config.json
+model_uuid: kuru-rag-pipeline-v1
+run_id: 8cfd3e502e82424ba08e8958e62c3e86
+utc_time_created: "2026-05-11T00:00:00"
+mlflow_version: "2.13.0"
+signature:
+  inputs: '[{"name": "question", "type": "string"}, {"name": "program_id", "type": "string", "required": false}]'
+  outputs: '[{"name": "answer", "type": "string"}, {"name": "confidence_level", "type": "string"}, {"name": "used_tcas_data", "type": "boolean"}]'
+metadata:
+  project: KUru
+  description: >
+    RAG pipeline for KU curriculum and TCAS admission queries.
+    Components: multilingual-e5-base embedder → pgvector IVFFlat retriever →
+    PyThaiNLP reranker → Gemini 2.5 Flash Lite generator.
+  best_experiment: wider_retrieval
+  selected_params:
+    top_k: 8
+    min_similarity: 0.30
+    fetch_multiplier: 3
+    chunk_size: 2000
+    chunk_overlap: 200
+  eval_metrics:
+    avg_score: 2.10
+    pct_good: 70.0
+    avg_score_curriculum: 2.20
+    avg_score_admission: 2.00

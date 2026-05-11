@@ -41,7 +41,7 @@ export type MockApiClient = {
   }>;
   chat(payload: ChatRequest): Promise<{
     data: ChatData;
-    sources: typeof MOCK_CHAT_SOURCES;
+    sources: never[];
     isMock: true;
   }>;
 };
@@ -101,8 +101,11 @@ export const mockApiClient: MockApiClient = {
       data: {
         answer,
         session_id: session_id ?? uuid(),
+        confidence_level: "high" as const,
+        sources: MOCK_CHAT_SOURCES,
+        used_tcas_data: false,
       },
-      sources: MOCK_CHAT_SOURCES,
+      sources: [],
       isMock: true,
     };
   },

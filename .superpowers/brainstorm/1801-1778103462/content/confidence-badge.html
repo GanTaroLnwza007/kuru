@@ -1,0 +1,86 @@
+<h2>Confidence Badge Style</h2>
+<p class="subtitle">Shown on every assistant answer. Which treatment communicates uncertainty clearly without being alarming?</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:16px;background:#f9fafb;display:flex;flex-direction:column;gap:10px">
+      <!-- High -->
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:10px 14px;font-size:12px;max-width:85%">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+          <span style="width:8px;height:8px;border-radius:50%;background:#16a34a;display:inline-block"></span>
+          <span style="font-size:11px;font-weight:600;color:#16a34a">High confidence</span>
+        </div>
+        For TCAS Round 3, CPE requires TGAT score of…
+      </div>
+      <!-- Low -->
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:10px 14px;font-size:12px;max-width:85%">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+          <span style="width:8px;height:8px;border-radius:50%;background:#dc2626;display:inline-block"></span>
+          <span style="font-size:11px;font-weight:600;color:#dc2626">Low confidence</span>
+        </div>
+        I couldn't find detailed data for this program…
+        <div style="margin-top:6px;font-size:11px;color:#92400e;background:#fef3c7;border-radius:4px;padding:4px 8px">
+          ⚠️ ข้อมูลนี้อาจไม่ครบถ้วน / This answer may be incomplete.
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Dot + label inline</h3>
+      <p>Colored dot with text label at the top of each bubble. Disclaimer appears inside the bubble when low.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:16px;background:#f9fafb;display:flex;flex-direction:column;gap:10px">
+      <!-- High -->
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:10px 14px;font-size:12px;max-width:85%">
+        For TCAS Round 3, CPE requires TGAT score of…
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px">
+          <span style="background:#dcfce7;color:#15803d;border-radius:99px;padding:2px 10px;font-size:10px;font-weight:600">High ✓</span>
+          <span style="font-size:10px;color:#9ca3af">CPE-69-TCAS3.pdf</span>
+        </div>
+      </div>
+      <!-- Low -->
+      <div style="background:#fff;border:1px solid #fca5a5;border-radius:10px;padding:10px 14px;font-size:12px;max-width:85%">
+        I couldn't find detailed data for this program…
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px">
+          <span style="background:#fee2e2;color:#dc2626;border-radius:99px;padding:2px 10px;font-size:10px;font-weight:600">Low ⚠</span>
+          <span style="font-size:10px;color:#9ca3af">no source</span>
+        </div>
+        <div style="margin-top:6px;font-size:11px;color:#92400e;background:#fef3c7;border-radius:4px;padding:4px 8px">
+          ข้อมูลนี้อาจไม่ครบถ้วน / This answer may be incomplete.
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Pill badge + source, bottom of bubble</h3>
+      <p>Pill at the bottom-left, source filename at bottom-right. Low confidence adds a border tint and disclaimer below.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding:16px;background:#f9fafb;display:flex;flex-direction:column;gap:10px">
+      <!-- High -->
+      <div style="background:#fff;border-left:3px solid #16a34a;border-radius:0 10px 10px 0;padding:10px 14px;font-size:12px;max-width:85%">
+        <div style="font-size:10px;color:#16a34a;font-weight:600;margin-bottom:4px">● HIGH CONFIDENCE</div>
+        For TCAS Round 3, CPE requires TGAT score of…
+      </div>
+      <!-- Low -->
+      <div style="background:#fff;border-left:3px solid #dc2626;border-radius:0 10px 10px 0;padding:10px 14px;font-size:12px;max-width:85%">
+        <div style="font-size:10px;color:#dc2626;font-weight:600;margin-bottom:4px">● LOW CONFIDENCE</div>
+        I couldn't find detailed data for this program…
+        <div style="margin-top:6px;font-size:11px;color:#92400e;background:#fef3c7;border-radius:4px;padding:4px 8px">
+          ⚠️ ข้อมูลนี้อาจไม่ครบถ้วน / This answer may be incomplete.
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Colored left border + label</h3>
+      <p>Left border color signals confidence at a glance. Label at top in matching color. Clean, no pills.</p>
+    </div>
+  </div>
+
+</div>
+
+<p class="subtitle" style="margin-top:16px">Click your preferred style, then tell me in the terminal.</p>

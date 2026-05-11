@@ -37,6 +37,11 @@ export default function ChatPage() {
     async (text: string) => {
       if (isLoading) return;
 
+      // Capture history before the new user message is added to the store
+      const history = messages
+        .slice(-10)
+        .map((m) => ({ role: m.role as "user" | "assistant", content: m.content }));
+
       addMessage({
         id: generateId(),
         role: "user",
@@ -51,6 +56,7 @@ export default function ChatPage() {
           message: text,
           program_context_id: programId ?? undefined,
           session_id: sessionId ?? undefined,
+          conversation_history: history,
         });
 
         const data = response.data;
@@ -63,8 +69,10 @@ export default function ChatPage() {
           role: "assistant",
           content: data.answer,
           createdAt: new Date().toISOString(),
-          sources: response.sources as import("@/lib/api").SourceChunk[],
+          confidenceLevel: data.confidence_level,
+          sources: data.sources,
           isMock,
+          usedTcasData: data.used_tcas_data,
         });
       } catch {
         addMessage({
@@ -77,7 +85,7 @@ export default function ChatPage() {
         setLoading(false);
       }
     },
-    [isLoading, sessionId, programId, addMessage, setSessionId, setLoading, t]
+    [isLoading, messages, sessionId, programId, addMessage, setSessionId, setLoading, t]
   );
 
   useEffect(() => {
@@ -105,7 +113,7 @@ export default function ChatPage() {
       />
 
       {/* Responsive grid: single column → 3-column at xl */}
-      <div className="relative z-10 mx-auto grid h-full max-w-[1320px] grid-cols-1 gap-6 px-4 py-6 sm:px-8 sm:py-8 xl:grid-cols-[280px_1fr_320px]">
+      <div className="relative z-10 mx-auto grid h-full max-w-[1320px] grid-rows-1 grid-cols-1 gap-6 px-4 py-6 sm:px-8 sm:py-8 xl:grid-cols-[280px_1fr_320px]">
         {/* ── Left rail (hidden below xl) ── */}
         <aside className="hidden max-h-full overflow-y-auto xl:block">
           <LeftRail onQuickPrompt={sendMessage} />

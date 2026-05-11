@@ -115,18 +115,30 @@ export function MessageList({
   }, [messages, isLoading]);
 
   return (
-    <div className="flex flex-1 flex-col gap-[18px] overflow-y-auto px-8 py-7">
+    <div className="flex flex-1 min-h-0 flex-col gap-[18px] overflow-y-auto px-8 py-7">
       {messages.length === 0 && !isLoading ? (
         <WelcomeState hollandCode={hollandCode} onQuickPrompt={onQuickPrompt} />
       ) : (
-        messages.map((message) => (
-          <MessageBubble
-            key={message.id}
-            message={message}
-            sourcesLabel={sourcesLabel}
-            mockBadgeLabel={mockBadgeLabel}
-          />
-        ))
+        messages.map((message, i) => {
+          const question =
+            message.role === "assistant"
+              ? messages
+                  .slice(0, i)
+                  .reverse()
+                  .find((m) => m.role === "user")?.content ?? ""
+              : "";
+          const isStreaming = isLoading && i === messages.length - 1 && message.role === "assistant";
+          return (
+            <MessageBubble
+              key={message.id}
+              message={message}
+              sourcesLabel={sourcesLabel}
+              mockBadgeLabel={mockBadgeLabel}
+              question={question}
+              isStreaming={isStreaming}
+            />
+          );
+        })
       )}
       {isLoading && <TypingIndicator label={typingIndicatorLabel} />}
       <div ref={bottomRef} />

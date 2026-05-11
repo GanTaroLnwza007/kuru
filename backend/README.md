@@ -21,6 +21,13 @@ cp .env.example .env
 uv run uvicorn main:app --reload
 ```
 
+> **Windows — "trampoline failed" error?** Your `.venv` is stale. Recreate it:
+> ```powershell
+> Remove-Item -Recurse -Force .venv
+> uv sync
+> uv run uvicorn main:app --reload
+> ```
+
 The API will be available at `http://localhost:8000`.
 
 ## Lint

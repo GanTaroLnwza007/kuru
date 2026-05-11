@@ -489,7 +489,7 @@ export default function ExplorePage() {
 
   const programs = useMemo(() => {
     let list = allPrograms.map((p) => {
-      const rich = RICH_PROGRAMS[p.slug ?? ""] ?? RICH_PROGRAMS[p.id];
+      const rich = RICH_PROGRAMS[p.slug] ?? RICH_PROGRAMS[p.id];
       const match = rich && riasecScores
         ? computeProgramMatch(rich.riasec, riasecScores, rich.baseFit)
         : rich ? rich.baseFit : null;

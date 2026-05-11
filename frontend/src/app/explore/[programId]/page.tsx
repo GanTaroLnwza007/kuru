@@ -227,7 +227,7 @@ export default function ProgramDetailPage() {
     );
   }
 
-  const rich: RichProgram | undefined = RICH_PROGRAMS[program.slug ?? ""] ?? RICH_PROGRAMS[program.id];
+  const rich: RichProgram | undefined = RICH_PROGRAMS[program.slug] ?? RICH_PROGRAMS[program.id];
   const matchScore =
     rich && riasecScores
       ? computeProgramMatch(rich.riasec, riasecScores, rich.baseFit)
