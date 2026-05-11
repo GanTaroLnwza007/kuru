@@ -1,0 +1,599 @@
+"""RAG query engine — local embed query → pgvector retrieval → Gemini generation."""
+
+from __future__ import annotations
+
+import re
+from dataclasses import dataclass
+
+from sentence_transformers import SentenceTransformer  # used by _get_embed_model return type
+from tenacity import retry, retry_if_exception, stop_after_attempt, wait_exponential
+
+from pipeline.src.kuru.db import supabase_client as db
+from pipeline.src.kuru.llm import GENERATION_MODEL, get_openrouter_client, session_usage
+
+EMBED_MODEL_NAME = "intfloat/multilingual-e5-base"
+TOP_K = 5
+MIN_SIMILARITY = 0.35   # chunks below this are too weak to be useful
+
+
+def _get_embed_model() -> SentenceTransformer:
+    # Delegate to embedder's singleton so the model is loaded exactly once
+    # regardless of whether demo_rag pre-loads it or the first query triggers it.
+    from pipeline.src.kuru.ingestion.embedder import _get_model
+    return _get_model()
+
+
+from pipeline.src.kuru.ingestion.utils import is_transient_error
+
+# Thai + English keywords that signal a TCAS admission question
+TCAS_KEYWORDS = re.compile(
+    r"TCAS|GPAX|เกรด|รับ|สมัคร|คะแนน|รอบ|TGAT|TPAT|A-Level|quota|โควตา|วันรับ|ประกาศ|admission|score|portfolio"
+    r"|enroll|apply|applying|application|qualify|qualification|requirement|สอบ|ข้อสอบ|เข้าเรียน|เข้าศึกษา|รับสมัคร|คุณสมบัติ"
+    r"|อยากเข้า|จะเข้า|วิธีเข้า|ต้องทำไง|ต้องทำอะไร|ขั้นตอนการสมัคร|วิธีสมัคร",
+    re.IGNORECASE,
+)
+
+# Strong TCAS signals — scores, rounds, grades, application process
+_STRONG_TCAS_RE = re.compile(
+    r"TCAS|GPAX|เกรด|คะแนน|สมัคร|รอบ|quota|โควตา|TGAT|TPAT|A-Level|score|admission"
+    r"|enroll|apply|applying|application|qualify|qualification|requirement|สอบ|ข้อสอบ"
+    r"|เข้าเรียน|เข้าศึกษา|รับสมัคร|คุณสมบัติ|อยากเข้า|จะเข้า|วิธีเข้า|ต้องทำไง"
+    r"|ขั้นตอนการสมัคร|วิธีสมัคร|วันรับ|ประกาศ",
+    re.IGNORECASE,
+)
+
+# Signals that the question is about curriculum-level policy (nationality, language), not TCAS scores
+_CURRICULUM_POLICY_RE = re.compile(
+    r"ต่างชาติ|ต่างประเทศ|foreign.student|international.student|นิสิตต่าง",
+    re.IGNORECASE,
+)
+
+# Keywords that signal a broad "list all programs" type question.
+# Deliberately narrow — "what courses will I take in X" must NOT match here.
+LISTING_KEYWORDS = re.compile(
+    r"what programs are|what programs does|which programs|what majors|what faculties"
+    r"|available programs|list.*program|programs.*available"
+    r"|หลักสูตรอะไรบ้าง|มีหลักสูตรอะไร|สาขาวิชาอะไรบ้าง|คณะอะไรบ้าง|มีคณะอะไร|เรียนอะไรได้บ้าง"
+    r"|มีสาขาอะไร|สาขาใดบ้าง|มีอะไรบ้าง",
+    re.IGNORECASE,
+)
+
+# Common program abbreviations → canonical English name (must match name_en in DB exactly)
+# NOTE: "cs" maps to "computer engineering" because KU's Computer Science (Faculty of Science)
+# is not ingested — CPE is the closest available engineering equivalent.
+_PROGRAM_ABBREVS: dict[str, str] = {
+    "cs":  "computer engineering",
+    "cpe": "computer engineering",
+    "ske": "software and knowledge engineering",
+    "ee":  "electrical engineering",
+    "me":  "mechanical engineering",
+    "ce":  "civil engineering",
+    "ie":  "industrial engineering",
+    "che": "chemical engineering",
+}
+
+def _resolve_program_from_query(question: str, programs: list[dict]) -> str | None:
+    """Return program_id if the question mentions a specific program by name (Thai or English).
+
+    English: substring match on name_en (longest wins). Abbreviations (CS, CPE, SKE…)
+             are expanded before matching so "CS" resolves to "computer science".
+    Thai: token match on name_th — count how many ≥4-char Thai tokens from the query
+          appear in the program's name_th; pick the program with the most hits (min 1).
+    """
+    q_lower = question.lower()
+    # Expand abbreviations so "CS" → "computer science" is found by substring match
+    for abbr, full in _PROGRAM_ABBREVS.items():
+        if re.search(r"\b" + abbr + r"\b", q_lower):
+            q_lower = q_lower + " " + full
+
+    # English match — longest name_en substring wins
+    # Strip parenthetical suffixes e.g. "(IUP)", "(International Program)" before matching
+    best_en_len = 0
+    best_en_id: str | None = None
+    for p in programs:
+        name_en = re.sub(r"\s*\([^)]+\)\s*$", "", (p.get("name_en") or "")).strip().lower()
+        if len(name_en) < 8:
+            continue
+        if name_en in q_lower and len(name_en) > best_en_len:
+            best_en_len = len(name_en)
+            best_en_id = p["id"]
+    if best_en_id:
+        return best_en_id
+
+    # Thai match — tokenize and count hits against name_th
+    try:
+        from pythainlp.tokenize import word_tokenize as _th_tok
+        q_tokens = [t for t in _th_tok(question, engine="newmm") if re.match(r"[ก-๙]{4,}", t)]
+    except Exception:
+        q_tokens = re.findall(r"[ก-๙]{4,}", question)
+
+    if not q_tokens:
+        return None
+
+    best_hits = 0
+    best_th_id: str | None = None
+    for p in programs:
+        name_th = (p.get("name_th") or "")
+        hits = sum(1 for t in q_tokens if t in name_th)
+        if hits > best_hits:
+            best_hits = hits
+            best_th_id = p["id"]
+
+    # Require at least 2 token hits to avoid false positives on short common words
+    return best_th_id if best_hits >= 2 else None
+
+
+_COMPARISON_RE = re.compile(
+    r"\bกับ\b|\bvs\.?\b|versus|compare|ต่างกัน|เทียบ|เปรียบ|comparison|difference",
+    re.IGNORECASE,
+)
+
+def _resolve_extra_programs(question: str, programs: list[dict], exclude_id: str | None) -> list[str]:
+    """Return up to 2 additional program IDs for comparison queries."""
+    if not _COMPARISON_RE.search(question):
+        return []
+
+    q_lower = question.lower()
+    for abbr, full in _PROGRAM_ABBREVS.items():
+        if re.search(r"\b" + abbr + r"\b", q_lower):
+            q_lower = q_lower + " " + full
+
+    results: list[tuple[int, str]] = []
+    seen_ids = {exclude_id} if exclude_id else set()
+
+    for p in programs:
+        if p["id"] in seen_ids:
+            continue
+        name_en = re.sub(r"\s*\([^)]+\)\s*$", "", (p.get("name_en") or "")).strip().lower()
+        if len(name_en) >= 8 and name_en in q_lower:
+            seen_ids.add(p["id"])
+            results.append((len(name_en), p["id"]))
+
+    try:
+        from pythainlp.tokenize import word_tokenize as _th_tok
+        q_tokens = [t for t in _th_tok(question, engine="newmm") if re.match(r"[ก-๙]{4,}", t)]
+    except Exception:
+        q_tokens = re.findall(r"[ก-๙]{4,}", question)
+
+    for p in programs:
+        if p["id"] in seen_ids:
+            continue
+        name_th = (p.get("name_th") or "")
+        hits = sum(1 for t in q_tokens if t in name_th)
+        if hits >= 2:
+            seen_ids.add(p["id"])
+            results.append((hits, p["id"]))
+
+    results.sort(reverse=True)
+    return [pid for _, pid in results[:2]]
+
+
+RAG_SYSTEM_PROMPT = """You are KUru, a warm and knowledgeable academic companion for Kasetsart University (KU) prospective students. Think of yourself as a helpful older male student who genuinely cares about guiding juniors — enthusiastic, friendly, and honest.
+
+IDENTITY (non-negotiable):
+- You are male. Always use ผม when referring to yourself in Thai. Always end Thai sentences with ครับ, never ค่ะ.
+- Call the student น้อง in Thai responses.
+- In English responses, use "I" and gender-neutral language.
+
+PERSONALITY:
+- Be conversational and natural, not robotic or overly formal.
+- Show genuine interest in the student's goals. Acknowledge what they're looking for before diving in.
+- When you find good info, present it warmly: "Great news — I found..." or "Here's what I know about..."
+- When info is incomplete or missing, be upfront and helpful: "I don't have full details on that yet, but here's what I found..." — then suggest they check the KU website or official admission channels.
+- Use "I" / "ผม" naturally. End with an offer to help further.
+
+GROUNDING RULES (non-negotiable):
+1. Every fact, number, score, and quota MUST come from the provided context. Never use outside knowledge about KU.
+2. If the context is "No relevant context found": be honest and warm — don't just refuse. Say something like "I couldn't find that in my current documents — you might want to check [ku.ac.th] or ask the faculty directly. Want me to help with something related?"
+3. If context is partial: share what you found and clearly say what's missing. Don't silently fill gaps.
+4. TCAS admission data (scores, GPAX, quotas, exam requirements) come ONLY from [TCAS Admission Data] blocks. Course prerequisite codes (like 01219241) are for enrolled students — never cite them as admission requirements.
+5. When answering about TCAS: structure by round (Round 1 / 2 / 3), include seats, GPAX minimum, exam requirements, portfolio, and deadlines.
+6. When answering about curriculum: describe PLOs, courses, degree structure — not TCAS scores.
+7. Never invent numbers, quotas, dates, or exam scores.
+8. Cite sources naturally: "According to [filename]..." or "[Source: filename]" at the end.
+9. LANGUAGE — STRICT: detect the language of the student's question. If the question is in English, your ENTIRE response must be in English. If the question is in Thai, your ENTIRE response must be in Thai. Never mix languages or default to Thai for an English question.
+10. CRITICAL — do NOT recommend or describe programs that appear only in [TCAS Admission Data] blocks as if curriculum details are available. Programs in [TCAS Admission Data] may only have admission data, not full curriculum details. If a student asks about a program that only appears in TCAS data (not in a curriculum context block), clearly say: "I only have admission data for this program, not the full curriculum details. For course lists, PLOs, and program structure, please check ku.ac.th directly." """
+
+RAG_USER_TEMPLATE = """Context passages:
+{context}
+
+---
+Question: {question}
+
+{lang_instruction}
+Answer:"""
+
+
+@dataclass
+class RAGResult:
+    answer: str
+    sources: list[dict]   # [{source_file, section_type, similarity}]
+    used_tcas_data: bool
+    debug_info: dict | None = None  # populated when debug=True
+
+
+# ─────────────────────────────────────────
+# TCAS record helpers
+# ─────────────────────────────────────────
+
+def _pick_round(recs: list[dict], preferred_round: str | None, limit: int = 5) -> list[dict]:
+    """Return up to `limit` records, putting the preferred round first."""
+    if preferred_round:
+        preferred = [r for r in recs if r.get("round") == preferred_round]
+        others    = [r for r in recs if r.get("round") != preferred_round]
+        return (preferred + others)[:limit]
+    return recs[:limit]
+
+
+def _dedup_add(records: list[dict], seen_ids: set[str], dest: list[dict]) -> None:
+    """Append records to dest, skipping any already in seen_ids (keyed by 'id')."""
+    for r in records:
+        rid = r.get("id") or r.get("program_name_raw", "")
+        if rid not in seen_ids:
+            seen_ids.add(rid)
+            dest.append(r)
+
+
+# ─────────────────────────────────────────
+# Embedding
+# ─────────────────────────────────────────
+
+def _embed_query(query: str) -> list[float]:
+    """Embed a query using the local multilingual-e5 model (query: prefix)."""
+    vector = _get_embed_model().encode(
+        f"query: {query}", normalize_embeddings=True, show_progress_bar=False
+    )
+    return vector.tolist()
+
+
+# ─────────────────────────────────────────
+# Generation
+# ─────────────────────────────────────────
+
+def _lang_instruction(question: str) -> str:
+    thai = len(re.findall(r"[ก-๙]", question))
+    eng = len(re.findall(r"[a-zA-Z]", question))
+    if eng > thai:
+        return "IMPORTANT: Respond ENTIRELY IN ENGLISH. Do not use Thai at all."
+    return "ตอบเป็นภาษาไทยทั้งหมดครับ"
+
+
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=2, min=4, max=30), retry=retry_if_exception(is_transient_error), reraise=True)
+def _generate(context: str, question: str, conversation_history: list[dict] | None = None) -> str:
+    prompt = RAG_USER_TEMPLATE.format(
+        context=context, question=question, lang_instruction=_lang_instruction(question)
+    )
+    history = [{"role": t["role"], "content": t["content"]} for t in (conversation_history or [])]
+    response = get_openrouter_client().chat.completions.create(
+        model=GENERATION_MODEL,
+        messages=[
+            {"role": "system", "content": RAG_SYSTEM_PROMPT},
+            *history,
+            {"role": "user", "content": prompt},
+        ],
+        temperature=0.2,
+    )
+    if response.usage:
+        session_usage.add(GENERATION_MODEL, response.usage)
+    return response.choices[0].message.content or "(No response generated)"
+
+
+# ─────────────────────────────────────────
+# TCAS structured data retrieval
+# ─────────────────────────────────────────
+
+def _format_tcas_records(records: list[dict]) -> str:
+    if not records:
+        return ""
+    lines = ["[TCAS Admission Data]"]
+    for r in records:
+        lines.append(
+            f"\n--- Program: {r.get('program_name_raw', r.get('program_id', '?'))} ---"
+        )
+        lines.append(f"  Round: {r.get('round', 'N/A')}")
+        lines.append(f"  Seats (quota): {r.get('quota', 'N/A')}")
+        lines.append(f"  GPAX minimum: {r.get('gpax_min', 'N/A')}")
+        exam = r.get("exam_criteria")
+        if exam:
+            lines.append(f"  Exam criteria: {exam}")
+        portfolio = r.get("portfolio_requirements")
+        if portfolio:
+            lines.append(f"  Portfolio requirements: {portfolio}")
+        deadlines = r.get("deadlines")
+        if deadlines:
+            lines.append(f"  Deadlines: {deadlines}")
+        src = r.get("source_file")
+        if src:
+            lines.append(f"  Source: {src}")
+    return "\n".join(lines)
+
+
+# ─────────────────────────────────────────
+# Main query function
+# ─────────────────────────────────────────
+
+def query(
+    question: str,
+    top_k: int = TOP_K,
+    program_id: str | None = None,
+    debug: bool = False,
+    conversation_history: list[dict] | None = None,
+) -> RAGResult:
+    """Run RAG over มคอ.2 chunks, with TCAS structured data augmentation."""
+    client = db.get_client()
+
+    # 1. Embed the query
+    q_embedding = _embed_query(question)
+
+    # 2. Retrieve relevant chunks from pgvector (always unfiltered first)
+    is_tcas_query = bool(TCAS_KEYWORDS.search(question))
+    # Override: questions about foreign/international students are curriculum policy questions,
+    # not TCAS score questions — only suppress when there are no strong TCAS signals.
+    if is_tcas_query and _CURRICULUM_POLICY_RE.search(question) and not _STRONG_TCAS_RE.search(question):
+        is_tcas_query = False
+    is_plo_query = bool(re.search(r"PLO|plo|ผลลัพธ์การเรียนรู้", question))
+    is_listing_query = bool(LISTING_KEYWORDS.search(question))
+    # Fetch a larger pool so re-ranking has enough material
+    fetch_k = max(top_k * 3, 15)
+    all_chunks = db.similarity_search(client, q_embedding, top_k=fetch_k, program_id=program_id)
+
+    # English program name resolution: if the user names a specific program in English,
+    # do a targeted search filtered to that program_id and merge it to the front.
+    # This fixes the case where English queries fail to retrieve Thai-named documents.
+    resolved_program_id: str | None = None
+    all_programs_list: list[dict] = []
+    if not is_listing_query and not program_id:
+        all_programs_list = db.get_programs(client)
+        resolved_program_id = _resolve_program_from_query(question, all_programs_list)
+        if resolved_program_id:
+            targeted = db.similarity_search(
+                client, q_embedding, top_k=fetch_k, program_id=resolved_program_id
+            )
+            # Prepend targeted results, then fill with unfiltered (deduplicated by id)
+            seen = {c.get("id") for c in targeted}
+            all_chunks = targeted + [c for c in all_chunks if c.get("id") not in seen]
+
+        # For comparison queries, also fetch chunks for additional mentioned programs
+        extra_ids = _resolve_extra_programs(question, all_programs_list, resolved_program_id)
+        if extra_ids:
+            # Comparison mode: embed each program's name rather than the comparison question
+            # so targeted searches return overview content, not "difference" vectors.
+            def _prog_embed(prog_id: str) -> list[float]:
+                name = next(
+                    (re.sub(r"\s*\([^)]+\)\s*$", "", p.get("name_en") or "").strip()
+                     for p in all_programs_list if p["id"] == prog_id),
+                    "",
+                )
+                return _embed_query(name) if name else q_embedding
+
+            # Re-fetch primary program with its own name embedding for better overview chunks
+            if resolved_program_id:
+                targeted = db.similarity_search(
+                    client, _prog_embed(resolved_program_id), top_k=fetch_k, program_id=resolved_program_id
+                )
+                seen = {c.get("id") for c in targeted}
+                all_chunks = targeted + [c for c in all_chunks if c.get("id") not in seen]
+
+            for extra_id in extra_ids:
+                extra = db.similarity_search(
+                    client, _prog_embed(extra_id), top_k=max(fetch_k // 2, 8), program_id=extra_id
+                )
+                seen = {c.get("id") for c in all_chunks}
+                all_chunks = all_chunks + [c for c in extra if c.get("id") not in seen]
+
+    # Drop chunks that are too weak to be useful
+    above_threshold = [c for c in all_chunks if c.get("similarity", 0.0) >= MIN_SIMILARITY]
+
+    debug_info: dict = {
+        "is_tcas_query": is_tcas_query,
+        "is_plo_query": is_plo_query,
+        "is_listing_query": is_listing_query,
+        "resolved_program_id": resolved_program_id,
+        "fetched": len(all_chunks),
+        "above_threshold": len(above_threshold),
+        "threshold": MIN_SIMILARITY,
+        "raw_chunks": [
+            {
+                "source_file": c.get("source_file", ""),
+                "section_type": c.get("section_type", ""),
+                "similarity": round(c.get("similarity", 0.0), 3),
+                "content_preview": c.get("content", "")[:120],
+            }
+            for c in all_chunks
+        ],
+    }
+
+    # 3. If TCAS query (but NOT a pure listing query), find matching TCAS records.
+    # We suppress TCAS injection for listing queries because TCAS programs may not have
+    # curriculum PDFs — mixing them in causes the model to recommend programs it can't
+    # actually describe, leading to contradictory follow-up answers.
+    tcas_records: list[dict] = []
+    used_tcas = False
+    if is_tcas_query and not is_listing_query:
+        # Detect TCAS round from question (e.g. "TCAS3", "round 1", "รอบ2")
+        _round_m = re.search(r"(?:TCAS|รอบ)\s*([1-4])|round\s*([1-4])", question, re.IGNORECASE)
+        detected_round: str | None = None
+        if _round_m:
+            _n = _round_m.group(1) or _round_m.group(2)
+            detected_round = f"round{_n}"
+
+        q_words = [w for w in re.findall(r"[a-zA-Zก-๙]{4,}", question) if len(w) >= 4]
+
+        seen_ids: set[str] = set()
+        tcas_records_raw: list[dict] = []
+
+        # First try: DB-level keyword search against program_name_raw.
+        # Each q_word is searched separately so every program keyword gets a slot.
+        if q_words:
+            for w in q_words:
+                hits = db.get_tcas_records(client, program_name_search=w, limit=200)
+                if hits:
+                    _dedup_add(_pick_round(hits, detected_round), seen_ids, tcas_records_raw)
+
+        # Second try (fallback): Thai words from chunk filenames handle English queries
+        # where q_words don't appear in Thai program names.
+        if not tcas_records_raw and all_chunks:
+            seen_sources: set[str] = set()
+            for chunk in all_chunks:
+                src = chunk.get("source_file", "")
+                if src in seen_sources:
+                    continue
+                seen_sources.add(src)
+                for tw in re.findall(r"[ก-๙]{5,}", src):
+                    hits = db.get_tcas_records(client, program_name_search=tw, limit=200)
+                    if hits:
+                        _dedup_add(_pick_round(hits, detected_round), seen_ids, tcas_records_raw)
+                        break  # one keyword per source file is enough
+
+        # Final fallback: generic fetch when nothing else matched
+        if not tcas_records_raw:
+            _dedup_add(db.get_tcas_records(client, program_id=program_id, limit=10), seen_ids, tcas_records_raw)
+
+        tcas_records = tcas_records_raw[:30]
+        used_tcas = bool(tcas_records)
+        debug_info["tcas_records_found"] = len(tcas_records)
+        debug_info["detected_round"] = detected_round
+
+    # Work with only above-threshold chunks from here; fall back to raw list only if
+    # nothing at all passed (so TCAS filename fallback still has something to work with).
+    chunks = above_threshold if above_threshold else []
+
+    # Filter course chunks from context only for TCAS queries (prevent prerequisite hallucination)
+    if is_tcas_query:
+        chunks = [c for c in chunks if c.get("section_type") != "course"] or chunks
+
+    # Re-rank: boost chunks whose source file matches program keywords in the query.
+    # Thai words run together so we use pythainlp to tokenize before matching.
+    try:
+        from pythainlp.tokenize import word_tokenize as _th_tokenize
+        q_thai_tokens = [
+            t for t in _th_tokenize(question, engine="newmm")
+            if re.match(r"[ก-๙]{3,}", t)
+        ]
+    except Exception:
+        q_thai_tokens = re.findall(r"[ก-๙]{4,}", question)
+
+    if q_thai_tokens or is_plo_query:
+        def _rank_score(chunk: dict) -> int:
+            src = chunk.get("source_file", "")
+            section = chunk.get("section_type", "")
+            score = 0
+            for w in q_thai_tokens:
+                if w in src:
+                    score += 10  # strong boost: query word appears in source filename
+            if is_plo_query and section == "plo":
+                score += 5   # PLO section preferred for PLO queries
+            return score
+
+        chunks = sorted(chunks, key=_rank_score, reverse=True)
+        # If top chunk strongly matches a specific program, keep only chunks from that program
+        if chunks and _rank_score(chunks[0]) >= 10:
+            top_src = chunks[0].get("source_file", "")
+            program_chunks = [c for c in chunks if c.get("source_file") == top_src]
+            other_chunks = [c for c in chunks if c.get("source_file") != top_src]
+            # Use program chunks first, pad with others only if needed
+            chunks = (program_chunks + other_chunks)[:top_k]
+        else:
+            chunks = chunks[:top_k]
+
+    debug_info["chunks_used"] = [
+        {
+            "source_file": c.get("source_file", ""),
+            "section_type": c.get("section_type", ""),
+            "similarity": round(c.get("similarity", 0.0), 3),
+        }
+        for c in chunks
+    ]
+
+    # 4. No-data guard — return an honest response rather than sending empty context to
+    # the LLM, which would cause confident-sounding hallucinations.
+    if not chunks and not tcas_records and not is_listing_query:
+        if resolved_program_id:
+            prog_name = next(
+                (p.get("name_th") or p.get("id") for p in all_programs_list if p.get("id") == resolved_program_id),
+                resolved_program_id,
+            )
+            no_data_msg = (
+                f"ขออภัยครับ ยังไม่มีข้อมูลหลักสูตรของ {prog_name} ในระบบขณะนี้ "
+                "กรุณาติดต่อคณะโดยตรงหรือตรวจสอบที่เว็บไซต์ของมหาวิทยาลัยเกษตรศาสตร์ครับ"
+            )
+        else:
+            no_data_msg = (
+                "ขออภัยครับ ไม่พบข้อมูลที่เกี่ยวข้องในฐานข้อมูล "
+                "ลองถามเกี่ยวกับหลักสูตรหรือการรับสมัคร TCAS ของมหาวิทยาลัยเกษตรศาสตร์ครับ"
+            )
+        return RAGResult(
+            answer=no_data_msg,
+            sources=[],
+            used_tcas_data=False,
+            debug_info=debug_info if debug else None,
+        )
+
+    # 5. Assemble context
+    context_parts: list[str] = []
+
+    # For broad "what programs exist" queries, prepend the programs registry
+    if is_listing_query:
+        programs = db.get_programs(client)
+        if programs:
+            prog_lines = ["[KU Programs Available in Database]"]
+            current_faculty = None
+            for p in programs:
+                fac = p.get("faculty") or "Unknown Faculty"
+                if fac != current_faculty:
+                    prog_lines.append(f"\nFaculty: {fac}")
+                    current_faculty = fac
+                name_th = p.get("name_th") or ""
+                name_en = p.get("name_en") or ""
+                degree = p.get("degree_level") or ""
+                prog_lines.append(f"  - {name_th} / {name_en} ({degree})")
+            context_parts.append("\n".join(prog_lines))
+            debug_info["programs_injected"] = len(programs)
+
+    # Prepend a coverage note when a specific program is identified, so the LLM
+    # knows what the source document does and doesn't contain.
+    if resolved_program_id and all_programs_list:
+        prog = next((p for p in all_programs_list if p.get("id") == resolved_program_id), None)
+        if prog:
+            cov = prog.get("coverage") or {}
+            notes: list[str] = []
+            method = cov.get("extraction_method", "")
+            if method == "scanned":
+                notes.append("This program's source document was a scanned image — text may be incomplete.")
+            else:
+                if not cov.get("has_plos"):
+                    notes.append("The source document for this program does NOT contain PLO (Program Learning Outcomes) sections.")
+                if not cov.get("has_overview"):
+                    notes.append("The source document does not contain a program overview section.")
+            if notes:
+                context_parts.append("[Document Coverage Note]\n" + "\n".join(f"- {n}" for n in notes))
+
+    for c in chunks:
+        sim = round(c.get("similarity", 0.0), 3)
+        context_parts.append(
+            f"[{c['source_file']} | {c.get('section_type', 'general')} | similarity: {sim}]\n{c['content']}"
+        )
+    if tcas_records:
+        context_parts.append(_format_tcas_records(tcas_records))
+
+    context = "\n\n---\n\n".join(context_parts) if context_parts else "No relevant context found."
+
+    # 6. Generate answer
+    answer = _generate(context, question, conversation_history=conversation_history)
+
+    # 7. Build sources list
+    sources = [
+        {
+            "source_file": c.get("source_file", ""),
+            "section_type": c.get("section_type", ""),
+            "similarity": round(c.get("similarity", 0.0), 3),
+        }
+        for c in chunks
+    ]
+
+    return RAGResult(
+        answer=answer,
+        sources=sources,
+        used_tcas_data=used_tcas,
+        debug_info=debug_info if debug else None,
+    )
