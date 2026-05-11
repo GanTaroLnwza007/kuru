@@ -1,0 +1,38 @@
+{
+  "query": "หลักสูตรวิศวกรรมโยธา-ชลประทาน มี PLO อะไรบ้าง",
+  "answer": "ผมพบข้อมูล PLO ของหลักสูตรวิศวกรรมโยธา-ชลประทานครับ!\n\n**ผลลัพธ์การเรียนรู้ที่คาดหวัง (PLOs) — วิศวกรรมโยธา-ชลประทาน**\n\nPLO1: ความรู้ด้านคณิตศาสตร์ วิทยาศาสตร์ และวิศวกรรมพื้นฐาน เพื่อนำไปใช้แก้ปัญหาวิศวกรรมได้\nPLO2: สามารถออกแบบ วิเคราะห์ และแก้ปัญหาทางวิศวกรรมโยธาและชลประทานที่ซับซ้อนได้\nPLO3: มีทักษะการใช้เครื่องมือและซอฟต์แวร์ทางวิศวกรรมสมัยใหม่\nPLO4: สามารถทำงานร่วมกับผู้อื่นได้อย่างมีประสิทธิภาพ และมีภาวะผู้นำ\nPLO5: มีจริยธรรมวิชาชีพและความรับผิดชอบต่อสังคมและสิ่งแวดล้อม\nPLO6: สามารถสื่อสารและนำเสนองานทางวิศวกรรมได้ทั้งภาษาไทยและภาษาอังกฤษ\n\n[ที่มา: วิศวกรรมโยธา-ชลประทาน_bangkhen_mko2.pdf]",
+  "used_tcas_data": false,
+  "debug_info": {
+    "is_tcas_query": false,
+    "is_plo_query": true,
+    "is_listing_query": false,
+    "resolved_program_id": "bangkhen_civil_irr_a3b9",
+    "fetched": 15,
+    "above_threshold": 8,
+    "threshold": 0.35,
+    "chunks_used": [
+      {"source_file": "วิศวกรรมโยธา-ชลประทาน_bangkhen_mko2.pdf", "section_type": "plo", "similarity": 0.791},
+      {"source_file": "วิศวกรรมโยธา-ชลประทาน_bangkhen_mko2.pdf", "section_type": "plo", "similarity": 0.758},
+      {"source_file": "วิศวกรรมโยธา-ชลประทาน_bangkhen_mko2.pdf", "section_type": "general", "similarity": 0.712},
+      {"source_file": "วิศวกรรมโยธา-ชลประทาน_bangkhen_mko2.pdf", "section_type": "plo", "similarity": 0.687},
+      {"source_file": "วิศวกรรมโยธา-ชลประทาน_bangkhen_mko2.pdf", "section_type": "general", "similarity": 0.643}
+    ],
+    "raw_chunks_summary": [
+      {"source_file": "วิศวกรรมโยธา-ชลประทาน_bangkhen_mko2.pdf", "section_type": "plo", "similarity": 0.791},
+      {"source_file": "วิศวกรรมโยธา-ชลประทาน_bangkhen_mko2.pdf", "section_type": "plo", "similarity": 0.758},
+      {"source_file": "วิศวกรรมโยธา-ชลประทาน_bangkhen_mko2.pdf", "section_type": "general", "similarity": 0.712},
+      {"source_file": "วิศวกรรมโยธา-ชลประทาน_bangkhen_mko2.pdf", "section_type": "plo", "similarity": 0.687},
+      {"source_file": "วิศวกรรมโยธา-ชลประทาน_bangkhen_mko2.pdf", "section_type": "general", "similarity": 0.643},
+      {"source_file": "วิศวกรรมโยธา_bangkhen_mko2.pdf", "section_type": "plo", "similarity": 0.589},
+      {"source_file": "วิศวกรรมโยธา_bangkhen_mko2.pdf", "section_type": "general", "similarity": 0.541},
+      {"source_file": "วิศวกรรมสิ่งแวดล้อม_bangkhen_mko2.pdf", "section_type": "plo", "similarity": 0.472},
+      {"source_file": "วิศวกรรมเครื่องกล_bangkhen_mko2.pdf", "section_type": "plo", "similarity": 0.389},
+      {"source_file": "วิศวกรรมไฟฟ้า_bangkhen_mko2.pdf", "section_type": "plo", "similarity": 0.351},
+      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "plo", "similarity": 0.318},
+      {"source_file": "เกษตรศาสตร์_bangkhen_mko2.pdf", "section_type": "general", "similarity": 0.289},
+      {"source_file": "สัตวศาสตร์_bangkhen_mko2.pdf", "section_type": "general", "similarity": 0.241},
+      {"source_file": "ประมง_bangkhen_mko2.pdf", "section_type": "general", "similarity": 0.198},
+      {"source_file": "เศรษฐศาสตร์_bangkhen_mko2.pdf", "section_type": "general", "similarity": 0.156}
+    ]
+  }
+}

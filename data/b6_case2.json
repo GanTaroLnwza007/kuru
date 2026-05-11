@@ -1,0 +1,39 @@
+{
+  "query": "What are the TCAS3 score requirements for Computer Engineering?",
+  "answer": "Here's what I found for TCAS Round 3 (Direct Admission) for Computer Engineering at KU Bangkhen!\n\n**Round 3 — Direct Admission (รับตรงร่วมกัน)**\n- Seats available: 30\n- GPAX minimum: 2.75\n- Required exams: TGAT (Thai General Aptitude Test) + TPAT3 (Science & Technology)\n- Score weights: TGAT 30%, TPAT3 70%\n- Minimum TGAT score: 25 points\n- Minimum TPAT3 score: 30 points\n\nI'd recommend checking the official TCAS portal (mytcas.com) and the KU Faculty of Engineering website for the most current cut-off scores and deadlines. [Source: TCAS_round3_2567.pdf]",
+  "used_tcas_data": true,
+  "debug_info": {
+    "is_tcas_query": true,
+    "is_plo_query": false,
+    "is_listing_query": false,
+    "resolved_program_id": "bangkhen_ddf705a9",
+    "detected_round": "round3",
+    "tcas_records_found": 5,
+    "fetched": 15,
+    "above_threshold": 9,
+    "threshold": 0.35,
+    "chunks_used": [
+      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "admission", "similarity": 0.681},
+      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "general", "similarity": 0.639},
+      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "admission", "similarity": 0.601}
+    ],
+    "raw_chunks_summary": [
+      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "admission", "similarity": 0.681},
+      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "general", "similarity": 0.639},
+      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "admission", "similarity": 0.601},
+      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "course", "similarity": 0.572},
+      {"source_file": "วิศวกรรมซอฟต์แวร์_bangkhen_mko2.pdf", "section_type": "admission", "similarity": 0.548},
+      {"source_file": "วิศวกรรมไฟฟ้า_bangkhen_mko2.pdf", "section_type": "admission", "similarity": 0.501},
+      {"source_file": "วิศวกรรมเครื่องกล_bangkhen_mko2.pdf", "section_type": "admission", "similarity": 0.467},
+      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "plo", "similarity": 0.389},
+      {"source_file": "วิศวกรรมเคมี_bangkhen_mko2.pdf", "section_type": "general", "similarity": 0.351},
+      {"source_file": "วิศวกรรมโยธา_bangkhen_mko2.pdf", "section_type": "admission", "similarity": 0.312},
+      {"source_file": "เกษตรศาสตร์_bangkhen_mko2.pdf", "section_type": "general", "similarity": 0.289},
+      {"source_file": "วิศวกรรมอุตสาหการ_bangkhen_mko2.pdf", "section_type": "course", "similarity": 0.241},
+      {"source_file": "วิศวกรรมสิ่งแวดล้อม_bangkhen_mko2.pdf", "section_type": "general", "similarity": 0.198},
+      {"source_file": "สัตวศาสตร์_bangkhen_mko2.pdf", "section_type": "general", "similarity": 0.167},
+      {"source_file": "ประมง_bangkhen_mko2.pdf", "section_type": "general", "similarity": 0.143}
+    ],
+    "note_course_chunks_filtered": "3 'course' section chunks were removed from context to prevent prerequisite code hallucination"
+  }
+}

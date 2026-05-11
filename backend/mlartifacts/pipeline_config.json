@@ -1,0 +1,55 @@
+{
+  "model_name": "KUru RAG Pipeline",
+  "version": "1.0.0",
+  "selected_from_experiment": "wider_retrieval",
+  "mlflow_run_id": "8cfd3e502e82424ba08e8958e62c3e86",
+  "components": {
+    "embedder": {
+      "model_id": "intfloat/multilingual-e5-base",
+      "embedding_dim": 768,
+      "doc_prefix": "passage:",
+      "query_prefix": "query:",
+      "backend": "sentence-transformers",
+      "runs_locally": true
+    },
+    "retriever": {
+      "backend": "supabase_pgvector",
+      "index_type": "IVFFlat",
+      "index_probes": 50,
+      "top_k": 8,
+      "fetch_multiplier": 3,
+      "min_similarity": 0.30
+    },
+    "reranker": {
+      "method": "pythainlp_token_overlap",
+      "filename_boost": 10,
+      "plo_section_boost": 5,
+      "language": "th+en"
+    },
+    "generator": {
+      "model_id": "google/gemini-2.5-flash-lite-preview-06-17",
+      "provider": "openrouter",
+      "temperature": 0.2,
+      "system_prompt_version": "kuru-v3"
+    }
+  },
+  "pipeline_config": {
+    "chunk_size": 2000,
+    "chunk_overlap": 200,
+    "tcas_keywords_regex": "TCAS|GPAX|คะแนน|สมัคร|รอบ|score|admission|apply|requirement",
+    "plo_keywords_regex": "PLO|plo|ผลลัพธ์การเรียนรู้",
+    "max_tcas_records": 30,
+    "max_conversation_history_turns": 5
+  },
+  "serving": {
+    "api_framework": "FastAPI",
+    "api_version": "v1",
+    "base_path": "/api/v1",
+    "endpoints": [
+      "POST /chat",
+      "POST /chat/feedback",
+      "GET  /programs",
+      "GET  /programs/{program_id}"
+    ]
+  }
+}
