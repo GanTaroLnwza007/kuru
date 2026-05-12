@@ -61,6 +61,36 @@ Outstanding:
 - `bangkhen_vet_9ea52f52` (`สพ.บ._2568.pdf`) is an 870-page DVM PDF. A retry was interrupted after clearing old chunks, so it currently has 0 chunks and needs a dedicated long run or a separate OCR policy.
 - Some old suspect program IDs were cleared because the registrar scrape produced replacement IDs, or because the old source is no longer represented by a current registrar PDF.
 
+## Program Table Hygiene
+
+After the registrar re-ingest, the `programs` table contained stale Google Drive/compact-PDF rows alongside newer registrar rows. This happened because program IDs are derived from the source path and filename stem, so the same curriculum can receive a different ID when the source file changes. Chunks can duplicate in the same way because resume detection is based on `source_file`.
+
+Cleanup scripts:
+
+- `scripts/cleanup_program_duplicates.py` merges known stale program IDs into the kept registrar IDs, moves TCAS rows, deletes duplicate chunks, and corrects bad inferred names.
+- `scripts/backfill_program_names_from_chunks.py` infers missing `name_en` values from existing chunks and applies manual overrides where the chunks do not contain a clean English program label.
+- `scripts/backfill_program_metadata.py` fills safe derived metadata: `slug`, `year_by_year_vibe`, and missing `coverage`.
+
+Latest cleanup results:
+
+- Programs: 72 -> 57 after removing stale duplicate rows.
+- Chunks: 14,326 -> 13,910 after deleting duplicate old chunks.
+- `name_en`, `name_th`, `slug`, `faculty`, `degree_level`, `coverage`, and `year_by_year_vibe`: 0 missing values.
+- Exact duplicate `name_en` and exact duplicate `name_th`: 0.
+- The bad row `name_th=นานาชาติ`, `name_en=Software and Knowledge Engineering (International Program)` was corrected to Accountancy because its chunks are from `Bachelor of Accountancy Program (International Program)`.
+
+Remaining sparse columns are semantic structured fields, not identity fields:
+
+| Column | Current gap | How to fix safely |
+|--------|-------------|-------------------|
+| `overview` | 36 / 57 missing | Re-run structured extraction or targeted re-ingest |
+| `plos` | 44 / 57 missing | Re-run structured extraction; some source PDFs genuinely lack PLOs |
+| `courses` | 23 / 57 missing | Re-run structured extraction; do not infer from arbitrary chunks without validation |
+| `year_timeline` | 32 / 57 missing | Re-run structured extraction |
+| `curriculum_mapping` | 46 / 57 missing | Re-run structured extraction; often absent in source |
+
+Do not fill these semantic fields with generic placeholders; the RAG system should distinguish missing source evidence from inferred UI metadata.
+
 ## Operational Guidance
 
 - Do not assume `data/native/curriculum` means "no OCR cost".
@@ -68,3 +98,4 @@ Outstanding:
 - To route full-document OCR through OpenRouter, use a provider-prefixed value such as `OCR_MODEL=google/gemini-2.5-flash`.
 - Check Typhoon usage when `coverage.extraction_method` contains `typhoon_pages`.
 - For very large scans such as DVM, run a small targeted script or overnight job rather than mixing it into the main batch.
+- After any source swap or large re-ingest, re-run the cleanup/backfill scripts above and audit duplicate program names before evaluation.

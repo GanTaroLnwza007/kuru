@@ -145,6 +145,18 @@ The upsert window is short compared with extraction/OCR time, so the risk is low
 $env:PYTHONUTF8=1; uv run kuru-demo
 ```
 
+### Data hygiene after source changes
+
+When replacing Google Drive/compact PDFs with registrar PDFs, run the maintenance scripts from `pipeline/`:
+
+```powershell
+$env:PYTHONUTF8=1; uv run python scripts/cleanup_program_duplicates.py --apply
+$env:PYTHONUTF8=1; uv run python scripts/backfill_program_names_from_chunks.py --apply
+$env:PYTHONUTF8=1; uv run python scripts/backfill_program_metadata.py --apply
+```
+
+These scripts remove known stale duplicate program rows/chunks, fill missing English names from chunks, and populate safe UI metadata (`slug`, `year_by_year_vibe`, `coverage`). They do not invent missing PLOs, course lists, timelines, or curriculum mappings; those require structured extraction from the source document.
+
 Sample queries to test coverage:
 - `What courses are in the Computer Engineering program?`
 - `What are the PLOs for Entomology PhD?`
