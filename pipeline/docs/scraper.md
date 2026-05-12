@@ -55,7 +55,7 @@ uv run kuru-scrape-curriculum
 PDFs are saved to:
 
 ```
-data/raw/curriculum/บางเขน/
+data/native/curriculum/บางเขน/
 ├── agri/
 │   ├── วท.บ._วิทยาศาสตร์เกษตร_2564.pdf
 │   └── ...
@@ -126,7 +126,7 @@ uv run python - <<'EOF'
 from pathlib import Path
 from kuru.ingestion.text_extractor import extract_text_auto, full_text
 
-pdf = next(Path("data/raw/curriculum/บางเขน").rglob("*.pdf"))
+pdf = next(Path("data/native/curriculum/บางเขน").rglob("*.pdf"))
 pages = extract_text_auto(pdf, verbose=True)
 text = full_text(pages)
 print(f"File : {pdf.name}")
