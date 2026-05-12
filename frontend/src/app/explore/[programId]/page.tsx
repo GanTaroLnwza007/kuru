@@ -271,7 +271,7 @@ export default function ProgramDetailPage() {
 
   if (isNotFound || !program) {
     return (
-      <div className="mx-auto max-w-5xl px-4 pt-16 text-center sm:px-6">
+      <div data-testid="explore-detail-shell" className="mx-auto max-w-5xl px-4 pt-16 text-center sm:px-6">
         <p className="mb-2 text-4xl">🔍</p>
         <h1 className="mb-3 font-display text-2xl font-extrabold tracking-tight text-ink">ไม่พบหลักสูตรนี้</h1>
         <p className="mb-6 text-ink-3">รหัสหลักสูตร &ldquo;{programId}&rdquo; ไม่มีในระบบ</p>
