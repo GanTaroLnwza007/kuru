@@ -36,6 +36,8 @@ API keys by path:
 
 Important cost-tracking implication: a low Gemini request count does not mean no OCR happened. The recent targeted re-ingests mostly recorded `coverage.extraction_method = "pymupdf+typhoon_pages"`, so OCR spend would appear on Typhoon, while Gemini only saw the smaller structured-extraction calls.
 
+If the Gemini dashboard shows only a handful of calls, do not automatically attribute them to scanned-PDF ingestion. They may be from partner experiments, direct Gemini smoke tests, structured extraction on a small number of ingested files, or any script that imports `kuru.llm.get_client()`. The pipeline CLI and backend chat RAG path use OpenRouter for answer generation through `GENERATION_MODEL`; they do not use the direct Gemini key for normal chat responses.
+
 ## Recent Targeted Re-Ingest
 
 The May 10 audit found several bad or suspicious chunk sets. Targeted replacement/re-ingest was run against registrar PDFs using the default environment. Completed replacements currently show `pymupdf+typhoon_pages`, not full `gemini_ocr`.
