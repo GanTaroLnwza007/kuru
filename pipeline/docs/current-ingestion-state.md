@@ -81,15 +81,23 @@ Latest cleanup results:
 - Exact duplicate `name_en` and exact duplicate `name_th`: 0.
 - The bad row `name_th=นานาชาติ`, `name_en=Software and Knowledge Engineering (International Program)` was corrected to Accountancy because its chunks are from `Bachelor of Accountancy Program (International Program)`.
 
+After running `scripts/backfill_structured_from_chunks.py --limit 100 --apply` on 2026-05-13, the existing DB was repaired using the same targeted completion logic now built into ingestion. The semantic structured-field gaps changed from:
+
+- `overview`: 36 / 57 missing -> 4 / 57 missing
+- `plos`: 44 / 57 missing -> 26 / 57 missing
+- `courses`: 23 / 57 missing -> 0 / 57 missing
+- `year_timeline`: 32 / 57 missing -> 14 / 57 missing
+- `curriculum_mapping`: 46 / 57 missing -> 24 / 57 missing
+
 Remaining sparse columns are semantic structured fields, not identity fields:
 
 | Column | Current gap | How to fix safely |
 |--------|-------------|-------------------|
-| `overview` | 36 / 57 missing | Re-run structured extraction or targeted re-ingest |
-| `plos` | 44 / 57 missing | Re-run structured extraction; some source PDFs genuinely lack PLOs |
-| `courses` | 23 / 57 missing | Re-run structured extraction; do not infer from arbitrary chunks without validation |
-| `year_timeline` | 32 / 57 missing | Re-run structured extraction |
-| `curriculum_mapping` | 46 / 57 missing | Re-run structured extraction; often absent in source |
+| `overview` | 4 / 57 missing | Targeted re-ingest or manual source check |
+| `plos` | 26 / 57 missing | Some source PDFs genuinely lack PLOs; otherwise targeted source check |
+| `courses` | 0 / 57 missing | Filled |
+| `year_timeline` | 14 / 57 missing | Targeted source check; often absent or not organized by year |
+| `curriculum_mapping` | 24 / 57 missing | Often absent in source; only fill from explicit PLO-course mapping tables |
 
 Do not fill these semantic fields with generic placeholders; the RAG system should distinguish missing source evidence from inferred UI metadata.
 
