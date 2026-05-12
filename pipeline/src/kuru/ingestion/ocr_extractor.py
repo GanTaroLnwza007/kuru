@@ -13,8 +13,8 @@ from pathlib import Path
 
 from tenacity import retry, retry_if_exception, stop_after_attempt, wait_exponential
 
-from pipeline.src.kuru.ingestion.utils import is_transient_error, png_dimensions, safe_print
-from pipeline.src.kuru.llm import OCR_MODEL, _is_openrouter_model, get_gemini_client, get_ocr_client, get_openrouter_client, session_usage
+from kuru.ingestion.utils import is_transient_error, png_dimensions, safe_print
+from kuru.llm import OCR_MODEL, _is_openrouter_model, get_gemini_client, get_ocr_client, get_openrouter_client, session_usage
 
 _PDF_EXTRACT_PROMPT = (
     "Extract all text from these PDF page images. "

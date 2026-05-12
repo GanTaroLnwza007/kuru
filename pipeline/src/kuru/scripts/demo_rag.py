@@ -15,8 +15,8 @@ from rich.panel import Panel
 from rich.prompt import Prompt
 from rich.table import Table
 
-from pipeline.src.kuru.llm import session_usage
-from pipeline.src.kuru.rag.query_engine import query
+from kuru.llm import session_usage
+from kuru.rag.query_engine import query
 
 load_dotenv()
 
@@ -119,7 +119,7 @@ def main() -> None:
 
     # Pre-load the embedding model so first query doesn't appear frozen
     console.print("[dim]Loading embedding model …[/dim]", end=" ")
-    from pipeline.src.kuru.ingestion.embedder import _get_model
+    from kuru.ingestion.embedder import _get_model
     _get_model()
     console.print("[dim]ready.[/dim]\n")
 

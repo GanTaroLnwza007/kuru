@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn, TimeElapsedColumn
 
-from pipeline.src.kuru.ingestion.tcas_extractor import (
+from kuru.ingestion.tcas_extractor import (
     extract_tcas_from_pdf,
     extract_tcas_from_xlsx,
     store_tcas_records,

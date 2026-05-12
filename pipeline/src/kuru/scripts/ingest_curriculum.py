@@ -20,12 +20,12 @@ sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 from dotenv import load_dotenv
 from rich.console import Console
 
-from pipeline.src.kuru.db import supabase_client as db
-from pipeline.src.kuru.ingestion.chunker import chunk_document
-from pipeline.src.kuru.ingestion.embedder import embed_and_store, _get_model
-from pipeline.src.kuru.ingestion.structured_extractor import StructuredProgram, extract_structured
-from pipeline.src.kuru.ingestion.text_extractor import PageText, extract_text_auto, full_text
-from pipeline.src.kuru.llm import session_usage
+from kuru.db import supabase_client as db
+from kuru.ingestion.chunker import chunk_document
+from kuru.ingestion.embedder import embed_and_store, _get_model
+from kuru.ingestion.structured_extractor import StructuredProgram, extract_structured
+from kuru.ingestion.text_extractor import PageText, extract_text_auto, full_text
+from kuru.llm import session_usage
 
 load_dotenv()
 
@@ -281,7 +281,7 @@ def ingest_document(pdf_path: Path, campus: str, name_mapping: dict, verbose: bo
     # ── Scanned PDF — attempt OCR then fall through to chunking ────────────
     all_scanned = all(p.extraction_method == "scanned" for p in pages)
     if all_scanned:
-        from pipeline.src.kuru.ingestion.ocr_extractor import extract_with_ocr  # noqa: PLC0415
+        from kuru.ingestion.ocr_extractor import extract_with_ocr  # noqa: PLC0415
         ocr_text = extract_with_ocr(pdf_path, verbose=verbose)
         if not ocr_text.strip():
             coverage = _build_coverage(pages, StructuredProgram(), name_en_source)
