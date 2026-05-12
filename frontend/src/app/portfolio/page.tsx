@@ -599,7 +599,7 @@ export default function PortfolioPage() {
   const [step, setStep] = useState(0);
 
   return (
-    <div style={{ position: "relative", minHeight: "calc(100vh - 72px)", padding: "48px 0 80px", overflow: "hidden" }}>
+    <div data-testid="portfolio-shell" style={{ position: "relative", minHeight: "calc(100vh - 72px)", padding: "48px 0 80px", overflow: "hidden" }}>
       {/* bg-mesh: same radial gradients as the rest of the site */}
       <div aria-hidden="true" style={{
         position: "absolute", inset: 0, zIndex: 0, pointerEvents: "none",

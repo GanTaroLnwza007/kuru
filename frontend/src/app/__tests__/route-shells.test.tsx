@@ -94,8 +94,8 @@ describe("MVP route shells", () => {
     expect(screen.queryByTestId("riasec-shell")).toBeDefined();
   });
 
-  it("renders portfolio shell", async () => {
-    render(await PortfolioPage());
+  it("renders portfolio shell", () => {
+    render(<PortfolioPage />);
     expect(screen.getByTestId("portfolio-shell")).toBeInTheDocument();
   });
 });

@@ -257,7 +257,7 @@ export default function ProgramDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="mx-auto max-w-5xl px-4 pt-8 sm:px-6">
+      <div data-testid="explore-detail-shell" className="mx-auto max-w-5xl px-4 pt-8 sm:px-6">
         <div className="space-y-4">
           <div className="h-6 w-24 animate-pulse rounded-full bg-line-soft" />
           <div className="h-64 animate-pulse rounded-2xl bg-line-soft" />
