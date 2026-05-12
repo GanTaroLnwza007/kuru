@@ -83,7 +83,9 @@ _DEGREE_PAREN_RE = re.compile(
 )
 
 _EN_NAME_RE = re.compile(
-    r"(?:Bachelor|Master|Doctor)\s+of\s+[\w\s,\-]+?Program\s+in\s+[^\n\r]{5,80}",
+    r"(?:Bachelor|Master|Doctor)\s+of\s+[A-Za-z][A-Za-z\s,&()/.-]{2,120}?"
+    r"Program(?:me)?(?:\s+in\s+[A-Za-z][A-Za-z\s,&()/.-]{2,120})?"
+    r"(?:\s*\([^)]{3,60}\))?",
     re.IGNORECASE,
 )
 
@@ -154,23 +156,32 @@ _EN_LABEL_RE = re.compile(
 )
 # Broad fallback: "Master/Bachelor/Doctor of ... Program in ..."
 _EN_NAME_BROAD_RE = re.compile(
-    r"(?:Bachelor|Master|Doctor|Programme|Program)\s+of\s+[\w\s,\-]+?(?:Program(?:me)?\s+in\s+)?[A-Z][^\n\r]{5,80}",
+    r"(?:Bachelor|Master|Doctor)\s+of\s+[A-Za-z][A-Za-z\s,&()/.-]{5,140}"
+    r"(?:\s*\([^)]{3,60}\))?",
     re.IGNORECASE,
 )
+
+
+def _clean_name_en(raw: str) -> str:
+    name = " ".join(raw.replace("\n", " ").split())
+    for marker in (" ชื่อย", " 1.", " 2.", " ปรัชญา", " จำนวน", " สถานภาพ"):
+        if marker in name:
+            name = name.split(marker, 1)[0].strip()
+    return name.strip(" :;-")[:150]
 
 
 def _extract_name_en(doc_text: str) -> str | None:
     # Try มคอ.2 ภาษาอังกฤษ label first (works for both native and OCR'd text)
     m = _EN_LABEL_RE.search(doc_text[:8000])
     if m:
-        return m.group(1).strip()[:150]
+        return _clean_name_en(m.group(1))
     # Fallback: "Bachelor/Master/Doctor of ... Program in ..."
     m = _EN_NAME_RE.search(doc_text[:8000])
     if m:
-        return m.group(0).strip()[:150]
+        return _clean_name_en(m.group(0))
     # Broad fallback — search full text (handles chunk-split labels)
     m = _EN_NAME_BROAD_RE.search(doc_text)
-    return m.group(0).strip()[:150] if m else None
+    return _clean_name_en(m.group(0)) if m else None
 
 
 def _extract_name_th_from_content(doc_text: str) -> str | None:

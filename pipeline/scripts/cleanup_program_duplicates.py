@@ -95,6 +95,10 @@ PROGRAM_UPDATES: dict[str, dict[str, str]] = {
     "bangkhen_fish_563c2887": {
         "name_th": "วิทยาศาสตร์การประมงและเทคโนโลยี (ปริญญาเอก)",
     },
+    "bangkhen_vet_9ea52f52": {
+        "name_th": "สัตวแพทยศาสตรบัณฑิต",
+        "name_en": "Doctor of Veterinary Medicine Program",
+    },
 }
 
 
