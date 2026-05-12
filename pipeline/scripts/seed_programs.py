@@ -3,13 +3,12 @@
 from __future__ import annotations
 
 import os
-from pathlib import Path
 
-from dotenv import load_dotenv
 from supabase import Client, create_client
 
-_env_path = Path(__file__).parent.parent / "backend" / ".env"
-load_dotenv(dotenv_path=_env_path)
+from _env import load_project_env
+
+load_project_env(__file__)
 
 PROGRAMS: list[dict[str, str]] = [
     {

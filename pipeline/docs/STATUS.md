@@ -81,7 +81,7 @@ uv run kuru-ingest-mko ศรีราชา
 
 **Fix:** Set `OCR_MODEL=google/gemini-2.5-flash` in `.env` before running `kuru-ingest-mko`. The stronger model costs ~5× more ($25 vs $5 for 260 files) but brings failure rate to ~2–5%.
 
-For remaining failures after that, set `OCR_MODEL=google/gemini-2.5-pro` and re-run only the failed files via `reingest_targets.py`.
+For remaining failures after that, set `OCR_MODEL=google/gemini-2.5-pro` and re-run only the failed files via `scripts/reingest_targets.py`.
 
 **Effort:** Low (config change) — but requires ~$25–30 in API credit.
 

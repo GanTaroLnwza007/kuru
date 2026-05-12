@@ -1,7 +1,7 @@
 """Sample chunks per program and score quality — decides which programs to keep vs re-ingest.
 
 Usage:
-    $env:PYTHONUTF8=1; uv run python audit_chunks.py
+    $env:PYTHONUTF8=1; uv run python scripts/audit_chunks.py
 """
 from __future__ import annotations
 
@@ -12,14 +12,15 @@ from collections import defaultdict
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
-from dotenv import load_dotenv
 from rich.console import Console
 from rich.table import Table
 
-load_dotenv()
+from _env import load_project_env
+
+load_project_env(__file__)
 
 from kuru.db import supabase_client as db
-from kuru.ingestion.text_extractor import _is_garbage_line
+from kuru.ingestion.ocr_extractor import _is_garbage_line
 
 console = Console(legacy_windows=False)
 

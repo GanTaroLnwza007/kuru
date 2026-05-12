@@ -3,7 +3,10 @@
 import time
 from datetime import datetime
 
+from _env import load_project_env
 from kuru.db.supabase_client import get_client
+
+load_project_env(__file__)
 
 TOTAL = 50   # change to 260 for full run
 POLL  = 30   # seconds between checks

@@ -55,7 +55,7 @@ $env:PYTHONUTF8=1; uv run kuru-ingest-mko กำแพงแสน
 Open a second terminal while ingest is running:
 
 ```powershell
-$env:PYTHONUTF8=1; uv run python ingestion_monitor.py
+$env:PYTHONUTF8=1; uv run python scripts/ingestion_monitor.py
 ```
 
 Prints every 30s:
@@ -86,7 +86,7 @@ Killing the terminal has the same effect as Ctrl+C.
 ### Clear all curriculum chunks (keeps TCAS intact)
 
 ```powershell
-$env:PYTHONUTF8=1; uv run python clear_chunks.py
+$env:PYTHONUTF8=1; uv run python scripts/clear_chunks.py
 ```
 
 ### Clear a single file's chunks (force re-ingest)
