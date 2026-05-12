@@ -24,6 +24,7 @@ export default function MainNav() {
   const navItems: NavItem[] = [
     { href: "/explore",    label: t("explore") },
     { href: "/riasec",     label: t("riasec") },
+    { href: "/portfolio",  label: t("portfolio") },
     { href: "/chat",       label: t("chat") },
   ];
 

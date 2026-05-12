@@ -31,14 +31,14 @@ const FEATURES = [
   },
   {
     num: "03",
-    kicker: "Ask",
+    kicker: "Prepare",
     kickerColor: "var(--d-rust, #B85B2E)",
     washBg: "var(--d-peach-soft, #FFF1E6)",
     hoverNumColor: "var(--d-rust, #B85B2E)",
-    title: <>ถาม<em style={{ fontFamily: "var(--font-serif, Georgia, serif)", fontStyle: "italic", color: "var(--d-rust, #B85B2E)" }}> KUru</em> ได้เลย</>,
-    body: "KUru อ่าน มคอ.2 และข้อมูล TCAS มาแล้ว — ถามอะไรก็ได้เกี่ยวกับคณะ วิชา TCAS คุณสมบัติ หรือขอคำแนะนำเตรียมตัว",
-    cta: "เริ่มถาม",
-    href: "/chat",
+    title: <>ปั้น<em style={{ fontFamily: "var(--font-serif, Georgia, serif)", fontStyle: "italic", color: "var(--d-rust, #B85B2E)" }}> Portfolio</em> ก่อนยื่น</>,
+    body: "อัปโหลดพอร์ต PDF ระบบจะแยก achievements, ประเมินช่องว่าง, แล้วทำ roadmap 12 สัปดาห์ให้ก่อนยื่น TCAS รอบ 1",
+    cta: "อัปโหลดพอร์ต",
+    href: "/portfolio",
   },
 ] as const;
 
