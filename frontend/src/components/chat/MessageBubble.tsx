@@ -22,16 +22,13 @@ function formatTime(iso: string): string {
 
 function BotAvatar() {
   return (
-    <div className="relative grid h-8 w-8 shrink-0 place-items-center overflow-hidden rounded-[10px] bg-ink">
-      <span
-        className="absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(circle at 30% 30%, var(--d-green-pop), transparent 60%)",
-          opacity: 0.7,
-        }}
-      />
-      <span className="relative font-serif text-sm font-semibold italic text-white">K</span>
+    <div
+      className="relative grid h-8 w-8 shrink-0 place-items-center rounded-[10px]"
+      style={{ background: "linear-gradient(135deg, #00A651 0%, #006D35 100%)" }}
+    >
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/>
+      </svg>
     </div>
   );
 }
@@ -85,8 +82,8 @@ export function MessageBubble({ message, sourcesLabel, mockBadgeLabel, question,
           className="px-[18px] py-3.5 text-[15px] leading-[1.55]"
           style={
             isUser
-              ? { background: "var(--ink)", color: "#fff", borderRadius: "18px 18px 6px 18px" }
-              : { background: "var(--paper)", color: "var(--ink)", borderRadius: "18px 18px 18px 6px" }
+              ? { background: "var(--d-green, #00A651)", color: "#fff", borderRadius: "18px 18px 6px 18px" }
+              : { background: "#fff", color: "var(--ink)", borderRadius: "18px 18px 18px 6px", boxShadow: "0 1px 4px rgba(15,27,20,.07)" }
           }
         >
           {isUser ? (

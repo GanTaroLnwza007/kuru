@@ -130,35 +130,31 @@ export default function ChatPage() {
             style={{ background: "linear-gradient(180deg,#fff 0%,var(--paper) 100%)" }}
           >
             <div className="flex items-center gap-3.5">
-              <div className="relative grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-[14px] bg-ink">
+              {/* Avatar — green gradient + sparkles icon + online dot */}
+              <div
+                className="relative grid h-11 w-11 shrink-0 place-items-center rounded-[14px]"
+                style={{
+                  background: "linear-gradient(135deg, #00A651 0%, #006D35 100%)",
+                  boxShadow: "0 2px 8px rgba(0,166,81,0.35)",
+                }}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/>
+                </svg>
                 <span
-                  className="absolute inset-0"
-                  style={{
-                    background:
-                      "radial-gradient(circle at 30% 30%, var(--d-green-pop), transparent 60%)",
-                    opacity: 0.7,
-                  }}
+                  className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-white"
+                  style={{ background: "#3DCC74" }}
                 />
-                <span className="relative font-serif text-[22px] font-semibold italic text-white">
-                  K
-                </span>
               </div>
               <div>
-                <div className="font-display text-lg font-extrabold tracking-tight text-ink">
-                  KUru AI
+                <div className="font-display text-[15px] font-extrabold tracking-tight text-ink">
+                  KUru
                 </div>
                 <div
-                  className="mt-0.5 flex items-center gap-1.5 text-[12.5px]"
-                  style={{ color: "var(--d-green-deep)" }}
+                  className="mt-0.5 text-[11.5px] font-semibold"
+                  style={{ color: "var(--d-green, #00A651)" }}
                 >
-                  <span
-                    className="h-1.5 w-1.5 rounded-full"
-                    style={{
-                      background: "var(--d-green)",
-                      animation: "pulse 1.6s infinite",
-                    }}
-                  />
-                  พร้อมคุยตอนนี้ · ตอบเป็นภาษาคน
+                  ● ออนไลน์ · พร้อมตอบคำถาม
                 </div>
               </div>
             </div>

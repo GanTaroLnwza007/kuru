@@ -80,7 +80,8 @@ export function ChatInput({ onSend, disabled, placeholder }: Props) {
         onClick={submit}
         disabled={disabled}
         aria-label="ส่งข้อความ"
-        className="grid h-11 w-11 min-h-0 min-w-0 shrink-0 place-items-center rounded-[14px] bg-ink text-white transition-all hover:scale-[1.06] disabled:cursor-not-allowed disabled:bg-line disabled:text-ink-4 disabled:scale-100 self-end"
+        className="grid h-11 w-11 min-h-0 min-w-0 shrink-0 place-items-center rounded-[14px] text-white transition-all hover:scale-[1.06] disabled:cursor-not-allowed disabled:scale-100 self-end"
+        style={{ background: disabled ? "var(--line, #E8EAE2)" : "var(--d-green, #00A651)", color: disabled ? "var(--ink-4)" : "#fff" }}
       >
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
           <path d="M5 12h14M13 6l6 6-6 6" />
