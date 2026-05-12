@@ -12,8 +12,8 @@ from typing import Any
 
 from sentence_transformers import SentenceTransformer
 
-from pipeline.src.kuru.db import supabase_client as db
-from pipeline.src.kuru.ingestion.chunker import Chunk
+from kuru.db import supabase_client as db
+from kuru.ingestion.chunker import Chunk
 
 # Model is downloaded once on first use (~1.1 GB) and cached in ~/.cache/huggingface/
 EMBEDDING_MODEL = "intfloat/multilingual-e5-base"

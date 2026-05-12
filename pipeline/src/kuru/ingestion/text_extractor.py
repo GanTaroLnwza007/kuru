@@ -14,7 +14,7 @@ from pathlib import Path
 
 import fitz  # PyMuPDF
 
-from pipeline.src.kuru.ingestion.utils import png_dimensions, safe_print
+from kuru.ingestion.utils import png_dimensions, safe_print
 
 # If PyMuPDF extracts fewer than this many chars total, the PDF is treated as scanned.
 SCANNED_CHAR_THRESHOLD = 500
@@ -46,7 +46,7 @@ def _extract_page_typhoon(page_b64: str) -> str:
     if not os.environ.get("TYPHOON_API_KEY"):
         return ""
     try:
-        from pipeline.src.kuru.llm import get_ocr_client  # noqa: PLC0415
+        from kuru.llm import get_ocr_client  # noqa: PLC0415
 
         w, h = png_dimensions(page_b64)
         prompt = (
@@ -66,7 +66,7 @@ def _extract_page_typhoon(page_b64: str) -> str:
             extra_body={"repetition_penalty": 1.2},
         )
         if response.usage:
-            from pipeline.src.kuru.llm import session_usage  # noqa: PLC0415
+            from kuru.llm import session_usage  # noqa: PLC0415
             session_usage.add("typhoon-ocr", response.usage)
         if not response.choices:
             return ""
