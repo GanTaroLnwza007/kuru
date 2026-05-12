@@ -69,7 +69,7 @@ def similarity_search(
         )
         language plpgsql volatile as $$
         begin
-          set local ivfflat.probes = 50;
+          set local ivfflat.probes = 10;
           return query
           select
             c.id, c.program_id, c.source_file, c.section_type, c.content, c.metadata,

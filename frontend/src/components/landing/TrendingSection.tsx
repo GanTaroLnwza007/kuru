@@ -102,13 +102,7 @@ export default function TrendingSection() {
                     </span>
                   ))}
                 </div>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: 20, borderTop: "1px solid rgba(255,255,255,.12)" }}>
-                  <div>
-                    <div style={{ fontFamily: "var(--font-display, sans-serif)", fontSize: 11, fontWeight: 800, letterSpacing: ".12em", color: "var(--d-green-pop, #3DDC84)" }}>MATCH</div>
-                    <div style={{ fontFamily: "var(--font-display, sans-serif)", fontSize: 36, fontWeight: 800, lineHeight: 1, marginTop: 4 }}>
-                      {HERO_PROGRAM.match}<span style={{ fontSize: 18, opacity: .6 }}>%</span>
-                    </div>
-                  </div>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", paddingTop: 20, borderTop: "1px solid rgba(255,255,255,.12)" }}>
                   <div style={{ width: 56, height: 56, borderRadius: "50%", background: "rgba(255,255,255,.1)", border: "1px solid rgba(255,255,255,.2)", display: "grid", placeItems: "center", transition: "all 240ms", color: "#fff" }}>
                     <ArrowIcon size={22} />
                   </div>
@@ -150,10 +144,7 @@ export default function TrendingSection() {
                   </span>
                 ))}
               </div>
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 16, paddingTop: 12, borderTop: "1px solid var(--line-soft, #F0F2EB)" }}>
-                <span style={{ fontFamily: "var(--font-display, sans-serif)", fontSize: 16, fontWeight: 800, color: "var(--d-green-deep, #006D35)" }}>
-                  {p.match}<span style={{ fontSize: 11, color: "var(--ink-3)", fontWeight: 600 }}>% match</span>
-                </span>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", marginTop: 16, paddingTop: 12, borderTop: "1px solid var(--line-soft, #F0F2EB)" }}>
                 <span style={{ width: 28, height: 28, borderRadius: "50%", display: "grid", placeItems: "center", color: "var(--ink-3)" }}>
                   <ArrowIcon size={14} />
                 </span>

@@ -62,3 +62,99 @@ Commented out the `kuru-pipeline` dependency and its `[tool.uv.sources]` entry. 
 - Frontend can now call `/programs/{slug}` and receive real PLO + TCAS data.
 - RAG pipeline integration: un-stub `backend/api/v1/chat.py` once `kuru.rag` is importable.
 - Run `scripts/assign_slugs.py` and `scripts/link_tcas.py` against production Supabase after applying migration 002.
+
+---
+
+## How to connect the frontend chat page to the real backend
+
+### Current state
+
+The frontend chat page (`frontend/src/app/chat/page.tsx`) is wired and ready. It calls
+`apiClient.chat(...)` which routes through `frontend/src/lib/api/index.ts`. By default the
+chat is kept on **mock mode** (`NEXT_PUBLIC_USE_MOCK_CHAT=true` in `frontend/.env.local`) so the
+page works without a running backend.
+
+### Step 1 — Run both services
+
+**Backend** (terminal 1):
+
+```bash
+cd backend
+uv run uvicorn main:app --reload
+# → listening on http://localhost:8000
+```
+
+**Pipeline** — the backend's `/chat` endpoint imports `kuru.rag` at request time. For this
+import to succeed, the pipeline package must be installed into the **backend's** virtual env:
+
+```bash
+cd backend
+uv add --editable ../pipeline
+```
+
+Then restart uvicorn.
+
+**Frontend** (terminal 2):
+
+```bash
+cd frontend
+npm run dev
+# → listening on http://localhost:3000
+```
+
+### Step 2 — Point the frontend at the backend
+
+Edit `frontend/.env.local`:
+
+```env
+NEXT_PUBLIC_USE_MOCK=false
+NEXT_PUBLIC_API_BASE_URL=http://localhost:8000/api/v1
+
+# Change this line — remove mock override so chat hits the real backend
+NEXT_PUBLIC_USE_MOCK_CHAT=false
+```
+
+Restart the Next.js dev server after editing `.env.local`.
+
+### Step 3 — Verify
+
+Open `http://localhost:3000/chat` and send a message. You should see:
+
+- **No** `[mock]` badge on the assistant bubble.
+- `confidence_level` of `"high"` or `"medium"` (not `"low"`) for a well-matched query.
+- Source chips in the right rail listing actual PDF filenames.
+
+To confirm the backend received the request, check the uvicorn terminal — you should see a
+`POST /api/v1/chat` line with a 200 status.
+
+### How the data flows
+
+```text
+frontend/src/app/chat/page.tsx
+  └─ apiClient.chat({ message, program_context_id, session_id, conversation_history })
+       └─ realApiClient  →  POST http://localhost:8000/api/v1/chat
+            └─ backend/api/v1/chat.py :: chat()
+                 └─ kuru.rag.query_engine.query()   ← pipeline package
+                      ├─ embed question (multilingual-e5, local)
+                      ├─ similarity_search → Supabase pgvector
+                      └─ generate answer  → Gemini 2.5 Flash Lite
+            └─ ChatResponse { answer, session_id, confidence_level, sources, used_tcas_data }
+  └─ addMessage() → renders in MessageList with source chips and confidence badge
+```
+
+### Chatting in context of a specific program
+
+The explore page (`/explore/[programId]`) has a "Chat about this program" button. It navigates
+to `/chat?program_id=<id>&program_name=<name>`. The chat page reads these params and passes
+`program_context_id` in every request, which causes the RAG engine to pre-filter chunks to that
+program before doing the similarity search.
+
+### Troubleshooting
+
+| Symptom | Likely cause | Fix |
+| --- | --- | --- |
+| `[mock]` badge appears | `NEXT_PUBLIC_USE_MOCK_CHAT` is still `true` | Set it to `false` and restart Next.js |
+| Network error / CORS | Backend not running or wrong port | Check uvicorn is on `:8000`; confirm `CORS_ORIGINS` in `backend/.env` includes `http://localhost:3000` |
+| Answer is Thai stub about system under development | Pipeline not installed in backend venv | Run `uv add --editable ../pipeline` inside `backend/` |
+| `KeyError: SUPABASE_URL` in backend logs | `backend/.env` missing or not loaded | Ensure `backend/.env` has `SUPABASE_URL` and `SUPABASE_KEY` |
+| Statement timeout on first query | `ivfflat.probes` too high | Already reduced to 10 in `pipeline/src/kuru/db/supabase_client.py` |

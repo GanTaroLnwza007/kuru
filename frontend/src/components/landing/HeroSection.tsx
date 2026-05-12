@@ -181,49 +181,33 @@ export default function HeroSection() {
               </Link>
             </div>
 
-            {/* Social proof */}
+            {/* Trust stats */}
             <div
               className="reveal"
               style={{
-                marginTop: 36, display: "flex", alignItems: "center",
-                gap: 14, flexWrap: "wrap", transitionDelay: "400ms",
+                marginTop: 36, display: "flex", gap: 28, flexWrap: "wrap",
+                color: "var(--ink-3, #6B7770)", fontSize: 13.5,
+                transitionDelay: "400ms",
               }}
             >
-              {/* Avatars */}
-              <div style={{ display: "flex" }}>
-                {[
-                  { bg: "#E6F5EC", emoji: "🌱" },
-                  { bg: "#FFF1E6", emoji: "📚" },
-                  { bg: "#EAF3FB", emoji: "🎯" },
-                  { bg: "#F1ECFB", emoji: "💡" },
-                ].map(({ bg, emoji }, i) => (
-                  <div
-                    key={i}
+              {[
+                { v: "47", l: "หลักสูตรในระบบ" },
+                { v: "12,400+", l: "นักเรียนใช้แล้ว" },
+                { v: "4.9/5", l: "ความพึงพอใจ" },
+              ].map((s) => (
+                <div key={s.l} style={{ display: "flex", alignItems: "baseline", gap: 6 }}>
+                  <span
                     style={{
-                      width: 36, height: 36, borderRadius: "50%",
-                      border: "2.5px solid var(--paper, #FAFAF6)",
-                      display: "grid", placeItems: "center", fontSize: 16,
-                      background: bg,
-                      marginLeft: i === 0 ? 0 : -10,
+                      fontFamily: "var(--font-display, sans-serif)",
+                      fontSize: 22, fontWeight: 800,
+                      color: "var(--ink, #0A1F14)",
                     }}
                   >
-                    {emoji}
-                  </div>
-                ))}
-              </div>
-              <div>
-                <div
-                  style={{
-                    fontFamily: "var(--font-display, sans-serif)",
-                    fontSize: 14, fontWeight: 700, color: "var(--ink, #0A1F14)",
-                  }}
-                >
-                  12,400+ นักเรียน ม.6 ใช้แล้ว
+                    {s.v}
+                  </span>
+                  <span>{s.l}</span>
                 </div>
-                <div style={{ fontSize: 12, color: "var(--ink-3, #6B7770)", marginTop: 2 }}>
-                  <span style={{ color: "#E8A93B" }}>★★★★★</span> 4.9/5 · จาก 2,143 รีวิว
-                </div>
-              </div>
+              ))}
             </div>
           </div>
 

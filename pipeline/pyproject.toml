@@ -2,7 +2,6 @@
 name = "kuru-pipeline"
 version = "0.1.0"
 description = "KUru data ingestion pipeline — PDF extraction, embedding, RAG, and Neo4j population"
-readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "pymupdf>=1.24.0",
