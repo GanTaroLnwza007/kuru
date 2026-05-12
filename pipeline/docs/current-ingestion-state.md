@@ -22,6 +22,7 @@ The curriculum ingest path is:
 3. If the whole PDF has less than the scanned threshold after page extraction, mark all pages as scanned and call `ocr_extractor.extract_with_ocr()`.
 4. Chunk the resulting text, embed locally with multilingual-e5, and upsert chunks to Supabase.
 5. Run structured extraction through Gemini text mode for program metadata, courses, PLOs, and coverage.
+6. If structured fields are still missing, run a targeted completion pass over the already-created section-tagged chunks (`plo`, `course`, `general`) before writing the `programs` row.
 
 API keys by path:
 
@@ -70,6 +71,7 @@ Cleanup scripts:
 - `scripts/cleanup_program_duplicates.py` merges known stale program IDs into the kept registrar IDs, moves TCAS rows, deletes duplicate chunks, and corrects bad inferred names.
 - `scripts/backfill_program_names_from_chunks.py` infers missing `name_en` values from existing chunks and applies manual overrides where the chunks do not contain a clean English program label.
 - `scripts/backfill_program_metadata.py` fills safe derived metadata: `slug`, `year_by_year_vibe`, and missing `coverage`.
+- `scripts/backfill_structured_from_chunks.py` is an optional repair tool that uses the same targeted structured-completion logic now built into ingestion. Use it for rows ingested before that completion pass existed.
 
 Latest cleanup results:
 
@@ -90,6 +92,8 @@ Remaining sparse columns are semantic structured fields, not identity fields:
 | `curriculum_mapping` | 46 / 57 missing | Re-run structured extraction; often absent in source |
 
 Do not fill these semantic fields with generic placeholders; the RAG system should distinguish missing source evidence from inferred UI metadata.
+
+Going forward, normal ingestion should reduce these gaps because `kuru-ingest-mko` now performs the targeted completion pass during the ingest itself. Remaining gaps after a fresh ingest usually mean the source text did not contain the section, OCR quality was too poor, or the section was too ambiguous for reliable JSON extraction.
 
 ## Operational Guidance
 

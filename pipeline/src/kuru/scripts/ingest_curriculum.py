@@ -23,7 +23,7 @@ from rich.console import Console
 from kuru.db import supabase_client as db
 from kuru.ingestion.chunker import chunk_document
 from kuru.ingestion.embedder import embed_and_store, _get_model
-from kuru.ingestion.structured_extractor import StructuredProgram, extract_structured
+from kuru.ingestion.structured_extractor import StructuredProgram, extract_structured_complete
 from kuru.ingestion.text_extractor import PageText, extract_text_auto, full_text
 from kuru.llm import session_usage
 
@@ -352,7 +352,7 @@ def ingest_document(pdf_path: Path, campus: str, name_mapping: dict, verbose: bo
         status["errors"].append(f"embedding ({type(exc).__name__}): {exc}")
 
     # ── Structured extraction ───────────────────────────────────────────────
-    structured = extract_structured(doc_text, verbose=verbose)
+    structured = extract_structured_complete(doc_text, chunks, verbose=verbose)
     coverage = _build_coverage(pages, structured, name_en_source)
 
     db.update_program_structured(client, program_id, {

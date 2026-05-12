@@ -157,6 +157,15 @@ $env:PYTHONUTF8=1; uv run python scripts/backfill_program_metadata.py --apply
 
 These scripts remove known stale duplicate program rows/chunks, fill missing English names from chunks, and populate safe UI metadata (`slug`, `year_by_year_vibe`, `coverage`). They do not invent missing PLOs, course lists, timelines, or curriculum mappings; those require structured extraction from the source document.
 
+For rows ingested before the targeted structured-completion pass was added, you can repair missing semantic fields without re-OCRing or re-embedding:
+
+```powershell
+$env:PYTHONUTF8=1; uv run python scripts/backfill_structured_from_chunks.py --limit 3
+$env:PYTHONUTF8=1; uv run python scripts/backfill_structured_from_chunks.py --limit 3 --apply
+```
+
+New ingests run this completion logic automatically after the first structured extraction call, so this script should be a migration tool rather than a normal operating step.
+
 Sample queries to test coverage:
 - `What courses are in the Computer Engineering program?`
 - `What are the PLOs for Entomology PhD?`
