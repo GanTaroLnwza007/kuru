@@ -64,25 +64,41 @@ export default function MainNav() {
 
       {/* Right CTAs */}
       <div className="flex items-center gap-2">
+        {/* Ask AI — desktop */}
+        <Link
+          href="/chat"
+          className="hidden h-9 items-center gap-1.5 rounded-full border border-ink bg-white px-4 font-display text-sm font-bold text-ink transition-all hover:-translate-y-px hover:border-ink/70 hover:shadow-sm md:inline-flex"
+        >
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.5A8 8 0 1 1 21 12z"/>
+          </svg>
+          ถาม AI
+        </Link>
+
+        {/* Language toggle — desktop */}
         <button
           type="button"
           onClick={handleLocaleToggle}
-          className="hidden h-9 items-center rounded-full border border-line px-3 font-display text-xs font-semibold text-ink-3 transition-colors hover:border-ink hover:text-ink sm:inline-flex"
+          className="hidden h-9 items-center gap-1.5 rounded-full border border-ink bg-white px-3 font-display text-sm font-bold text-ink transition-all hover:-translate-y-px hover:border-ink/70 hover:shadow-sm sm:inline-flex"
         >
-          {nextLocale.toUpperCase()}
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>
+          </svg>
+          {locale.toUpperCase()}
         </button>
-        <button
-          type="button"
-          className="hidden h-9 items-center rounded-full border border-line bg-white/70 px-4 font-display text-sm font-bold text-ink transition-all hover:border-ink hover:bg-white md:inline-flex"
-        >
-          เข้าสู่ระบบ
-        </button>
+
+        {/* Ask AI — mobile */}
         <Link
-          href="/riasec"
-          className="inline-flex h-9 items-center rounded-full bg-ink px-4 font-display text-sm font-bold text-white shadow-[0_8px_24px_-8px_rgba(10,31,20,.5)] transition-all hover:-translate-y-px hover:shadow-[0_14px_32px_-10px_rgba(10,31,20,.6)]"
+          href="/chat"
+          className="inline-flex h-9 items-center gap-1.5 rounded-full border border-ink bg-white px-3 font-display text-xs font-bold text-ink md:hidden"
         >
-          เริ่มเลย
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.5A8 8 0 1 1 21 12z"/>
+          </svg>
+          AI
         </Link>
+
+        {/* Hamburger — mobile */}
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
