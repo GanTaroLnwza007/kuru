@@ -8,8 +8,8 @@ from dataclasses import dataclass
 from sentence_transformers import SentenceTransformer  # used by _get_embed_model return type
 from tenacity import retry, retry_if_exception, stop_after_attempt, wait_exponential
 
-from pipeline.src.kuru.db import supabase_client as db
-from pipeline.src.kuru.llm import GENERATION_MODEL, get_openrouter_client, session_usage
+from kuru.db import supabase_client as db
+from kuru.llm import GENERATION_MODEL, get_openrouter_client, session_usage
 
 EMBED_MODEL_NAME = "intfloat/multilingual-e5-base"
 TOP_K = 5
@@ -19,11 +19,11 @@ MIN_SIMILARITY = 0.35   # chunks below this are too weak to be useful
 def _get_embed_model() -> SentenceTransformer:
     # Delegate to embedder's singleton so the model is loaded exactly once
     # regardless of whether demo_rag pre-loads it or the first query triggers it.
-    from pipeline.src.kuru.ingestion.embedder import _get_model
+    from kuru.ingestion.embedder import _get_model
     return _get_model()
 
 
-from pipeline.src.kuru.ingestion.utils import is_transient_error
+from kuru.ingestion.utils import is_transient_error
 
 # Thai + English keywords that signal a TCAS admission question
 TCAS_KEYWORDS = re.compile(

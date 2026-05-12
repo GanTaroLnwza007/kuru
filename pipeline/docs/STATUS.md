@@ -65,7 +65,7 @@ uv run kuru-ingest-mko ศรีราชา
 
 ### Gap 2 — Most engineering PDFs lack PLO sections (`courses_only`)
 
-**Impact:** PLO queries for วิศวฯ programs return "this document does not contain PLO information." The raw data genuinely doesn't have them — these are compact course-catalog PDFs, not full มคอ.2 specifications.
+**Impact:** PLO queries for วิศวฯ programs return "this document does not contain PLO information." The source PDFs genuinely don't have them — these are compact course-catalog PDFs, not full มคอ.2 specifications.
 
 **Fix options:**
 - Find the full มคอ.2 PDFs for each engineering program (they may exist in a different Drive folder or on the KU registrar website) and re-ingest.

@@ -7,7 +7,8 @@ How to ingest curriculum PDFs and TCAS data into the KUru pipeline.
 ## Prerequisites
 
 - `.env` file with `SUPABASE_URL`, `SUPABASE_KEY`, `OPENROUTER_API_KEY`, `GEMINI_API_KEY`
-- PDFs already downloaded (`uv run kuru-download`)
+- TCAS files downloaded (`uv run kuru-download`)
+- Curriculum PDFs downloaded from the registrar (`uv run kuru-scrape-curriculum`)
 - DB tables created (`uv run kuru-setup-db`)
 
 ---

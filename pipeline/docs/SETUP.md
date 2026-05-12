@@ -11,7 +11,7 @@ Complete walkthrough from credentials to first demo.
 - A [Supabase](https://supabase.com) project with pgvector enabled
 - A [Neo4j Aura Free](https://neo4j.com/cloud/platform/aura-graph-database/) instance _(optional — only needed for PLO graph queries)_
 - An [OpenRouter](https://openrouter.ai) API key (for Gemini generation)
-- Google Drive access to the KU curriculum folder (read-only link)
+- Public access to the KU registrar curriculum pages
 
 ---
 
@@ -85,20 +85,23 @@ This connects to Supabase via `DATABASE_URL` and executes `db/schema.sql`, which
 
 ---
 
-## Step 4 — Download Raw Data
+## Step 4 — Download Source Data
 
 ```bash
-# First time — download everything
+# TCAS data from Google Drive
 uv run kuru-download
 
-# Subsequent runs — only fetch files missing locally
+# Registrar curriculum PDFs from https://registrar.ku.ac.th/cur/all
+uv run kuru-scrape-curriculum
+
+# Subsequent Drive runs — only fetch files missing locally
 uv run kuru-download --sync
 ```
 
 Downloads into:
 - `data/native/tcas/` — TCAS PDFs + xlsx score spreadsheets
-- `data/native/curriculum/บางเขน/` — มคอ.2 curriculum PDFs (บางเขน campus)
-- `data/native/curriculum/กพส/` — กพส campus PDFs
+- `data/native/curriculum/บางเขน/` — registrar มคอ.2 curriculum PDFs (บางเขน campus)
+- `data/native/curriculum/กพส/` — กพส campus PDFs from Drive, if configured
 - Any folders linked via `.txt` redirect files (followed automatically)
 
 **If a file fails to download** (permission or gdown glitch), add its Drive file ID to `MANUAL_RETRY` in `download_data.py` and re-run.

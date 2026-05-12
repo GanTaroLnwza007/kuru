@@ -10,10 +10,10 @@ from typing import Any
 from pydantic import BaseModel, Field, field_validator
 from tenacity import retry, retry_if_exception, stop_after_attempt, wait_exponential
 
-from pipeline.src.kuru.db import supabase_client as db
-from pipeline.src.kuru.ingestion.text_extractor import extract_text, full_text
-from pipeline.src.kuru.ingestion.utils import is_transient_error, safe_print
-from pipeline.src.kuru.llm import LLM_MODEL, get_client
+from kuru.db import supabase_client as db
+from kuru.ingestion.text_extractor import extract_text, full_text
+from kuru.ingestion.utils import is_transient_error, safe_print
+from kuru.llm import LLM_MODEL, get_client
 
 # Maximum sheets processed per xlsx workbook — guard against runaway API costs.
 MAX_XLSX_SHEETS = 20

@@ -12,7 +12,7 @@ import re
 
 from dotenv import load_dotenv
 
-from pipeline.src.kuru.db import supabase_client as db
+from kuru.db import supabase_client as db
 
 load_dotenv()
 

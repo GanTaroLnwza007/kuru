@@ -12,10 +12,10 @@ import fitz
 from pydantic import BaseModel, Field
 from tenacity import retry, retry_if_exception, stop_after_attempt, wait_exponential
 
-from pipeline.src.kuru.db import neo4j_client as neo4j
-from pipeline.src.kuru.ingestion.text_extractor import extract_text_auto, full_text, render_page_b64
-from pipeline.src.kuru.ingestion.utils import is_transient_error, safe_print
-from pipeline.src.kuru.llm import LLM_MODEL, get_client
+from kuru.db import neo4j_client as neo4j
+from kuru.ingestion.text_extractor import extract_text_auto, full_text, render_page_b64
+from kuru.ingestion.utils import is_transient_error, safe_print
+from kuru.llm import LLM_MODEL, get_client
 
 
 # ─────────────────────────────────────────

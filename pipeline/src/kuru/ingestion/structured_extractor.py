@@ -10,8 +10,8 @@ import json
 import re
 from dataclasses import dataclass, field
 
-from pipeline.src.kuru.ingestion.utils import safe_print
-from pipeline.src.kuru.llm import LLM_MODEL, get_client
+from kuru.ingestion.utils import safe_print
+from kuru.llm import LLM_MODEL, get_client
 
 # Truncate input text to this many chars to stay within context limits.
 _MAX_TEXT_CHARS = 60_000

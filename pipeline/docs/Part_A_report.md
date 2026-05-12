@@ -246,7 +246,7 @@ feedback table (Supabase)
     ▼ [daily aggregation]
 Programs with negative_rate > 30%
     │
-    ├── If chunks < 100: re-ingest with full มคอ.2 from data/raw
+    ├── If chunks < 100: re-ingest with full มคอ.2 from data/native/curriculum
     │   (upgraded OCR model: gemini-2.5-flash)
     │
     └── If chunks ≥ 100: investigate chunking quality

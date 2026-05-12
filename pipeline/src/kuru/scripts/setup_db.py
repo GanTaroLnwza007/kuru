@@ -42,7 +42,7 @@ def setup_supabase() -> None:
 
 def setup_neo4j() -> None:
     """Create Neo4j constraints."""
-    from pipeline.src.kuru.db import neo4j_client as neo4j  # noqa: PLC0415
+    from kuru.db import neo4j_client as neo4j  # noqa: PLC0415
     neo4j.setup_schema()
     print("Neo4j constraints created.")
 
