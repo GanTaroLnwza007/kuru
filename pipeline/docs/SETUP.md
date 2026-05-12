@@ -10,7 +10,9 @@ Complete walkthrough from credentials to first demo.
 - [`uv`](https://docs.astral.sh/uv/) — `pip install uv`
 - A [Supabase](https://supabase.com) project with pgvector enabled
 - A [Neo4j Aura Free](https://neo4j.com/cloud/platform/aura-graph-database/) instance _(optional — only needed for PLO graph queries)_
-- An [OpenRouter](https://openrouter.ai) API key (for Gemini generation)
+- A `GEMINI_API_KEY` for structured extraction and direct Gemini OCR
+- A `TYPHOON_API_KEY` for page-level OCR on low-yield scanned pages
+- An [OpenRouter](https://openrouter.ai) API key (for RAG generation, and optional routed OCR)
 - Public access to the KU registrar curriculum pages
 
 ---
@@ -20,7 +22,13 @@ Complete walkthrough from credentials to first demo.
 Copy `.env.example` to `.env` and fill in:
 
 ```env
-# OpenRouter (LLM generation)
+# Gemini (structured extraction and direct full-PDF OCR)
+GEMINI_API_KEY=...
+
+# Typhoon (page OCR for low-yield pages)
+TYPHOON_API_KEY=...
+
+# OpenRouter (RAG generation; optional OCR routing)
 OPENROUTER_API_KEY=sk-or-...
 
 # Supabase (vector store)
@@ -36,10 +44,18 @@ NEO4J_PASSWORD=<password>
 
 ### Where to get each key
 
+**`GEMINI_API_KEY`**
+1. Create a key in Google AI Studio
+2. Use it for `LLM_MODEL` and direct Gemini `OCR_MODEL` values such as `gemini-2.5-flash`
+
+**`TYPHOON_API_KEY`**
+1. Create a key at OpenTyphoon
+2. Use it for page-level OCR on low-yield pages inside otherwise readable PDFs
+
 **`OPENROUTER_API_KEY`**
 1. Sign up at [openrouter.ai](https://openrouter.ai)
 2. Dashboard → **Keys** → **Create key**
-3. Add credit ($5 is enough for a full ingest run)
+3. Add credit for RAG generation, or for OCR only when `OCR_MODEL` is set to a provider-prefixed value such as `google/gemini-2.5-flash`
 
 **`SUPABASE_URL` and `SUPABASE_KEY`**
 1. Supabase dashboard → **Project Settings** → **API**
@@ -104,6 +120,8 @@ Downloads into:
 - `data/native/curriculum/กพส/` — กพส campus PDFs from Drive, if configured
 - Any folders linked via `.txt` redirect files (followed automatically)
 
+`data/native/curriculum` is a historical working path, not a guarantee that the PDFs are born-digital. Registrar downloads can be scanned or mixed PDFs. See [current-ingestion-state.md](current-ingestion-state.md) for the live extraction and cost behavior.
+
 **If a file fails to download** (permission or gdown glitch), add its Drive file ID to `MANUAL_RETRY` in `download_data.py` and re-run.
 
 **For additional campuses** (กำแพงแสน, ศรีราชา): add the Drive folder IDs to `EXTRA_CAMPUS_FOLDERS` in `download_data.py` once you have the links.
@@ -123,13 +141,13 @@ uv run kuru-ingest-mko ศรีราชา
 
 For each document, the pipeline:
 1. Skips ภาคผนวก (appendix) subfolders and DOCX files when a same-stem PDF exists
-2. Extracts text — PyMuPDF for born-digital PDFs; Gemini OCR fallback for scanned pages
+2. Extracts text with PyMuPDF first; low-yield pages use Typhoon page OCR; fully scanned PDFs use `OCR_MODEL`
 3. Chunks text into ~2,000-char segments tagged by section type (`plo` / `course` / `general`)
 4. Embeds each chunk with local `multilingual-e5-base` and upserts into Supabase
 5. Extracts PLOs via Gemini and writes to Neo4j (skipped if Neo4j not configured)
 6. Updates the program's `coverage` field in the `programs` table
 
-**OCR quality:** The default OCR model (`google/gemini-2.5-flash-lite`) has a ~25% failure rate on poor scans. For a full ingest run, set `OCR_MODEL=google/gemini-2.5-flash` in `.env` to use the stronger model (~$25 for 260 files vs ~$5, but far fewer failures).
+**OCR and cost tracking:** `OCR_MODEL` defaults to direct Gemini `gemini-2.5-flash`, which uses `GEMINI_API_KEY` only for PDFs classified as fully scanned. Low-yield pages normally use Typhoon and will not show up as Gemini spend. Use `OCR_MODEL=google/gemini-2.5-flash` only when you intentionally want full-PDF OCR routed through OpenRouter.
 
 After ingestion, check coverage:
 ```bash
@@ -174,11 +192,12 @@ The embedding model loads on startup (~5 seconds). First query after a cold star
 
 | Problem | Cause | Fix |
 |---------|-------|-----|
-| `KeyError: OPENROUTER_API_KEY` | `.env` missing or not loaded | Check `.env` file exists in project root |
+| `KeyError: *_API_KEY` | `.env` missing or not loaded | Check `.env` file exists in project root, or pass the backend `.env` path explicitly in scripts |
 | gdown download fails | Drive folder not public | Set folder to "Anyone with the link can view" |
 | `match_chunks RPC not found` | Schema not applied | Run `uv run kuru-setup-db` |
 | Queries return wrong program | `name_en` not populated | Run `kuru-coverage --populate-names` |
 | CPE / other program chunks missing | IVFFlat probes too low | `kuru-setup-db` re-applies the function with `probes=50` — run it |
 | Neo4j `ServiceUnavailable` | AuraDB Free pauses after 3 days idle | Resume at [console.neo4j.io](https://console.neo4j.io) |
-| `choices=None` / OCR garbage | Weak OCR model on poor scan | Set `OCR_MODEL=google/gemini-2.5-flash` in `.env` |
+| Unexpected Gemini cost count | Low-yield pages used Typhoon, not Gemini OCR | Check `coverage.extraction_method` for `pymupdf+typhoon_pages` and review Typhoon usage |
+| `choices=None` / OCR garbage | OCR model struggled with a poor scan | Re-run the affected file with explicit `OCR_MODEL=gemini-2.5-flash` or a stronger routed model |
 | Thai text garbled in terminal | Windows console encoding | Set `PYTHONUTF8=1` environment variable |

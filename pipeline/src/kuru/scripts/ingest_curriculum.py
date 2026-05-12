@@ -293,7 +293,7 @@ def ingest_document(pdf_path: Path, campus: str, name_mapping: dict, verbose: bo
 
     # ── Backfill names from document content (overrides stem-based name_th) ──
     # Content-extracted names are more accurate than filename stems, especially
-    # for data/raw files with short Thai naming like วศ.ม._วิศวกรรมไฟฟ้า_2565.pdf
+    # for registrar/source PDFs with short Thai naming like วศ.ม._วิศวกรรมไฟฟ้า_2565.pdf
     name_updates: dict = {}
     if not name_en_from_csv:
         name_en_auto = _extract_name_en(doc_text)

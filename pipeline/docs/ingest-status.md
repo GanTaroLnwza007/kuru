@@ -2,6 +2,8 @@
 
 Last updated: 2026-04-25
 
+> Historical note: this file records an older OCR debugging pass. For the current registrar scrape, API routing, and re-ingest status, use [current-ingestion-state.md](current-ingestion-state.md).
+
 ---
 
 ## Current State

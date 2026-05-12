@@ -9,7 +9,7 @@
 | Component | Status | Notes |
 |-----------|--------|-------|
 | PDF/DOCX/xlsx download | ✅ Done | Google Drive, txt-redirect folders supported |
-| Text extraction | ✅ Done | PyMuPDF + Gemini OCR fallback for scanned PDFs |
+| Text extraction | ✅ Done | PyMuPDF first; Typhoon page OCR for low-yield pages; `OCR_MODEL` for fully scanned PDFs |
 | Curriculum chunking + embedding | ✅ Done | 768-dim multilingual-e5, stored in Supabase |
 | TCAS structured extraction | ✅ Done | Round 1 (1,463 records) + Round 3 (1,061 records) |
 | PLO extraction → Neo4j | ⚠️ Partial | Works for 2 programs only (see §3 Known Issues) |

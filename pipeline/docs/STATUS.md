@@ -1,6 +1,8 @@
 # KUru Pipeline — Status & Roadmap
 
-_Last updated: 2026-05-03_
+_Last updated: 2026-05-13_
+
+> Current ingestion note: `data/native/curriculum` is a historical path name. Registrar PDFs stored there are not necessarily born-digital; many recent re-ingests used PyMuPDF plus Typhoon page OCR. See [current-ingestion-state.md](current-ingestion-state.md) before using older OCR/cost estimates in this file.
 
 ---
 

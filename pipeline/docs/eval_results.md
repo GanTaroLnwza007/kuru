@@ -83,7 +83,7 @@
 | API cost | ~$0.0095 |
 
 **Changes made:**
-- Re-ingested 9 engineering bachelor's programs using full มคอ.2 PDFs from `data/native/curriculum` (via Gemini OCR) instead of compact TCAS booklets.
+- Re-ingested 9 engineering bachelor's programs using full มคอ.2 PDFs from `data/native/curriculum` (current runs typically show PyMuPDF plus Typhoon page OCR, not full Gemini OCR) instead of compact TCAS booklets.
 - Chunk counts improved dramatically: EME 31→332, SemE 56→432, DMriE 21→277, WRE 27→177, MatE 46→192
 
 **Result: No significant improvement vs v2 (+0% good-answer rate, -0.05 avg score)**
