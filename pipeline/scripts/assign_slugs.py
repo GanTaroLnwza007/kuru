@@ -7,12 +7,12 @@ Safe to run multiple times (idempotent).
 from __future__ import annotations
 
 import os
-from pathlib import Path
 
-from dotenv import load_dotenv
 from supabase import Client, create_client
 
-load_dotenv(dotenv_path=Path(__file__).parent.parent / "backend" / ".env")
+from _env import load_project_env
+
+load_project_env(__file__)
 
 # Canonical 20 programs: hash_id → slug
 # bangkhen_0a75bd0f (SKE IUP) was removed from DB; replaced with bangkhen_65e17156 (Industrial Eng)

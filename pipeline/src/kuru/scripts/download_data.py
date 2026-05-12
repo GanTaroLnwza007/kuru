@@ -1,4 +1,4 @@
-"""Download raw data from Google Drive using gdown."""
+"""Download source data from Google Drive using gdown."""
 
 from __future__ import annotations
 

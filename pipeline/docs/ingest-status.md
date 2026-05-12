@@ -95,7 +95,7 @@ If Tesseract binary is not found, the fallback logs a warning and returns empty 
 the ingest. Re-ingest the failed files after installing:
 
 ```powershell
-$env:PYTHONUTF8=1; uv run python reingest_targets.py
+$env:PYTHONUTF8=1; uv run python scripts/reingest_targets.py
 ```
 
 ---
@@ -126,7 +126,7 @@ Re-ingest after installing Tesseract (see above) — the Tesseract fallback will
 
 ## Next Steps
 
-1. Run `reingest_targets.py` to completion (13 files, ~2 hrs, single process)
-2. Re-run `test_rag_quality.py` and `student scenario` test to verify fixes
+1. Run `scripts/reingest_targets.py` to completion (13 files, ~2 hrs, single process)
+2. Re-run `scripts/rag_quality_check.py` and `student scenario` test to verify fixes
 3. If quality is satisfactory → run full 260-file ingest overnight: `uv run kuru-ingest-mko`
 4. Post-ingest: run PLO extraction (`kuru-extract-plos`) and verify Neo4j graph

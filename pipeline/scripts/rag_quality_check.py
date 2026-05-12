@@ -4,8 +4,9 @@ import sys
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
-from dotenv import load_dotenv
-load_dotenv()
+from _env import load_project_env
+
+load_project_env(__file__)
 
 from kuru.rag.query_engine import query
 
