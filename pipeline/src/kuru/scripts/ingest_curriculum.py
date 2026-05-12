@@ -248,27 +248,40 @@ def ingest_document(pdf_path: Path, campus: str, name_mapping: dict, verbose: bo
 
     client = db.get_client()
 
-    name_th = _program_name_from_stem(pdf_path.stem)
-
     # Resolve English name: CSV mapping first, auto-extract from text later
     mapping = name_mapping.get(program_id, {})
+    name_th = mapping.get("name_th_canonical") or _program_name_from_stem(pdf_path.stem)
     name_en_from_csv = mapping.get("name_en")
     name_en_source: str | None = "csv_mapping" if name_en_from_csv else None
-
-    db.upsert_program(client, {
-        "id": program_id,
-        "name_th": name_th,
-        "name_en": name_en_from_csv,
-        "faculty": campus,
-        "degree_level": _degree_level(pdf_path.stem),
-    })
 
     # ── Resume: skip if already fully ingested ──────────────────────────────
     existing = db.count_chunks(client, pdf_path.name)
     if existing > 0:
+        # On resume, avoid overwriting corrected DB names with filename guesses.
+        resume_update = {
+            "id": program_id,
+            "faculty": campus,
+            "degree_level": _degree_level(pdf_path.stem),
+        }
+        if mapping.get("name_th_canonical"):
+            resume_update["name_th"] = name_th
+        if name_en_from_csv:
+            resume_update["name_en"] = name_en_from_csv
+        if len(resume_update) > 3:
+            db.upsert_program(client, resume_update)
         status["chunks"] = existing
         status["skipped"] = True
         return status
+
+    program_row = {
+        "id": program_id,
+        "name_th": name_th,
+        "faculty": campus,
+        "degree_level": _degree_level(pdf_path.stem),
+    }
+    if name_en_from_csv:
+        program_row["name_en"] = name_en_from_csv
+    db.upsert_program(client, program_row)
 
     # ── Text extraction ─────────────────────────────────────────────────────
     try:

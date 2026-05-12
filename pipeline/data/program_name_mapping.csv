@@ -1,4 +1,4 @@
-program_id,name_en
+program_id,name_en,name_th_canonical
 bangkhen_a612dbb4,Chemical Engineering
 bangkhen_ddf705a9,Computer Engineering
 bangkhen_65e17156,Industrial Engineering
@@ -17,13 +17,12 @@ bangkhen_9312de2c,Survey and Geographic Information Engineering
 bangkhen_362ef3ec,Mechanical Engineering (International Program)
 bangkhen_579eaed1,Public Administration
 bangkhen_3976b66b,Animal Nursing
-bangkhen_f765bc67,Civil Engineering - Irrigation
-bangkhen_1ca687c1,Software and Knowledge Engineering (International Program)
+bangkhen_1ca687c1,Bachelor of Accountancy Program (International Program),บัญชีบัณฑิต
 bangkhen_d56eb1e6,Digital Manufacturing and Robotics Engineering (International Program)
 bangkhen_0a75bd0f,Software and Knowledge Engineering (IUP)
 bangkhen_50fe0121,Aviation Technology Management
-bangkhen_13e0215f,Nursing Science
-bangkhen_ef87a252,Earth Science
+bangkhen_13e0215f,Bachelor of Nursing Science Program,พยาบาลศาสตร์
+bangkhen_ef87a252,Bachelor of Science Program in Knowledge of The Land for Sustainable Development,ศาสตร์แห่งแผ่นดินเพื่อการพัฒนาที่ยั่งยืน
 bangkhen_f59cc529,Psychology
 bangkhen_524aa3dd,Electro-Mechanical Manufacturing Engineering
 bangkhen_b3439795,Mechanical Engineering
@@ -32,4 +31,12 @@ bangkhen_45012e1a,Law
 bangkhen_6471b30d,Political Science
 bangkhen_bbc3aed6,History
 bangkhen_b329a2c4,Sociology and Anthropology
-bangkhen_dd9a49d8,
+bangkhen_dd9a49d8,Bachelor of Education Program in Educational Studies,ศึกษาศาสตร์
+bangkhen_eng_7c9001b4,Digital Manufacturing and Robotics Engineering (International Program),วิศวกรรมการผลิตดิจิทัลและการบูรณาการหุ่นยนต์
+bangkhen_7600c7cd,Doctor of Philosophy Program in Chemical Engineering,วิศวกรรมเคมี (ปริญญาเอก)
+bangkhen_eng_b17edf6c,Doctor of Philosophy Program in Materials Engineering,วิศวกรรมวัสดุ (ปริญญาเอก)
+bangkhen_fish_21970d53,,วิทยาศาสตร์การประมงและเทคโนโลยี (ปริญญาโท)
+bangkhen_fish_563c2887,,วิทยาศาสตร์การประมงและเทคโนโลยี (ปริญญาเอก)
+bangkhen_eng_63fa1a4f,Bachelor of Engineering Program in Mechanical Engineering (International Program),วิศวกรรมเครื่องกล (นานาชาติ)
+bangkhen_5a8d741f,Bachelor of Engineering Program in Electrical Engineering,วิศวกรรมไฟฟ้า
+bangkhen_f765bc67,Bachelor of Engineering Program in Civil-Irrigation Engineering,วิศวกรรมโยธา-ชลประทาน
