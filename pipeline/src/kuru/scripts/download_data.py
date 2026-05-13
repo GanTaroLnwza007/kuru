@@ -19,8 +19,8 @@ CURRICULUM_FOLDER_ID = "1zmvMNmCYyzxLHjJWfHfqH0Yzoa6ZDYWC"
 # Additional campus curriculum folder IDs — fill in once you have the Drive URLs.
 # Format: { output_subdirectory: folder_id }
 EXTRA_CAMPUS_FOLDERS: dict[str, str] = {
-    # "data/native/curriculum/กำแพงแสน": "<KAMPHAENGSAEN_FOLDER_ID>",
-    # "data/native/curriculum/ศรีราชา":   "<SRIRACHA_FOLDER_ID>",
+    # "data/scanned/curriculum/กำแพงแสน": "<KAMPHAENGSAEN_FOLDER_ID>",
+    # "data/scanned/curriculum/ศรีราชา":   "<SRIRACHA_FOLDER_ID>",
 }
 
 _DRIVE_FOLDER_RE = re.compile(
@@ -36,11 +36,9 @@ _PDF_REDIRECT_MAX_CHARS = 200
 # These files need their Google Drive permission set to "Anyone with the link can view" first.
 MANUAL_RETRY: dict[str, str] = {
     # 67BThai-19SKedit2-IUP สาขาวิชาวิศวกรรมซอฟต์แวร์และความรู้ (นานาชาติ).pdf
-    "data/native/curriculum/บางเขน/วิศวฯ":  "1zy2vAAhxHd9qdFYZMYbxxCxAg2uIohlh",
+    "data/scanned/curriculum/บางเขน/วิศวฯ":  "1zy2vAAhxHd9qdFYZMYbxxCxAg2uIohlh",
     # 2.มคอ 2 หลักสูตรปรับปรุง พ.ศ.2565คอมฯ.pdf  (กพส campus)
-    "data/native/curriculum/กพส/วิศว กพส":  "1Niev92NFiNylLFaa6XL3Mvu-aZJCmpcE",
-    # 69_TCAS1_ STEAMs-Sci(1.1)_ประกาศรับสมัคร-ลงนาม.pdf
-    "data/native/tcas":                      "1cRaZi1XcPlq2BXuN9UGdgJfHqymJGV8h",
+    "data/scanned/curriculum/กพส/วิศว กพส":  "1Niev92NFiNylLFaa6XL3Mvu-aZJCmpcE",
 }
 
 
@@ -244,36 +242,47 @@ def _sync_folder(folder_id: str, output: str, label: str) -> None:
 
 def main() -> None:
     import sys as _sys
+    curriculum_dir = "data/scanned/curriculum"
+    tcas_dir = "data/native/tcas"
+
     if "--list" in _sys.argv:
         _list_folder(CURRICULUM_FOLDER_ID, "Curriculum — บางเขน + กพส")
         for output_dir, folder_id in EXTRA_CAMPUS_FOLDERS.items():
             _list_folder(folder_id, f"Curriculum — {Path(output_dir).name}")
         return
 
+    if "--tcas-only" in _sys.argv:
+        _download_folder(TCAS1_FOLDER_ID, tcas_dir, "TCAS native PDFs + data")
+        _retry_manual({k: v for k, v in MANUAL_RETRY.items() if k.startswith(tcas_dir)})
+        tcas_count = len(list(Path(tcas_dir).rglob("*.pdf")))
+        xlsx_count = len(list(Path(tcas_dir).rglob("*.xlsx")))
+        print(f"\nDone.  TCAS: {tcas_count} PDF(s), {xlsx_count} xlsx")
+        return
+
     if "--sync" in _sys.argv:
-        _sync_folder(CURRICULUM_FOLDER_ID, "data/native/curriculum", "Curriculum — บางเขน + กพส")
+        _sync_folder(CURRICULUM_FOLDER_ID, curriculum_dir, "Curriculum — บางเขน + กพส")
         for output_dir, folder_id in EXTRA_CAMPUS_FOLDERS.items():
             _sync_folder(folder_id, output_dir, f"Curriculum — {Path(output_dir).name}")
-        _follow_txt_redirects("data/native/curriculum")
-        _follow_pdf_redirects("data/native/curriculum")
-        curr_pdf  = len(list(Path("data/native/curriculum").rglob("*.pdf")))
-        curr_docx = len(list(Path("data/native/curriculum").rglob("*.docx")))
+        _follow_txt_redirects(curriculum_dir)
+        _follow_pdf_redirects(curriculum_dir)
+        curr_pdf  = len(list(Path(curriculum_dir).rglob("*.pdf")))
+        curr_docx = len(list(Path(curriculum_dir).rglob("*.docx")))
         print(f"\nDone.  Curriculum: {curr_pdf} PDF(s), {curr_docx} docx")
         return
 
-    _download_folder(TCAS1_FOLDER_ID,      "data/native/tcas",      "TCAS PDFs + data")
-    _download_folder(CURRICULUM_FOLDER_ID, "data/native/curriculum", "Curriculum (มคอ.2) — บางเขน + กพส")
+    _download_folder(TCAS1_FOLDER_ID,      tcas_dir,        "TCAS native PDFs + data")
+    _download_folder(CURRICULUM_FOLDER_ID, curriculum_dir,  "Curriculum scanned PDFs (มคอ.2) — บางเขน + กพส")
     for output_dir, folder_id in EXTRA_CAMPUS_FOLDERS.items():
         campus = Path(output_dir).name
         _download_folder(folder_id, output_dir, f"Curriculum — {campus}")
     _retry_manual(MANUAL_RETRY)
-    _follow_txt_redirects("data/native/curriculum")
-    _follow_pdf_redirects("data/native/curriculum")
+    _follow_txt_redirects(curriculum_dir)
+    _follow_pdf_redirects(curriculum_dir)
 
-    tcas_count  = len(list(Path("data/native/tcas").rglob("*.pdf")))
-    xlsx_count  = len(list(Path("data/native/tcas").rglob("*.xlsx")))
-    curr_pdf    = len(list(Path("data/native/curriculum").rglob("*.pdf")))
-    curr_docx   = len(list(Path("data/native/curriculum").rglob("*.docx")))
+    tcas_count  = len(list(Path(tcas_dir).rglob("*.pdf")))
+    xlsx_count  = len(list(Path(tcas_dir).rglob("*.xlsx")))
+    curr_pdf    = len(list(Path(curriculum_dir).rglob("*.pdf")))
+    curr_docx   = len(list(Path(curriculum_dir).rglob("*.docx")))
     print(
         f"\nDone.  TCAS: {tcas_count} PDF(s), {xlsx_count} xlsx   "
         f"Curriculum: {curr_pdf} PDF(s), {curr_docx} docx"

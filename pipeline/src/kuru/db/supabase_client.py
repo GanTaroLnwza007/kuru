@@ -131,7 +131,7 @@ def get_programs(
     faculty: str | None = None,
 ) -> list[dict[str, Any]]:
     """Fetch all known programs, optionally filtered by faculty."""
-    q = client.table("programs").select("id, name_th, name_en, faculty, degree_level, coverage")
+    q = client.table("programs").select("id, name_th, name_en, faculty, degree_level, fees, coverage")
     if faculty:
         q = q.ilike("faculty", f"%{faculty}%")
     return q.order("faculty").execute().data or []

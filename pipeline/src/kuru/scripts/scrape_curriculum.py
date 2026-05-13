@@ -12,7 +12,7 @@ from bs4 import BeautifulSoup
 
 BASE_URL = "https://registrar.ku.ac.th"
 INDEX_URL = f"{BASE_URL}/cur/all"
-OUTPUT_DIR = Path("data/native/curriculum/บางเขน")
+OUTPUT_DIR = Path("data/scanned/curriculum/บางเขน")
 
 # Bangkhen campus faculty slugs discovered from https://registrar.ku.ac.th/cur/all
 BANGKHEN_SLUGS = [

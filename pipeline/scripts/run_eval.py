@@ -81,6 +81,8 @@ def main() -> None:
     parser.add_argument("--out", default="data/eval_results.csv", help="Output results CSV")
     parser.add_argument("--sample", type=int, default=0, help="Randomly sample N rows (0=all)")
     parser.add_argument("--delay", type=float, default=0.5, help="Seconds between queries")
+    parser.add_argument("--mlflow", action="store_true", help="Log this eval run to local MLflow sqlite store")
+    parser.add_argument("--run-name", default="", help="MLflow run name when --mlflow is enabled")
     args = parser.parse_args()
 
     eval_path = Path(args.eval)
@@ -184,6 +186,55 @@ def main() -> None:
                 vs = [s for s in sc if s >= 0]
                 if vs:
                     print(f"  {t:12s}  avg={sum(vs)/len(vs):.2f}  n={len(vs)}")
+
+        if args.mlflow:
+            import mlflow
+
+            mlflow.set_tracking_uri("sqlite:///mlflow.db")
+            mlflow.set_experiment("kuru-rag-hyperparameter-search")
+            run_name = args.run_name or out_path.stem
+
+            with mlflow.start_run(run_name=run_name) as run:
+                mlflow.log_params({
+                    "eval_set": str(eval_path),
+                    "output_csv": str(out_path),
+                    "sample": args.sample or len(rows),
+                    "delay": args.delay,
+                    "top_k": 5,
+                    "min_similarity": 0.35,
+                    "fetch_multiplier": 3,
+                    "embed_model": "intfloat/multilingual-e5-base",
+                    "embed_dim": 768,
+                    "generator_model": GENERATION_MODEL,
+                    "index_type": "IVFFlat",
+                    "index_probes": 50,
+                    "reranker": "lexical-token-overlap",
+                    "structured_tcas": True,
+                    "structured_fees": True,
+                })
+
+                metrics = {
+                    "avg_score": round(avg, 3),
+                    "pct_good": round(pct_good, 1),
+                    "n_valid": len(valid_scores),
+                    "n_errors": scores.count(-1),
+                    "n_score_3": dist[3],
+                    "n_score_2": dist[2],
+                    "n_score_1": dist[1],
+                    "n_score_0": dist[0],
+                }
+                for t, sc in sorted(by_type.items()):
+                    vs = [s for s in sc if s >= 0]
+                    if vs:
+                        metrics[f"avg_score_{t}"] = round(sum(vs) / len(vs), 3)
+                        metrics[f"n_{t}"] = len(vs)
+
+                mlflow.log_metrics(metrics)
+                mlflow.log_artifact(str(out_path), artifact_path="eval_results")
+                mlflow.log_artifact(str(eval_path), artifact_path="eval_set")
+
+                print(f"\nMLflow run: {run.info.run_id}")
+                print("MLflow UI:  uv run mlflow ui --backend-store-uri sqlite:///mlflow.db --port 5000")
 
 
 if __name__ == "__main__":

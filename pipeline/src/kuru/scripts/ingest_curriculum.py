@@ -43,7 +43,7 @@ def _program_id_from_path(pdf_path: Path, campus: str) -> str:
     }.get(campus, re.sub(r"\s+", "_", campus).lower())
 
     # Use the faculty subfolder (e.g. "eng", "agri") as a stable prefix.
-    campus_dir = Path("data/native/curriculum") / campus
+    campus_dir = Path("data/scanned/curriculum") / campus
     try:
         rel = pdf_path.relative_to(campus_dir)
         faculty_part = rel.parts[0] if len(rel.parts) > 1 else ""
@@ -448,9 +448,9 @@ def main(campus: str | None = None, sample: int | None = None) -> None:
             elif a == "--sample" and args.index(a) + 1 < len(args):
                 sample = int(args[args.index(a) + 1])
 
-    base_dir = Path("data/native/curriculum")
+    base_dir = Path("data/scanned/curriculum")
     if not base_dir.exists():
-        console.print("[red]data/native/curriculum/ not found. Run kuru-download first.[/red]")
+        console.print("[red]data/scanned/curriculum/ not found. Run kuru-download first.[/red]")
         sys.exit(1)
 
     name_mapping = _load_name_mapping()

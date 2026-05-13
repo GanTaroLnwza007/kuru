@@ -18,6 +18,7 @@ create table if not exists programs (
   courses             jsonb default '[]',
   year_timeline       jsonb default '[]',
   curriculum_mapping  jsonb default '[]',
+  fees                jsonb default '{}',
   coverage            jsonb default '{}',
   created_at          timestamptz default now()
 );
@@ -79,6 +80,7 @@ alter table programs add column if not exists plos               jsonb default '
 alter table programs add column if not exists courses            jsonb default '[]';
 alter table programs add column if not exists year_timeline      jsonb default '[]';
 alter table programs add column if not exists curriculum_mapping jsonb default '[]';
+alter table programs add column if not exists fees               jsonb default '{}';
 alter table programs add column if not exists coverage           jsonb default '{}';
 
 -- ─────────────────────────────────────────

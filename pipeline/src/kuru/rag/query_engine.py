@@ -29,7 +29,8 @@ from kuru.ingestion.utils import is_transient_error
 TCAS_KEYWORDS = re.compile(
     r"TCAS|GPAX|เกรด|รับ|สมัคร|คะแนน|รอบ|TGAT|TPAT|A-Level|quota|โควตา|วันรับ|ประกาศ|admission|score|portfolio"
     r"|enroll|apply|applying|application|qualify|qualification|requirement|สอบ|ข้อสอบ|เข้าเรียน|เข้าศึกษา|รับสมัคร|คุณสมบัติ"
-    r"|อยากเข้า|จะเข้า|วิธีเข้า|ต้องทำไง|ต้องทำอะไร|ขั้นตอนการสมัคร|วิธีสมัคร",
+    r"|อยากเข้า|จะเข้า|วิธีเข้า|ต้องทำไง|ต้องทำอะไร|ขั้นตอนการสมัคร|วิธีสมัคร"
+    r"|เข้ายังไง|เข้าอย่างไร|เกณฑ์เข้า|สอบเข้า",
     re.IGNORECASE,
 )
 
@@ -38,7 +39,8 @@ _STRONG_TCAS_RE = re.compile(
     r"TCAS|GPAX|เกรด|คะแนน|สมัคร|รอบ|quota|โควตา|TGAT|TPAT|A-Level|score|admission"
     r"|enroll|apply|applying|application|qualify|qualification|requirement|สอบ|ข้อสอบ"
     r"|เข้าเรียน|เข้าศึกษา|รับสมัคร|คุณสมบัติ|อยากเข้า|จะเข้า|วิธีเข้า|ต้องทำไง"
-    r"|ขั้นตอนการสมัคร|วิธีสมัคร|วันรับ|ประกาศ",
+    r"|ขั้นตอนการสมัคร|วิธีสมัคร|วันรับ|ประกาศ"
+    r"|เข้ายังไง|เข้าอย่างไร|เกณฑ์เข้า|สอบเข้า",
     re.IGNORECASE,
 )
 
@@ -59,7 +61,13 @@ _CURRICULUM_STRUCTURE_RE = re.compile(
 # because curriculum questions often ask about credit requirements.
 _EXPLICIT_TCAS_RE = re.compile(
     r"TCAS|GPAX|TGAT|TPAT|A-Level|admission|portfolio|quota|apply|applying|application"
-    r"|สมัคร|รับสมัคร|รอบ|คะแนน|โควตา|สอบ|ข้อสอบ|เข้าศึกษา|เข้าเรียน",
+    r"|สมัคร|รับสมัคร|รอบ|คะแนน|โควตา|สอบ|ข้อสอบ|เข้าศึกษา|เข้าเรียน"
+    r"|เข้ายังไง|เข้าอย่างไร|เกณฑ์เข้า|สอบเข้า",
+    re.IGNORECASE,
+)
+
+FEES_KEYWORDS = re.compile(
+    r"ค่าเทอม|ค่าเล่าเรียน|ค่าธรรมเนียม|ค่าใช้จ่าย|tuition|fees?|cost",
     re.IGNORECASE,
 )
 
@@ -87,6 +95,52 @@ _PROGRAM_ABBREVS: dict[str, str] = {
     "che": "chemical engineering",
 }
 
+_PROGRAM_ALIASES: dict[str, str] = {
+    "software engineering": "software and knowledge engineering",
+    "software engineer": "software and knowledge engineering",
+    "วิศวกรรมซอฟต์แวร์": "software and knowledge engineering",
+    "วิศวกรรมซอฟต์เเวร์": "software and knowledge engineering",
+    "ซอฟต์แวร์": "software and knowledge engineering",
+    "ซอฟต์เเวร์": "software and knowledge engineering",
+}
+
+
+def _normalize_thai_text(value: str) -> str:
+    """Normalize Thai text for conservative substring matching."""
+    value = (value or "").replace("เเ", "แ")
+    value = re.sub(r"\([^)]*\)", "", value)
+    value = re.sub(r"[\s_\-–—()/.,:;]+", "", value)
+    return value
+
+
+def _normalize_thai_exact_text(value: str) -> str:
+    """Normalize Thai text while preserving parenthetical words."""
+    value = (value or "").replace("เเ", "แ")
+    value = re.sub(r"[\s_\-–—()/.,:;]+", "", value)
+    return value
+
+
+def _english_program_aliases(name_en: str) -> list[str]:
+    """Return searchable English aliases for an official program name."""
+    base = re.sub(r"\s*\([^)]+\)\s*$", "", (name_en or "")).strip().lower()
+    if not base:
+        return []
+
+    aliases = {base}
+    simplified = base
+    simplified = re.sub(r"^bachelor of (?:engineering|science|arts|education|laws|nursing science) program (?:in|for)\s+", "", simplified)
+    simplified = re.sub(r"^master of (?:science|engineering|arts) program (?:in|for)\s+", "", simplified)
+    simplified = re.sub(r"^doctor of (?:philosophy|veterinary medicine) program (?:in|for)?\s*", "", simplified)
+    simplified = re.sub(r"^bachelor of engineering in\s+", "", simplified)
+    simplified = re.sub(r"^bachelor of accountancy program$", "accountancy", simplified)
+    simplified = re.sub(r"^bachelor of business administration program$", "business administration", simplified)
+    simplified = simplified.strip()
+    if simplified and len(simplified) >= 4:
+        aliases.add(simplified)
+
+    return sorted(aliases, key=len, reverse=True)
+
+
 def _resolve_program_from_query(question: str, programs: list[dict]) -> str | None:
     """Return program_id if the question mentions a specific program by name (Thai or English).
 
@@ -96,24 +150,63 @@ def _resolve_program_from_query(question: str, programs: list[dict]) -> str | No
           appear in the program's name_th; pick the program with the most hits (min 1).
     """
     q_lower = question.lower()
+    q_alias = q_lower.replace("เเ", "แ")
     # Expand abbreviations so "CS" → "computer science" is found by substring match
     for abbr, full in _PROGRAM_ABBREVS.items():
         if re.search(r"\b" + abbr + r"\b", q_lower):
             q_lower = q_lower + " " + full
 
-    # English match — longest name_en substring wins
-    # Strip parenthetical suffixes e.g. "(IUP)", "(International Program)" before matching
-    best_en_len = 0
-    best_en_id: str | None = None
+    for alias, canonical in _PROGRAM_ALIASES.items():
+        if alias in q_alias:
+            for p in programs:
+                name_en = re.sub(r"\s*\([^)]+\)\s*$", "", (p.get("name_en") or "")).strip().lower()
+                if canonical == name_en:
+                    return p["id"]
+
+    # English match — longest alias substring wins. Aliases include official names
+    # and shortened names like "electrical engineering".
+    best_len = 0
+    best_id: str | None = None
     for p in programs:
-        name_en = re.sub(r"\s*\([^)]+\)\s*$", "", (p.get("name_en") or "")).strip().lower()
-        if len(name_en) < 8:
+        for alias in _english_program_aliases(p.get("name_en") or ""):
+            if len(alias) < 8:
+                continue
+            if alias in q_lower and len(alias) > best_len:
+                best_len = len(alias)
+                best_id = p["id"]
+    if best_id:
+        return best_id
+
+    # Thai exact-name match with parenthetical labels preserved first. This keeps
+    # bachelor/graduate or regular/international variants distinct when named.
+    q_th_exact = _normalize_thai_exact_text(question)
+    best_th_exact_len = 0
+    best_th_exact_id: str | None = None
+    for p in programs:
+        name_th_exact = _normalize_thai_exact_text(p.get("name_th") or "")
+        if len(name_th_exact) < 5:
             continue
-        if name_en in q_lower and len(name_en) > best_en_len:
-            best_en_len = len(name_en)
-            best_en_id = p["id"]
-    if best_en_id:
-        return best_en_id
+        if name_th_exact in q_th_exact and len(name_th_exact) > best_th_exact_len:
+            best_th_exact_len = len(name_th_exact)
+            best_th_exact_id = p["id"]
+    if best_th_exact_id:
+        return best_th_exact_id
+
+    # Thai exact-name match — normalized names catch parenthetical variants and
+    # common keyboard typo "เเ" for "แ". Longest wins for nested names such as
+    # วิศวกรรมไฟฟ้า vs วิศวกรรมไฟฟ้าเครื่องกลการผลิต.
+    q_th_norm = _normalize_thai_text(question)
+    best_th_len = 0
+    best_th_id: str | None = None
+    for p in programs:
+        name_th_norm = _normalize_thai_text(p.get("name_th") or "")
+        if len(name_th_norm) < 5:
+            continue
+        if name_th_norm in q_th_norm and len(name_th_norm) > best_th_len:
+            best_th_len = len(name_th_norm)
+            best_th_id = p["id"]
+    if best_th_id:
+        return best_th_id
 
     # Thai match — tokenize and count hits against name_th
     try:
@@ -327,9 +420,9 @@ GROUNDING RULES (non-negotiable):
 4. TCAS admission data (scores, GPAX, quotas, exam requirements) come ONLY from [TCAS Admission Data] blocks. Course prerequisite codes (like 01219241) are for enrolled students — never cite them as admission requirements.
 5. When answering about TCAS: structure by round (Round 1 / 2 / 3), include seats, GPAX minimum, exam requirements, portfolio, and deadlines.
 6. When answering about curriculum: describe PLOs, courses, degree structure — not TCAS scores.
-7. Never invent numbers, quotas, dates, or exam scores.
+7. Never invent numbers, quotas, dates, exam scores, tuition, or fees.
 8. Cite sources naturally: "According to [filename]..." or "[Source: filename]" at the end.
-9. LANGUAGE — STRICT: detect the language of the student's question. If the question is in English, your ENTIRE response must be in English. If the question is in Thai, your ENTIRE response must be in Thai. Never mix languages or default to Thai for an English question.
+9. LANGUAGE — STRICT: answer in the student's conversational language. If the question is clearly English, respond entirely in English. If the question is Thai, or mixed Thai/English where the English part is mainly a program name, respond in Thai. Keep official English program names, exam names, and source filenames unchanged when needed.
 10. CRITICAL — do NOT recommend or describe programs that appear only in [TCAS Admission Data] blocks as if curriculum details are available. Programs in [TCAS Admission Data] may only have admission data, not full curriculum details. If a student asks about a program that only appears in TCAS data (not in a curriculum context block), clearly say: "I only have admission data for this program, not the full curriculum details. For course lists, PLOs, and program structure, please check ku.ac.th directly." """
 
 RAG_USER_TEMPLATE = """Context passages:
@@ -388,9 +481,41 @@ def _embed_query(query: str) -> list[float]:
 # Generation
 # ─────────────────────────────────────────
 
+_THAI_CONVERSATION_RE = re.compile(
+    r"เข้ายังไง|เข้าอย่างไร|อยากเข้า|จะเข้า|วิธีเข้า|ต้องทำไง|ต้องทำอะไร|สมัคร|รับสมัคร|รอบ|คะแนน|เกณฑ์|สอบ"
+    r"|คืออะไร|อะไรบ้าง|ยังไง|อย่างไร|ไหม|มั้ย|หรือเปล่า|แนะนำ|เรียน"
+)
+_ENGLISH_QUESTION_RE = re.compile(
+    r"\b(what|which|how|when|where|why|can|could|should|is|are|do|does|tell|explain|recommend)\b",
+    re.IGNORECASE,
+)
+
+
 def _lang_instruction(question: str) -> str:
     thai = len(re.findall(r"[ก-๙]", question))
     eng = len(re.findall(r"[a-zA-Z]", question))
+    q = question.strip()
+
+    if re.search(r"\b(answer|respond|reply)\s+in\s+(english|อังกฤษ)\b", q, re.IGNORECASE):
+        return "IMPORTANT: Respond ENTIRELY IN ENGLISH. Do not use Thai at all."
+    if re.search(r"(ตอบ|อธิบาย).*(ภาษาอังกฤษ|อังกฤษ)", q, re.IGNORECASE):
+        return "IMPORTANT: Respond ENTIRELY IN ENGLISH. Do not use Thai at all."
+    if re.search(r"(ตอบ|อธิบาย).*(ภาษาไทย|ไทย)", q, re.IGNORECASE):
+        return "ตอบเป็นภาษาไทยทั้งหมดครับ"
+
+    # Thai users often write the program name in English, then ask the real
+    # question in Thai, e.g. "software engineering เข้ายังไง".
+    if thai and _THAI_CONVERSATION_RE.search(q):
+        return (
+            "ตอบเป็นภาษาไทยทั้งหมดครับ ใช้ชื่อหลักสูตรภาษาอังกฤษ ชื่อข้อสอบ "
+            "และชื่อไฟล์ต้นฉบับเป็นภาษาอังกฤษได้เมื่อเป็นชื่อทางการครับ"
+        )
+    if thai and _ENGLISH_QUESTION_RE.search(q):
+        return "IMPORTANT: Respond ENTIRELY IN ENGLISH. Do not use Thai at all."
+    if thai and not _ENGLISH_QUESTION_RE.search(q):
+        return (
+            "ตอบเป็นภาษาไทยทั้งหมดครับ ใช้ชื่อเฉพาะภาษาอังกฤษได้เมื่อจำเป็นครับ"
+        )
     if eng > thai:
         return "IMPORTANT: Respond ENTIRELY IN ENGLISH. Do not use Thai at all."
     return "ตอบเป็นภาษาไทยทั้งหมดครับ"
@@ -446,6 +571,34 @@ def _format_tcas_records(records: list[dict]) -> str:
     return "\n".join(lines)
 
 
+def _format_fee_data(program: dict | None) -> str:
+    if not program:
+        return ""
+    fees = program.get("fees") or {}
+    name = program.get("name_th") or program.get("name_en") or program.get("id", "?")
+    if not fees or fees.get("status") != "found":
+        return (
+            "[Program Fee Data]\n"
+            f"Program: {name}\n"
+            "Status: not_found\n"
+            "Instruction: The programs table has no source-backed tuition/fee data for this program. "
+            "Do not use fee numbers from chunks belonging to another program."
+        )
+
+    lines = ["[Program Fee Data]", f"Program: {name}", "Status: found"]
+    if fees.get("total_program_baht") is not None:
+        lines.append(f"Total program fee: {fees['total_program_baht']} THB")
+    if fees.get("per_semester_baht"):
+        lines.append(f"Per-semester fee(s): {fees['per_semester_baht']} THB")
+    if fees.get("amounts_baht"):
+        lines.append(f"Other extracted amounts: {fees['amounts_baht']} THB")
+    if fees.get("source_file"):
+        lines.append(f"Source: {fees['source_file']}")
+    if fees.get("evidence"):
+        lines.append(f"Evidence: {fees['evidence']}")
+    return "\n".join(lines)
+
+
 # ─────────────────────────────────────────
 # Main query function
 # ─────────────────────────────────────────
@@ -473,6 +626,7 @@ def query(
         is_tcas_query = False
     is_plo_query = bool(re.search(r"PLO|plo|learning outcome|ผลลัพธ์การเรียนรู้|ผลลัพธ์", question, re.IGNORECASE))
     is_listing_query = bool(LISTING_KEYWORDS.search(question))
+    is_fee_query = bool(FEES_KEYWORDS.search(question))
     structure_terms = _structure_search_terms(question)
     # Fetch a larger pool so re-ranking has enough material
     fetch_k = max(top_k * 3, 15)
@@ -490,9 +644,7 @@ def query(
             targeted = db.similarity_search(
                 client, q_embedding, top_k=fetch_k, program_id=resolved_program_id
             )
-            # Prepend targeted results, then fill with unfiltered (deduplicated by id)
-            seen = {c.get("id") for c in targeted}
-            all_chunks = targeted + [c for c in all_chunks if c.get("id") not in seen]
+            all_chunks = targeted
 
         # For comparison queries, also fetch chunks for additional mentioned programs
         extra_ids = _resolve_extra_programs(question, all_programs_list, resolved_program_id)
@@ -527,6 +679,7 @@ def query(
 
     debug_info: dict = {
         "is_tcas_query": is_tcas_query,
+        "is_fee_query": is_fee_query,
         "is_plo_query": is_plo_query,
         "is_listing_query": is_listing_query,
         "resolved_program_id": resolved_program_id,
@@ -550,6 +703,8 @@ def query(
     # actually describe, leading to contradictory follow-up answers.
     tcas_records: list[dict] = []
     used_tcas = False
+    effective_program_id = program_id or resolved_program_id
+    debug_info["effective_program_id"] = effective_program_id
     if is_tcas_query and not is_listing_query:
         # Detect TCAS round from question (e.g. "TCAS3", "round 1", "รอบ2")
         _round_m = re.search(r"(?:TCAS|รอบ)\s*([1-4])|round\s*([1-4])", question, re.IGNORECASE)
@@ -562,6 +717,18 @@ def query(
 
         seen_ids: set[str] = set()
         tcas_records_raw: list[dict] = []
+
+        # Prefer the current program context/resolution before broad keyword search.
+        # This keeps English queries (e.g. "SKE admission") tied to Thai TCAS rows.
+        if effective_program_id:
+            _dedup_add(
+                _pick_round(
+                    db.get_tcas_records(client, program_id=effective_program_id, limit=30),
+                    detected_round,
+                ),
+                seen_ids,
+                tcas_records_raw,
+            )
 
         # First try: DB-level keyword search against program_name_raw.
         # Each q_word is searched separately so every program keyword gets a slot.
@@ -588,7 +755,11 @@ def query(
 
         # Final fallback: generic fetch when nothing else matched
         if not tcas_records_raw:
-            _dedup_add(db.get_tcas_records(client, program_id=program_id, limit=10), seen_ids, tcas_records_raw)
+            _dedup_add(
+                db.get_tcas_records(client, program_id=effective_program_id, limit=10),
+                seen_ids,
+                tcas_records_raw,
+            )
 
         tcas_records = tcas_records_raw[:30]
         used_tcas = bool(tcas_records)
@@ -744,6 +915,15 @@ def query(
                     notes.append("The source document does not contain a program overview section.")
             if notes:
                 context_parts.append("[Document Coverage Note]\n" + "\n".join(f"- {n}" for n in notes))
+
+    fee_program: dict | None = None
+    if is_fee_query and not is_listing_query:
+        fee_program_id = program_id or resolved_program_id
+        if fee_program_id:
+            if not all_programs_list:
+                all_programs_list = db.get_programs(client)
+            fee_program = next((p for p in all_programs_list if p.get("id") == fee_program_id), None)
+            context_parts.append(_format_fee_data(fee_program))
 
     for c in chunks:
         sim = round(c.get("similarity", 0.0), 3)
