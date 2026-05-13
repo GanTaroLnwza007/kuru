@@ -285,7 +285,7 @@ export default function ProgramDetailPage() {
   const rich: RichProgram | undefined = RICH_PROGRAMS[program.slug] ?? RICH_PROGRAMS[program.id];
   const matchScore = rich && riasecScores
     ? computeProgramMatch(rich.riasec, riasecScores, rich.baseFit)
-    : rich ? rich.baseFit : null;
+    : null;
 
   const TABS: { id: TabId; label: string }[] = [
     { id: "vibe", label: "Year-by-Year Vibe" },
@@ -375,8 +375,8 @@ export default function ProgramDetailPage() {
               {/* quick stats */}
               <div className="pgm-quick-stats" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12, padding: "28px 0 0", borderTop: `1px solid ${C.lineSoft}`, marginTop: 32 }}>
                 {[
-                  { val: matchScore !== null ? `${matchScore}` : "—", unit: "%", label: "Match Score", valColor: C.green },
-                  { val: rich ? `${rich.seats}` : "—", unit: "", label: "ที่นั่ง/ปี", valColor: C.ink },
+                  { val: matchScore !== null ? `${matchScore}` : "—", unit: matchScore !== null ? "%" : "", label: "Match Score", valColor: C.green },
+                  { val: program.tcas_rounds.length > 0 ? `${program.tcas_rounds.reduce((s, r) => s + (r.quota ?? 0), 0)}` : rich ? `${rich.seats}` : "—", unit: "", label: "ที่นั่ง/ปี", valColor: C.ink },
                   { val: program.tcas_rounds[0]?.min_score?.toLocaleString() ?? "—", unit: "", label: "คะแนนต่ำสุด", valColor: C.ink },
                   { val: rich?.cost ?? "—", unit: "", label: "ค่าเทอม (฿)", valColor: C.ink },
                 ].map(({ val, unit, label, valColor }) => (
@@ -531,22 +531,24 @@ export default function ProgramDetailPage() {
               </div>
               <div className="pgm-tcas-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
                 {/* TCAS rounds */}
-                {program.tcas_rounds.length > 0 && (
-                  <div style={{ background: "#fff", border: `1px solid ${C.lineSoft}`, borderRadius: 22, padding: 26 }}>
-                    <h4 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 18, letterSpacing: "-.01em", marginBottom: 18, display: "flex", alignItems: "center", gap: 10 }}>
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.green} strokeWidth="2" strokeLinecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-                      TCAS — ข้อมูลการรับ
-                    </h4>
-                    {program.tcas_rounds.map((round, i) => (
+                <div style={{ background: "#fff", border: `1px solid ${C.lineSoft}`, borderRadius: 22, padding: 26 }}>
+                  <h4 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 18, letterSpacing: "-.01em", marginBottom: 18, display: "flex", alignItems: "center", gap: 10 }}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.green} strokeWidth="2" strokeLinecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+                    TCAS — ข้อมูลการรับ
+                  </h4>
+                  {program.tcas_rounds.length > 0 ? (
+                    program.tcas_rounds.map((round, i) => (
                       <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", padding: "10px 0", borderBottom: i < program.tcas_rounds.length - 1 ? `1px dashed ${C.line}` : "none", fontSize: 14 }}>
                         <span style={{ color: C.ink3 }}>{round.round}</span>
                         <span style={{ fontWeight: 700, color: C.ink, textAlign: "right" }}>
                           รับ {round.quota} คน {round.min_score !== null ? `· ขั้นต่ำ ${round.min_score}` : ""}
                         </span>
                       </div>
-                    ))}
-                  </div>
-                )}
+                    ))
+                  ) : (
+                    <div style={{ fontSize: 14, color: C.ink3, padding: "8px 0" }}>ยังไม่มีข้อมูล TCAS สำหรับหลักสูตรนี้</div>
+                  )}
+                </div>
                 {/* Cost */}
                 {rich && (
                   <div style={{ background: "#fff", border: `1px solid ${C.lineSoft}`, borderRadius: 22, padding: 26 }}>
@@ -557,7 +559,8 @@ export default function ProgramDetailPage() {
                     {[
                       ["ค่าเทอม", rich.cost],
                       ["ตลอดหลักสูตร 4 ปี (ประมาณ)", `~ ${(parseInt(rich.cost.replace(/[^0-9]/g, "")) * 8).toLocaleString()} ฿`],
-                      ["จำนวนที่รับ", `${rich.seats} คน`],
+                      ["จำนวนที่รับ", `${program.tcas_rounds.length > 0 ? program.tcas_rounds.reduce((s, r) => s + (r.quota ?? 0), 0) : rich.seats} คน`],
+                      ["เงินเดือนเริ่มต้น (ประมาณการ)", rich.salary],
                       ["ทุนการศึกษา", "15+ แหล่ง"],
                       ["หอพักในมหาวิทยาลัย", "4,000–8,000 ฿/เทอม"],
                     ].map(([k, v]) => (
