@@ -106,14 +106,15 @@ export function MessageList({
   onQuickPrompt,
   hollandCode,
 }: Props) {
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    const el = containerRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
   }, [messages, isLoading]);
 
   return (
-    <div className="flex flex-1 min-h-0 flex-col gap-[18px] overflow-y-auto px-8 py-7">
+    <div ref={containerRef} className="flex flex-1 min-h-0 flex-col gap-[18px] overflow-y-auto px-8 py-7">
       {messages.length === 0 && !isLoading ? (
         <WelcomeState hollandCode={hollandCode} onQuickPrompt={onQuickPrompt} />
       ) : (
@@ -139,7 +140,6 @@ export function MessageList({
         })
       )}
       {isLoading && <TypingIndicator label={typingIndicatorLabel} />}
-      <div ref={bottomRef} />
     </div>
   );
 }
