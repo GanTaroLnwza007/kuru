@@ -95,6 +95,26 @@ def similarity_search(
     return result.data or []
 
 
+def keyword_search_chunks(
+    client: Client,
+    program_id: str,
+    term: str,
+    limit: int = 5,
+) -> list[dict[str, Any]]:
+    """Fetch same-program chunks containing a literal keyword or phrase."""
+    if not term.strip():
+        return []
+    result = (
+        client.table("chunks")
+        .select("id, program_id, source_file, section_type, content, metadata")
+        .eq("program_id", program_id)
+        .ilike("content", f"%{term}%")
+        .limit(limit)
+        .execute()
+    )
+    return result.data or []
+
+
 def count_chunks(client: Client, source_file: str) -> int:
     """Return the number of chunks already stored for a given source file."""
     result = (

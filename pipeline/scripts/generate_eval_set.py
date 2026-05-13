@@ -12,6 +12,7 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -38,6 +39,7 @@ Rules:
 - Mix Thai and English questions naturally (Thai students ask in both languages)
 - Keep answers concise and factual (1-3 sentences)
 - Vary question types: admission, curriculum content, program details, PLOs
+- Do not create questions about corrupted/OCR-garbled course names or unreadable text
 - Output valid JSON only — no markdown, no explanation"""
 
 _USER_TEMPLATE = """Passage (from program: {program_name}, file: {source_file}, section: {section_type}):
@@ -88,34 +90,70 @@ def _generate_qa(content: str, source_file: str, section_type: str, program_name
         return []
 
 
-def _sample_chunks(client, programs: list[dict], per_program: int = 3) -> list[dict]:
-    """Sample diverse chunks across programs and section types."""
-    SECTION_PRIORITY = ["admission", "plo", "general", "course"]
+def _looks_corrupt(text: str) -> bool:
+    """Reject visibly OCR-corrupted generated text."""
+    if not text.strip():
+        return True
+
+    suspicious = [
+        "เทคนิโส",
+        "ถู้",
+        "กรรมสพ",
+        "????",
+        "undefined",
+        "null",
+    ]
+    lowered = text.lower()
+    if any(s in lowered for s in suspicious):
+        return True
+
+    return False
+
+
+def _sample_chunks(client, programs: list[dict], target_chunks: int) -> list[dict]:
+    """Sample a balanced set of chunks across current programs and section types."""
+    section_targets = {
+        "course": max(1, round(target_chunks * 0.45)),
+        "admission": max(1, round(target_chunks * 0.30)),
+        "plo": max(1, round(target_chunks * 0.15)),
+        "general": max(1, target_chunks),
+    }
+    section_targets["general"] = max(
+        1,
+        target_chunks - sum(v for k, v in section_targets.items() if k != "general"),
+    )
+
     samples: list[dict] = []
+    seen_keys: set[tuple[str, str, str]] = set()
 
-    for prog in programs:
-        pid = prog["id"]
-        name_th = prog.get("name_th") or pid
-        seen_sections: set[str] = set()
-
-        for section in SECTION_PRIORITY:
-            if len([s for s in samples if s["program_id"] == pid]) >= per_program:
+    for section, target in section_targets.items():
+        section_count = 0
+        for prog in programs:
+            if section_count >= target or len(samples) >= target_chunks:
                 break
+
+            pid = prog["id"]
             rows = (
                 client.table("chunks")
                 .select("content,source_file,section_type,program_id")
                 .eq("program_id", pid)
                 .eq("section_type", section)
-                .limit(1)
+                .limit(3)
                 .execute()
             )
-            for row in rows.data:
-                if row["section_type"] not in seen_sections and len(row["content"].strip()) > 200:
-                    row["name_th"] = name_th
-                    samples.append(row)
-                    seen_sections.add(row["section_type"])
+            for row in rows.data or []:
+                content = (row.get("content") or "").strip()
+                key = (pid, section, row.get("source_file", ""))
+                if key in seen_keys or len(content) <= 200:
+                    continue
 
-    return samples
+                row["name_th"] = prog.get("name_th") or prog.get("name_en") or pid
+                samples.append(row)
+                seen_keys.add(key)
+                section_count += 1
+                break
+
+    return samples[:target_chunks]
 
 
 def main() -> None:
@@ -134,9 +172,9 @@ def main() -> None:
     valid_programs = [p for p in programs if p.get("name_th") and "แบบ" not in (p.get("name_th") or "")]
     print(f"Found {len(valid_programs)} valid programs to sample from")
 
-    chunks_needed = -(-args.target // args.qa_per_chunk)  # ceiling division
-    per_program = max(1, -(-chunks_needed // len(valid_programs)))
-    samples = _sample_chunks(client, valid_programs, per_program=per_program)
+    # Oversample a little so filtering OCR-corrupted pairs still leaves enough rows.
+    chunks_needed = -(-(args.target + max(4, args.target // 4)) // args.qa_per_chunk)
+    samples = _sample_chunks(client, valid_programs, target_chunks=chunks_needed)
     print(f"Sampled {len(samples)} chunks → targeting {len(samples) * args.qa_per_chunk} Q&A pairs\n")
 
     rows: list[dict] = []
@@ -153,9 +191,14 @@ def main() -> None:
         print(f"{len(pairs)} pairs  (~${session_usage.estimated_cost_usd:.4f} spent)")
 
         for pair in pairs:
+            question = pair.get("question", "")
+            answer = pair.get("answer", "")
+            if _looks_corrupt(question) or _looks_corrupt(answer):
+                print("    [skip] OCR-corrupted generated pair")
+                continue
             rows.append({
-                "question":           pair.get("question", ""),
-                "ground_truth_answer": pair.get("answer", ""),
+                "question":           question,
+                "ground_truth_answer": answer,
                 "question_type":      pair.get("question_type", "general"),
                 "source_file":        src,
                 "program_id":         prog_id,

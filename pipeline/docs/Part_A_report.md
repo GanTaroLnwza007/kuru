@@ -20,7 +20,7 @@
 2. **Cross-lingual retrieval** — the student population queries in both Thai and English, but all curriculum documents are in Thai. A rule-based system has no mechanism for cross-language matching.
 3. **Synthesis across sections** — questions like "What are the minimum credits for general education in Computer Engineering?" require combining a credit table, a section header, and program identity from different parts of the document. Keyword search returns fragments; an LLM synthesises them into a coherent answer.
 
-**Expected impact:** Students can resolve curriculum and admission questions in under 5 seconds through natural language, without downloading or reading PDFs. This reduces the information barrier to informed TCAS program selection across 66+ KU programs.
+**Expected impact:** Students can resolve curriculum and admission questions in under 5 seconds through natural language, without downloading or reading PDFs. This reduces the information barrier to informed TCAS program selection across the cleaned Bangkhen corpus of 57 KU program records.
 
 ---
 
@@ -34,16 +34,16 @@ The following objectives satisfy the MAC criteria: each metric is **Measurable**
 
 | Level | Metric | Target | How Measured |
 |-------|--------|--------|--------------|
-| System goal | Good-answer rate (LLM-as-judge score ≥2/3) | ≥80% | Offline eval set, 20-question sample per run |
+| System goal | Good-answer rate (LLM-as-judge score ≥2 on 0–3 rubric) | ≥80% | Offline current-chunk eval set |
 | Leading indicator | Retrieval hit rate | ≥70% | Fraction of eval queries where correct chunk appears in top-k |
-| User outcome | Query resolved without follow-up | ≥80% of sessions | Thumbs-up rate in production feedback table |
+| User outcome | Query resolved without follow-up | ≥80% of rated answers | Thumbs-up rate in production feedback table |
 | System quality | End-to-end response latency | ≤5 seconds | Measured per request in FastAPI middleware |
 | Coverage | Programs queryable | ≥30 programs | Chunk count > 0 per program in Supabase |
 
-**Current status (eval set v3, n=20 questions):**
-- Good-answer rate: 65% (target: 80%)
-- Average LLM-as-judge score: 1.80 / 3.0
-- Admission questions avg: 1.83 | Curriculum questions avg: 1.79
+**Current status (v7 rerank on current-chunk eval set, n=50 questions):**
+- Good-answer rate: 74% (target: 80%)
+- Average LLM-as-judge score: 2.26 / 3.0
+- Admission avg: 2.09 | Curriculum avg: 2.23 | PLO avg: 2.40 | General avg: 2.75
 
 ---
 
@@ -53,7 +53,7 @@ The following objectives satisfy the MAC criteria: each metric is **Measurable**
 
 The system uses AI to solve two specific sub-problems:
 
-1. **Semantic retrieval across a multilingual document corpus** — given a Thai or English question, find the most relevant passages from มคอ.2 PDFs across 66 programs. This cannot be solved with keyword search due to vocabulary and language gaps.
+1. **Semantic retrieval across a multilingual document corpus** — given a Thai or English question, find the most relevant passages from มคอ.2 PDFs across the cleaned 57-program corpus. This cannot be solved with keyword search alone due to vocabulary and language gaps.
 
 2. **Answer synthesis and grounding** — given retrieved passages, generate a fluent, accurate answer that cites its sources and does not hallucinate beyond the provided context. This requires an LLM with a strict citation-grounded prompt.
 
@@ -61,11 +61,11 @@ The system uses AI to solve two specific sub-problems:
 
 | Property | Measure | Data Collection | Operationalization |
 |----------|---------|-----------------|-------------------|
-| **Correctness** (system goal) | LLM-as-judge score 0–3 per question | Run `scripts/run_eval.py` against 20-question sample from 50-question synthetic eval set | Score ≥2 = "good answer"; target ≥80% of sample |
-| **Retrieval hit rate** (leading indicator) | Fraction of eval queries where ground-truth answer is in top-k chunks | Compare retrieved chunks against ground-truth answer in eval CSV | Hit if judge scores ≥2; target ≥70% |
-| **User satisfaction** (user outcome) | Thumbs-up / thumbs-down ratio per program | `feedback` table in Supabase, written on each user rating | Negative rate >30% per program triggers re-ingestion review |
+| **Correctness** (system goal) | LLM-as-judge score 0–3 per question | Run `scripts/run_eval.py` against a 50-question current-chunk eval set | Score ≥2 = "good answer"; target ≥80% of eval set |
+| **Retrieval hit rate** (leading indicator) | Fraction of eval queries where ground-truth answer is in top-k chunks | Compare retrieved chunks against ground-truth answer in eval CSV | Hit if expected answer evidence appears in retrieved context; target ≥70% |
+| **User satisfaction** (user outcome) | Thumbs-up / thumbs-down ratio | `feedback` table in Supabase, written on each user rating | Negative rate >30% triggers review of low-rated questions and their source programs |
 | **Latency** (system quality) | Time from query received to response returned (ms) | FastAPI middleware logs per-request timing | p95 ≤ 5,000ms; alert if p95 > 8,000ms |
-| **Coverage** (system quality) | Number of programs with chunk_count > 100 | Daily query: `SELECT COUNT(*) FROM chunks GROUP BY program_id` | Target ≥30 programs above threshold |
+| **Coverage** (system quality) | Number of programs with chunk_count > 100 | Daily query: `SELECT program_id, COUNT(*) FROM chunks GROUP BY program_id` | Target ≥30 programs above threshold |
 | **Hallucination rate** (model property) | Fraction of answers containing claims not in retrieved chunks | LLM-as-judge secondary prompt asking "Is this answer grounded in the provided passages?" | Target <10% hallucination rate |
 
 #### A2.2.3 — ML Canvas
@@ -75,15 +75,15 @@ The system uses AI to solve two specific sub-problems:
 | **Prediction task** | Given a natural language question (Thai/English) and optional program scope, retrieve relevant passage(s) from มคอ.2 curriculum documents and generate a grounded, cited answer |
 | **Input** | User question text (Thai or English); optional program_id filter |
 | **Output** | Generated answer text with inline source citations (source file + section type) |
-| **Training data / corpus** | 18,027 document chunks from 66 KU programs at บางเขน campus. Ingestion = "training loop": chunking strategy and embedding model selection are the architecture decisions; chunk_size, overlap, top_k, MIN_SIMILARITY are the hyperparameters tuned across experiments |
+| **Training data / corpus** | 13,910 cleaned document chunks from the Bangkhen corpus after duplicate cleanup: 57 program records, with 56 currently usable chunked programs and one DVM record requiring a dedicated re-ingest. Ingestion = "training loop": chunking strategy and embedding model selection are the architecture decisions; chunk_size, overlap, top_k, MIN_SIMILARITY, and reranking rules are the hyperparameters tuned across experiments |
 | **Features** | 768-dimensional dense embeddings (intfloat/multilingual-e5-base) with asymmetric prefixes: `passage:` for documents, `query:` for queries |
-| **Model — retriever** | IVFFlat pgvector index, cosine similarity, probes=50, fetch 3×top_k then re-rank |
-| **Model — generator** | Google Gemini 2.5 Flash Lite via google-genai SDK; strict citation-grounded prompt |
-| **Hyperparameters** | chunk_size=2000 chars, overlap=200 chars, top_k=5, IVFFlat probes=50 |
+| **Model — retriever** | IVFFlat pgvector index, cosine similarity, probes=10, fetch 3×top_k, same-program keyword fallback, and targeted lexical reranking for structure/PLO/TCAS-style questions |
+| **Model — generator** | Google Gemini 2.5 Flash Lite through OpenRouter for RAG answer generation; strict citation-grounded prompt |
+| **Hyperparameters** | chunk_size=2000 chars, overlap=200 chars, top_k=5, MIN_SIMILARITY=0.35, IVFFlat probes=10 |
 | **Evaluation metric** | LLM-as-judge score (0–3 scale), good-answer rate (score ≥2), split by question type (admission / curriculum) |
-| **Offline evaluation** | 50-question synthetic eval set generated from actual Supabase chunks; 20 sampled per run with fixed seed |
-| **Online feedback** | Thumbs up/down → `feedback` table → flags low-coverage programs for re-ingestion |
-| **Known limitations** | Credit tables not extracted as structured text (fragmented by PyMuPDF); ambiguous program names ("นานาชาติ") cause resolution failures; กำแพงแสน / ศรีราชา campuses not yet ingested |
+| **Offline evaluation** | 50-question synthetic eval set generated from actual Supabase chunks; optional fixed-seed sampling for faster smoke runs |
+| **Online feedback** | Thumbs up/down → `feedback` table → review low-rated questions and map source programs for re-ingestion |
+| **Known limitations** | Dense table rows are still difficult to retrieve exactly; OCR-corrupted course titles can create noisy questions; DVM has a known interrupted chunk retry; กำแพงแสน / ศรีราชา campuses are not yet fully represented |
 
 #### A2.2.4 — Fault Tree Analysis (FTA)
 
@@ -126,7 +126,7 @@ Wrong/unhelpful answer  [TOP]
 | MCS-2 | program_id resolution failure | SPEC | Token-based name matching on name_th + name_en; program_id passed explicitly in eval |
 | MCS-3 | LLM hallucination | SPEC | System prompt: "only answer using information from the provided passages"; no-LLM guard when context empty |
 | MCS-4 | No empty-result guard | SPEC | `if not chunks and not tcas_records: return hardcoded "no data" message` — LLM never called |
-| MCS-5 | Tabular data loss | REQ | Identified as root cause of 3/20 eval failures; proposed fix: table-aware chunking with PyMuPDF `find_tables()` |
+| MCS-5 | Tabular data loss | REQ | Still visible in the v6/v7 eval stress cases; proposed fix: table-aware chunking with PyMuPDF `find_tables()` plus `structure` / `assessment` / `policy` section tags |
 
 ---
 
@@ -149,7 +149,7 @@ The system uses full automation — the user types a question and receives a gen
 | Source citations | Inline badges showing source filename and section type after each claim | Allows user to verify; reduces blind trust in generated text |
 | Confidence signal | If no relevant chunks found, system returns a fixed "ไม่พบข้อมูล" message instead of generating | Honest uncertainty > hallucinated confidence |
 | Feedback | Thumbs up / thumbs down below each response | Simple, low-friction; actionable signal for monitoring |
-| Coverage note | If program has known data gaps (e.g., no PLO sections), a note is injected: "PLO information not available for this program" | Sets correct expectations before the user asks follow-ups |
+| Coverage note | If retrieved evidence is weak or missing, the API returns low confidence or a fixed no-data message | Sets correct expectations before the user asks follow-ups |
 
 **What is NOT shown to the user:** raw chunk text, similarity scores, program_id, embedding vectors. These are internal pipeline details that add noise without benefit to a student user.
 
@@ -160,10 +160,10 @@ The system uses full automation — the user types a question and receives a gen
 | Component | Location | Justification |
 |-----------|----------|---------------|
 | Embedding model (intfloat/multilingual-e5-base, 768-dim) | **Local** — runs on the backend server process | Gemini embedding API has a 1,000 requests/day free quota — far too low for production. Local inference costs ~50ms per query with no quota constraint |
-| Vector index (pgvector IVFFlat) | **Cloud** — Supabase managed PostgreSQL | Managed scaling, persistent storage, no infrastructure to maintain; sub-200ms search across 18,027 chunks |
-| LLM generator (Gemini 2.5 Flash Lite) | **Cloud** — Google Gemini API | State-of-the-art Thai language generation; pay-per-token with no infrastructure; stateless per call |
-| Backend API (FastAPI) | **Cloud** — Railway | Managed deployment; co-located with embedding model to avoid network round-trip for local inference |
-| Frontend (Next.js) | **Cloud** — Vercel | CDN-distributed; no backend coupling |
+| Vector index (pgvector IVFFlat) | **Cloud** — Supabase managed PostgreSQL | Managed scaling, persistent storage, no infrastructure to maintain; sub-200ms search across 13,910 cleaned chunks |
+| LLM generator (Gemini 2.5 Flash Lite) | **Cloud** — OpenRouter provider route | State-of-the-art Thai language generation through a pay-per-token API; stateless per call |
+| Backend API (FastAPI) | **Backend server / cloud-ready host** | Co-located with the local embedding model to avoid a second network round trip for inference |
+| Frontend (Next.js) | **Web app / cloud-ready host** | Decoupled from the backend API and deployable behind a CDN |
 
 The embedding model runs locally on the same server as FastAPI specifically to avoid the API quota bottleneck — this is a justified architectural trade-off that differs from full cloud deployment.
 
@@ -172,9 +172,9 @@ The embedding model runs locally on the same server as FastAPI specifically to a
 | Consideration | Design decision | Justification |
 |---------------|----------------|---------------|
 | **Prediction speed / latency** | Target p95 ≤ 5s; local embedding (~50ms) + pgvector (~100ms) + Gemini (~2–4s) | Students expect near-instant response; >10s abandon rate is high. Gemini dominates latency; local embedding avoids adding a second ~500ms API call |
-| **Model size** | multilingual-e5-base (278M parameters, ~1.1GB on disk) | Chosen over larger multilingual models (e5-large: 560M params) because base provides sufficient retrieval quality at half the memory footprint; runs on a standard 2GB Railway instance |
+| **Model size** | multilingual-e5-base (278M parameters, ~1.1GB on disk) | Chosen over larger multilingual models (e5-large: 560M params) because base provides sufficient retrieval quality at half the memory footprint; small enough for a modest backend server |
 | **Throughput** | Stateless query pipeline; no session state | Enables horizontal scaling: multiple FastAPI instances share the same Supabase vector store without coordination overhead |
-| **Cost** | Local embedding = $0/query; Gemini Flash Lite ≈ $0.00015/query at ~1,000 tokens input | For a student-facing advisory tool, cost per query must be near-zero to be viable without per-user charging |
+| **Cost** | Local embedding = $0/query; Gemini Flash Lite via OpenRouter is below one cent per typical query in the current eval runs | For a student-facing advisory tool, cost per query must be near-zero to be viable without per-user charging |
 | **Multilingual robustness** | multilingual-e5 trained on 100 languages including Thai | Retrieval quality on Thai-English mixed queries confirmed empirically; alternative Thai-only models lack English cross-lingual capability |
 
 #### A2.3.4 — Model Composition
@@ -190,11 +190,11 @@ Component 1: Embedding model (intfloat/multilingual-e5-base)
         │
         ▼ (vector passed to pgvector; top chunks returned)
         │
-Component 2: LLM generator (Gemini 2.5 Flash Lite)
+Component 2: LLM generator (Gemini 2.5 Flash Lite via OpenRouter)
     Role: Answer synthesiser
     Input: Retrieved chunks (plain text) + original question
     Output: Grounded answer with citations
-    Failure mode: If Gemini API unavailable, return "service temporarily unavailable"
+    Failure mode: If OpenRouter or the Gemini provider route is unavailable, return "service temporarily unavailable"
 ```
 
 **Composition pattern: Sequential (pipeline)**
@@ -215,11 +215,11 @@ Component 2: LLM generator (Gemini 2.5 Flash Lite)
 ```
 feedback(
     id          UUID PRIMARY KEY,
+    session_id  TEXT,
     question    TEXT,
     answer      TEXT,
-    program_id  TEXT,
-    score       INTEGER,  -- +1 (thumbs up) or -1 (thumbs down)
-    timestamp   TIMESTAMPTZ
+    rating      SMALLINT,  -- +1 (thumbs up) or -1 (thumbs down)
+    created_at  TIMESTAMPTZ
 )
 ```
 
@@ -227,10 +227,10 @@ feedback(
 
 | Metric | Tool | Alert threshold |
 |--------|------|----------------|
-| Negative feedback rate per program | Daily Supabase query aggregating `feedback` table | >30% negative → flag for re-ingestion review |
-| Good-answer rate (offline) | `scripts/run_eval.py` — LLM-as-judge on 20-question sample | <60% → investigate retrieval quality |
+| Negative feedback rate | Daily Supabase query aggregating `feedback` table | >30% negative → inspect low-rated questions and source programs |
+| Good-answer rate (offline) | `scripts/run_eval.py` — LLM-as-judge on current-chunk eval set | <60% → investigate retrieval quality |
 | Empty-result rate | Count of responses where no-data guard triggered / total queries | >20% → corpus coverage gap; ingest more programs |
-| Response latency p95 | FastAPI middleware timing log | >8,000ms → investigate embedding or Gemini API latency |
+| Response latency p95 | FastAPI middleware timing log | >8,000ms → investigate embedding or OpenRouter/Gemini latency |
 | Chunk count per program | Supabase query: `SELECT program_id, COUNT(*) FROM chunks GROUP BY program_id` | <50 chunks → program flagged as low-coverage |
 
 **Note on "retraining" for a RAG system:** For a RAG pipeline, re-ingestion is the functional equivalent of model retraining. The "model" is the indexed vector store — updating it with better-extracted or more complete document chunks directly improves retrieval quality without changing any model weights. The pipeline below describes this re-ingestion loop, which serves the same role as a retraining pipeline in a classical ML system.
@@ -244,7 +244,7 @@ User thumbs down
 feedback table (Supabase)
     │
     ▼ [daily aggregation]
-Programs with negative_rate > 30%
+Low-rated questions / source programs
     │
     ├── If chunks < 100: re-ingest with full มคอ.2 from data/native/curriculum
     │   (upgraded OCR model: gemini-2.5-flash)
@@ -269,56 +269,60 @@ Compare score before/after → log in eval_results.md
 | v1 baseline | 1.30 / 3.0 | 40% | No program_id scoping; decontextualized eval questions |
 | v2 (query fix) | 1.85 / 3.0 | 65% | program_id scoping + program-named questions in eval set |
 | v3 (re-ingest) | 1.80 / 3.0 | 65% | Full มคอ.2 PDFs (10× more chunks for engineering programs) |
+| v4 (cleanup diagnostic) | 1.34 / 3.0 | 46% | Invalid benchmark because 14 eval rows used stale program IDs removed by duplicate cleanup |
+| v5 (ID remap + retrieval fix) | 2.02 / 3.0 | 64% | Remapped cleanup IDs; added curriculum-structure retrieval fixes |
+| v6 (fresh current chunks) | 2.04 / 3.0 | 70% | Regenerated eval set from current chunks after cleanup |
+| v7 (targeted lexical rerank) | 2.26 / 3.0 | 74% | Added targeted reranking and filtered obvious OCR-corrupted generated questions |
 
-The v1→v2 improvement (+25pp) came from fixing program-scoped retrieval. The v2→v3 plateau confirms the remaining failures are structural (credit table extraction), not data-volume failures.
+The v1→v2 improvement (+25pp) came from fixing program-scoped retrieval. The v4 drop is not a real system regression because it used stale IDs after duplicate cleanup. The current best benchmark is v7 on the fresh current-chunk eval set: 74% good answers, with remaining failures concentrated in dense tables, OCR-noisy rows, and section metadata gaps.
 
 ---
 
 ## A3 — Proposed Improvements
 
-Current system: 65% good-answer rate. Three concrete improvements address the confirmed root causes.
+Current system: 74% good-answer rate. Three concrete improvements target the remaining path to the 80% submission goal.
 
-### Improvement 1: Table-Aware Chunking (highest impact)
+### Improvement 1: Table-Aware Structure Backfill (highest impact)
 
-**Root cause confirmed:** Credit-structure questions score 0 even after re-ingesting the EME program with 332 full-document chunks. The issue is extraction quality: PyMuPDF breaks table cells into fragmented text, losing row/column relationships. "30" appears in a chunk with no context that it means "30 minimum credits for general education."
+**Root cause confirmed:** Curriculum-structure and assessment questions still fail when the answer lives in dense tables or table-like PDF text. The issue is extraction quality: PyMuPDF can break table cells into fragmented text, losing row/column relationships. A number such as "30" may appear without enough context to show that it means "30 minimum credits for general education."
 
 **Solution:**
 1. Detect tabular regions via PyMuPDF `page.find_tables()` during extraction
 2. Serialize tables as Markdown: `| หมวดวิชา | หน่วยกิต |\n|---|---|\n| วิชาศึกษาทั่วไป | 30 |`
-3. Tag as `section_type = "structure"` for targeted retrieval on credit queries
+3. Backfill `section_type` tags for `structure`, `assessment`, and `policy` so targeted retrieval can find credit tables, PLO assessment methods, and curriculum rules
 
-**Expected gain:** +10–15pp (3 failing questions out of 20 recovered)
+**Expected gain:** +6–10pp by recovering table-heavy curriculum and assessment questions.
 
-### Improvement 2: Program Name Alias Resolution (lowest effort)
+### Improvement 2: Hybrid BM25 + Dense Retrieval
 
-**Root cause confirmed:** "นานาชาติ" matches 10+ programs; resolver falls back to all-program search and mixes chunks from multiple programs in the context.
+**Root cause:** Dense-only retrieval underperforms on exact-keyword queries, especially course codes, credit numbers, plan numbers, and short policy phrases. PostgreSQL full-text search is already available in Supabase.
 
-**Solution:** Add `name_aliases` column to `programs` table; resolve ambiguous short forms to the full official program name before retrieval.
+**Solution:** Run full-text keyword search and dense vector search together, then merge with Reciprocal Rank Fusion (`score = Σ 1/(60 + rank_i)`). Keep the existing targeted lexical rerank for structure/PLO/TCAS-style questions.
 
-**Expected gain:** +5pp (1 confirmed failure)
+**Expected gain:** +4–8pp on keyword-heavy curriculum and policy questions.
 
-### Improvement 3: Hybrid BM25 + Dense Retrieval (medium effort)
+### Improvement 3: OCR and Eval Data Quality Cleanup
 
-**Root cause:** Dense-only retrieval underperforms on exact-keyword queries (course codes, credit numbers). PostgreSQL `tsvector` full-text search is already available in Supabase.
+**Root cause:** Some generated eval questions still contain OCR-corrupted fragments or ask about malformed table rows. The DVM PDF also has a known interrupted chunk retry and should not be treated as clean coverage until it gets a dedicated long re-ingest.
 
-**Solution:** Run BM25 and dense search in parallel; merge with Reciprocal Rank Fusion (`score = Σ 1/(60 + rank_i)`). Activate only when query contains numeric tokens.
+**Solution:** Add OCR-quality filters during eval generation and ingestion, mark low-confidence chunks, and run a dedicated DVM re-ingest. Keep `name_aliases` as a secondary resolver improvement for ambiguous short names, but the duplicate cleanup already removed the largest stale-ID/name ambiguity.
 
-**Expected gain:** +5–10pp on keyword-heavy curriculum questions
+**Expected gain:** +3–5pp by removing avoidable noisy failures and improving edge-case coverage.
 
 ### Combined Projection
 
 | Improvement | Est. gain |
 |-------------|-----------|
-| Table-aware chunking | +10–15pp |
-| Name alias resolution | +5pp |
-| Hybrid BM25 + dense | +5–10pp |
-| **Combined** | **~75–85% good-answer rate** |
+| Table-aware structure backfill | +6–10pp |
+| Hybrid BM25 + dense | +4–8pp |
+| OCR/eval cleanup + DVM re-ingest | +3–5pp |
+| **Combined** | **~80–85% good-answer rate** |
 
 ---
 
 ## AI Usage Disclosure
 
-Claude (Anthropic) was used to assist with: drafting and structuring this report, generating the B1 data exploration notebook code, and writing the eval runner script (`scripts/run_eval.py`). All architectural decisions, evaluation design, pipeline implementation, and data ingestion were performed by the team. All submitted code has been reviewed and can be explained by the team members.
+Claude (Anthropic) and ChatGPT/Codex were used to assist with: drafting and structuring this report, aligning the report with the latest ingestion/evaluation status, generating the B1 data exploration notebook code, and writing the eval runner script (`scripts/run_eval.py`). All architectural decisions, evaluation design, pipeline implementation, and data ingestion were performed by the team. All submitted code has been reviewed and can be explained by the team members.
 
 ---
 

@@ -1,8 +1,8 @@
 {
   "model_name": "KUru RAG Pipeline",
   "version": "1.0.0",
-  "selected_from_experiment": "wider_retrieval",
-  "mlflow_run_id": "8cfd3e502e82424ba08e8958e62c3e86",
+  "selected_from_experiment": "targeted_lexical_rerank",
+  "mlflow_run_id": "current-v7-eval",
   "components": {
     "embedder": {
       "model_id": "intfloat/multilingual-e5-base",
@@ -15,10 +15,12 @@
     "retriever": {
       "backend": "supabase_pgvector",
       "index_type": "IVFFlat",
-      "index_probes": 50,
-      "top_k": 8,
+      "index_probes": 10,
+      "top_k": 5,
       "fetch_multiplier": 3,
-      "min_similarity": 0.30
+      "min_similarity": 0.35,
+      "keyword_fallback": "same-program fallback for structure/PLO/policy/TCAS terms",
+      "targeted_lexical_rerank": true
     },
     "reranker": {
       "method": "pythainlp_token_overlap",
@@ -27,10 +29,10 @@
       "language": "th+en"
     },
     "generator": {
-      "model_id": "google/gemini-2.5-flash-lite-preview-06-17",
+      "model_id": "google/gemini-2.5-flash-lite",
       "provider": "openrouter",
       "temperature": 0.2,
-      "system_prompt_version": "kuru-v3"
+      "system_prompt_version": "kuru-v4"
     }
   },
   "pipeline_config": {

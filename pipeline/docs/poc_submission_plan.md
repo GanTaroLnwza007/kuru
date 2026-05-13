@@ -4,6 +4,8 @@
 **Deadline:** 14 May 2026, 23:59 (via Google Classroom)  
 **Target:** Complete in 2-3 days (starting May 10)
 
+**Current status note (2026-05-13):** This plan is a historical execution plan. For the current Part B source of truth after ingestion cleanup and v7 evaluation, use `pipeline/docs/Part_B_alignment.md`.
+
 ---
 
 ## Core Framing: RAG = The ML Model

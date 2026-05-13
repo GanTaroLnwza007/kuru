@@ -44,7 +44,22 @@ _STRONG_TCAS_RE = re.compile(
 
 # Signals that the question is about curriculum-level policy (nationality, language), not TCAS scores
 _CURRICULUM_POLICY_RE = re.compile(
-    r"ต่างชาติ|ต่างประเทศ|foreign.student|international.student|นิสิตต่าง",
+    r"ต่างชาติ|ต่างประเทศ|foreign.student|international.student|นิสิตต่าง|นักศึกษาต่าง|นิสิตไทย|นักศึกษาไทย|เฉพาะนิสิตไทย|เฉพาะนักศึกษาไทย",
+    re.IGNORECASE,
+)
+
+# Signals that the user is asking about curriculum structure, not TCAS admission.
+_CURRICULUM_STRUCTURE_RE = re.compile(
+    r"credit|credits|หน่วยกิต|หมวดวิชา|กลุ่มสาระ|โครงสร้างหลักสูตร|วิชาเฉพาะ|วิชาแกน"
+    r"|general.education|languages?.and.communication|curriculum.structure|specialized.course",
+    re.IGNORECASE,
+)
+
+# Explicit admission signals. Deliberately excludes broad words such as "requirement"
+# because curriculum questions often ask about credit requirements.
+_EXPLICIT_TCAS_RE = re.compile(
+    r"TCAS|GPAX|TGAT|TPAT|A-Level|admission|portfolio|quota|apply|applying|application"
+    r"|สมัคร|รับสมัคร|รอบ|คะแนน|โควตา|สอบ|ข้อสอบ|เข้าศึกษา|เข้าเรียน",
     re.IGNORECASE,
 )
 
@@ -166,6 +181,129 @@ def _resolve_extra_programs(question: str, programs: list[dict], exclude_id: str
 
     results.sort(reverse=True)
     return [pid for _, pid in results[:2]]
+
+
+def _structure_search_terms(question: str) -> list[str]:
+    """Return literal terms worth searching inside same-program chunks."""
+    q = question.lower()
+    terms: list[str] = []
+    pairs = [
+        (r"languages?.and.communication|ภาษากับการสื่อสาร", ["ภาษากับการสื่อสาร", "Languages and Communication"]),
+        (r"general.education|ศึกษาทั่วไป|หมวดวิชาศึกษาทั่วไป", ["หมวดวิชาศึกษาทั่วไป", "General Education"]),
+        (r"specialized|วิชาเฉพาะ", ["วิชาเฉพาะ", "specialized"]),
+        (r"core.course|วิชาแกน", ["วิชาแกน"]),
+        (r"curriculum.structure|โครงสร้างหลักสูตร", ["โครงสร้างหลักสูตร"]),
+        (r"credit|credits|หน่วยกิต", ["หน่วยกิต", "credits"]),
+        (r"cancel|cancelled|canceled|ยกเลิก", ["ยกเลิก", "cancel"]),
+        (r"thesis|วิทยานิพนธ์", ["วิทยานิพนธ์", "thesis"]),
+        (r"plan\s*1\.1|แบบ\s*1\.1", ["แบบ 1.1", "Plan 1.1"]),
+        (r"plan\s*2\.1|แบบ\s*2\.1", ["แบบ 2.1", "Plan 2.1"]),
+        (r"plan\s*2\.2|แบบ\s*2\.2", ["แบบ 2.2", "Plan 2.2"]),
+        (r"year\s*3|3rd.year|ปี\s*3", ["ปีที่ 3", "ชั้นปีที่ 3", "3rd year"]),
+        (r"semester|ภาคการศึกษา", ["ภาคการศึกษา", "semester"]),
+        (r"plo|learning.outcome|ผลลัพธ์", ["PLO", "ผลลัพธ์การเรียนรู้", "learning outcome"]),
+        (r"active.learning", ["active learning", "การเรียนรู้เชิงรุก"]),
+        (r"authentic.assessment", ["authentic assessment", "การประเมินตามสภาพจริง"]),
+        (r"self.management|self-management", ["self-management", "การจัดการตนเอง"]),
+        (r"digital.technology|digital", ["digital technology", "ดิจิทัล"]),
+        (r"foreign.student|international.student|นิสิตต่างชาติ|นักศึกษาต่างชาติ|ต่างชาติ", ["นิสิตต่างชาติ", "นักศึกษาต่างชาติ", "foreign student", "international student"]),
+        (r"นิสิตไทย|นักศึกษาไทย|thai.student", ["นิสิตไทย", "นักศึกษาไทย", "Thai student"]),
+        (r"selection|selecting|คัดเลือก", ["คัดเลือก", "selection"]),
+        (r"approval|approved|เปิดสอน|วันที่", ["เปิดสอน", "อนุมัติ", "วันที่"]),
+        (r"facebook|เพจ|ติดต่อ|สอบถาม", ["Facebook", "เพจ", "ติดต่อ", "สอบถาม"]),
+    ]
+    for pattern, candidates in pairs:
+        if re.search(pattern, q, re.IGNORECASE):
+            terms.extend(candidates)
+
+    terms.extend(re.findall(r"\b\d{8}\b", question))
+
+    seen: set[str] = set()
+    unique_terms: list[str] = []
+    for term in terms:
+        key = term.lower()
+        if key not in seen:
+            seen.add(key)
+            unique_terms.append(term)
+    return unique_terms
+
+
+def _keyword_rank(chunk: dict, terms: list[str]) -> int:
+    content = (chunk.get("content") or "").lower()
+    score = 0
+    for term in terms:
+        if term.lower() in content:
+            score += 10
+    if chunk.get("section_type") == "course":
+        score += 2
+    return score
+
+
+def _query_terms(question: str) -> list[str]:
+    """Extract query terms for lightweight lexical reranking."""
+    terms = re.findall(r"\b\d{4,8}\b", question)
+    terms.extend(
+        w.lower()
+        for w in re.findall(r"[a-zA-Z][a-zA-Z0-9-]{3,}", question)
+        if w.lower()
+        not in {
+            "what", "where", "when", "which", "about", "program", "kasetsart",
+            "university", "course", "courses", "credit", "credits",
+        }
+    )
+    try:
+        from pythainlp.tokenize import word_tokenize as _th_tokenize
+        thai_terms = [
+            t for t in _th_tokenize(question, engine="newmm")
+            if re.match(r"[ก-๙]{3,}", t)
+        ]
+    except Exception:
+        thai_terms = re.findall(r"[ก-๙]{3,}", question)
+    terms.extend(thai_terms)
+
+    seen: set[str] = set()
+    unique_terms: list[str] = []
+    for term in terms:
+        key = term.lower()
+        if key not in seen:
+            seen.add(key)
+            unique_terms.append(term)
+    return unique_terms
+
+
+def _evidence_rank_score(
+    question_terms: list[str],
+    structure_terms: list[str],
+    chunk: dict,
+    *,
+    is_plo_query: bool,
+    is_tcas_query: bool,
+) -> float:
+    """Rank chunks by exact evidence overlap while preserving vector similarity."""
+    content = (chunk.get("content") or "").lower()
+    source = (chunk.get("source_file") or "").lower()
+    section = chunk.get("section_type") or ""
+    score = float(chunk.get("similarity") or 0.0)
+
+    for term in structure_terms:
+        if term.lower() in content:
+            score += 12
+
+    for term in question_terms:
+        key = term.lower()
+        if key in content:
+            score += 4 if re.fullmatch(r"\d{4,8}", term) else 2
+        if key in source:
+            score += 1
+
+    if is_plo_query and section == "plo":
+        score += 8
+    if structure_terms and section == "course":
+        score += 3
+    if is_tcas_query and section == "admission":
+        score += 3
+
+    return score
 
 
 RAG_SYSTEM_PROMPT = """You are KUru, a warm and knowledgeable academic companion for Kasetsart University (KU) prospective students. Think of yourself as a helpful older male student who genuinely cares about guiding juniors — enthusiastic, friendly, and honest.
@@ -327,12 +465,15 @@ def query(
 
     # 2. Retrieve relevant chunks from pgvector (always unfiltered first)
     is_tcas_query = bool(TCAS_KEYWORDS.search(question))
-    # Override: questions about foreign/international students are curriculum policy questions,
-    # not TCAS score questions — only suppress when there are no strong TCAS signals.
-    if is_tcas_query and _CURRICULUM_POLICY_RE.search(question) and not _STRONG_TCAS_RE.search(question):
+    # Nationality/language admission policy is curriculum policy, not TCAS score lookup.
+    if is_tcas_query and _CURRICULUM_POLICY_RE.search(question):
         is_tcas_query = False
-    is_plo_query = bool(re.search(r"PLO|plo|ผลลัพธ์การเรียนรู้", question))
+    # Credit requirements and curriculum structure are not admission requirements.
+    if is_tcas_query and _CURRICULUM_STRUCTURE_RE.search(question) and not _EXPLICIT_TCAS_RE.search(question):
+        is_tcas_query = False
+    is_plo_query = bool(re.search(r"PLO|plo|learning outcome|ผลลัพธ์การเรียนรู้|ผลลัพธ์", question, re.IGNORECASE))
     is_listing_query = bool(LISTING_KEYWORDS.search(question))
+    structure_terms = _structure_search_terms(question)
     # Fetch a larger pool so re-ranking has enough material
     fetch_k = max(top_k * 3, 15)
     all_chunks = db.similarity_search(client, q_embedding, top_k=fetch_k, program_id=program_id)
@@ -462,6 +603,22 @@ def query(
     if is_tcas_query:
         chunks = [c for c in chunks if c.get("section_type") != "course"] or chunks
 
+    if program_id and structure_terms and not is_tcas_query:
+        keyword_hits: list[dict] = []
+        seen_ids = {c.get("id") for c in chunks}
+        for term in structure_terms:
+            for hit in db.keyword_search_chunks(client, program_id, term, limit=8):
+                if hit.get("id") in seen_ids:
+                    continue
+                seen_ids.add(hit.get("id"))
+                hit["similarity"] = max(hit.get("similarity") or 0.0, 0.999)
+                keyword_hits.append(hit)
+        if keyword_hits:
+            keyword_hits.sort(key=lambda c: _keyword_rank(c, structure_terms), reverse=True)
+            chunks = keyword_hits[:3] + chunks
+            debug_info["keyword_terms"] = structure_terms
+            debug_info["keyword_hits"] = len(keyword_hits)
+
     # Re-rank: boost chunks whose source file matches program keywords in the query.
     # Thai words run together so we use pythainlp to tokenize before matching.
     try:
@@ -492,9 +649,29 @@ def query(
             program_chunks = [c for c in chunks if c.get("source_file") == top_src]
             other_chunks = [c for c in chunks if c.get("source_file") != top_src]
             # Use program chunks first, pad with others only if needed
-            chunks = (program_chunks + other_chunks)[:top_k]
+            chunks = (program_chunks + other_chunks)[: max(top_k * 3, 15)]
         else:
-            chunks = chunks[:top_k]
+            chunks = chunks[: max(top_k * 3, 15)]
+    elif len(chunks) > top_k:
+        chunks = chunks[: max(top_k * 3, 15)]
+
+    question_terms = _query_terms(question)
+    should_lexical_rerank = bool(structure_terms or is_plo_query or is_tcas_query)
+    if chunks and should_lexical_rerank:
+        chunks = sorted(
+            chunks,
+            key=lambda c: _evidence_rank_score(
+                question_terms,
+                structure_terms,
+                c,
+                is_plo_query=is_plo_query,
+                is_tcas_query=is_tcas_query,
+            ),
+            reverse=True,
+        )[:top_k]
+        debug_info["rerank_terms"] = question_terms[:20]
+    elif len(chunks) > top_k:
+        chunks = chunks[:top_k]
 
     debug_info["chunks_used"] = [
         {

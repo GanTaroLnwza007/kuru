@@ -9,8 +9,8 @@ flavors:
     artifacts:
       pipeline_config: pipeline_config.json
 model_uuid: kuru-rag-pipeline-v1
-run_id: 8cfd3e502e82424ba08e8958e62c3e86
-utc_time_created: "2026-05-11T00:00:00"
+run_id: current-v7-eval
+utc_time_created: "2026-05-13T00:00:00"
 mlflow_version: "2.13.0"
 signature:
   inputs: '[{"name": "question", "type": "string"}, {"name": "program_id", "type": "string", "required": false}]'
@@ -21,15 +21,22 @@ metadata:
     RAG pipeline for KU curriculum and TCAS admission queries.
     Components: multilingual-e5-base embedder → pgvector IVFFlat retriever →
     PyThaiNLP reranker → Gemini 2.5 Flash Lite generator.
-  best_experiment: wider_retrieval
+  best_experiment: targeted_lexical_rerank
   selected_params:
-    top_k: 8
-    min_similarity: 0.30
+    top_k: 5
+    min_similarity: 0.35
     fetch_multiplier: 3
+    index_probes: 10
     chunk_size: 2000
     chunk_overlap: 200
+    keyword_fallback: same-program structure/PLO/policy/TCAS terms
+    rerank: targeted lexical rerank
   eval_metrics:
-    avg_score: 2.10
-    pct_good: 70.0
-    avg_score_curriculum: 2.20
-    avg_score_admission: 2.00
+    eval_set: data/eval_set_v6_current_chunks.csv
+    result_file: data/eval_results_v6_current_chunks.csv
+    avg_score: 2.26
+    pct_good: 74.0
+    avg_score_curriculum: 2.23
+    avg_score_admission: 2.09
+    avg_score_plo: 2.40
+    avg_score_general: 2.75
