@@ -13,6 +13,7 @@ dependencies = [
     # kuru-pipeline is provided by the partner's pipeline/ package.
     # Remove this comment and uncomment the line below once ../pipeline exists.
     # "kuru-pipeline",
+    "kuru-pipeline",
 ]
 
 # [tool.uv.sources]
@@ -26,6 +27,9 @@ dev-dependencies = [
     "pytest>=8.3.0",
     "httpx>=0.27.0",
 ]
+
+[tool.uv.sources]
+kuru-pipeline = { path = "../pipeline", editable = true }
 
 [tool.black]
 line-length = 88
