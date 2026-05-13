@@ -253,3 +253,5 @@ pipeline/data/native/
 pipeline/data/scanned/
 pipeline/data/*.png
 pipeline/*.png
+pipeline/docs/01219462_Final_Project_Manuscript_v01.pdf
+pipeline/docs/01219462_Final_Project_Manuscript_v01.extracted.txt
