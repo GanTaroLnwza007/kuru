@@ -245,6 +245,11 @@ const PORTFOLIO_KEY_LABELS: Record<string, string> = {
   competition_level: "ระดับการแข่งขัน",
   portfolio_description: "รายละเอียด Portfolio",
   other_requirements: "ข้อกำหนดอื่น ๆ",
+  criteria: "เกณฑ์ที่ต้องการ",
+  description: "คำอธิบาย",
+  length_limit: "จำนวนหน้าสูงสุด",
+  statement_of_purpose: "Statement of Purpose",
+  Statement_of_Purpose: "Statement of Purpose",
 };
 
 const MONTHS_TH = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
@@ -254,19 +259,59 @@ function formatThaiDate(iso: string): string {
   return `${d.getDate()} ${MONTHS_TH[d.getMonth()]} ${d.getFullYear() + 543}`;
 }
 
-type CriteriaEntry = { weight?: number; grade?: string; criteria?: string[] };
+type CriteriaEntry = { weight?: number; grade?: string | { item: string }; criteria?: Array<string | { item: string }> };
+
+function GradeTable({ grades, allSame, uniqueGrade, collapseAt }: {
+  grades: { subj: string; grade: string }[];
+  allSame: boolean;
+  uniqueGrade: string;
+  collapseAt: number;
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const visible = !expanded && grades.length > collapseAt ? grades.slice(0, collapseAt) : grades;
+  return (
+    <div>
+      <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 10 }}>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.amber} strokeWidth="2" strokeLinecap="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+        <span style={{ fontSize: 12, fontWeight: 800, color: C.amber, letterSpacing: ".08em", textTransform: "uppercase" }}>เกรดขั้นต่ำที่ต้องการ</span>
+      </div>
+      {allSame && (
+        <div style={{ marginBottom: 8, fontSize: 12.5, color: C.ink3 }}>
+          ทุกวิชาต้องได้เกรด{" "}
+          <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 11.5, color: C.greenDeep, background: C.greenSoft, padding: "1px 7px", borderRadius: 5 }}>{uniqueGrade}</span>
+          {" "}ขึ้นไป
+        </div>
+      )}
+      <div style={{ borderRadius: 10, overflow: "hidden", border: `1px solid ${C.lineSoft}` }}>
+        {visible.map(({ subj, grade }, i) => (
+          <div key={subj} style={{ display: "grid", gridTemplateColumns: "1fr auto", alignItems: "center", padding: "7px 12px", background: i % 2 === 0 ? "#fff" : "#F9FAFB", borderBottom: i < visible.length - 1 ? `1px solid ${C.lineSoft}` : "none" }}>
+            <span style={{ fontSize: 13, color: C.ink2 }}>{subj}</span>
+            {!allSame && (
+              <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 11.5, color: C.greenDeep, background: C.greenSoft, padding: "1px 7px", borderRadius: 5 }}>{grade}</span>
+            )}
+          </div>
+        ))}
+      </div>
+      {grades.length > collapseAt && (
+        <button type="button" onClick={() => setExpanded((v) => !v)} style={{ marginTop: 6, fontSize: 12.5, color: C.green, fontWeight: 700, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+          {expanded ? "ย่อรายการ ▲" : `ดูทั้งหมด ${grades.length} วิชา ▼`}
+        </button>
+      )}
+    </div>
+  );
+}
 
 // Track card inside a round group
 function TcasRoundCard({ round }: { round: import("@/lib/api").TcasRound }) {
   const [open, setOpen] = useState(false);
   const criteria = round.exam_criteria as Record<string, CriteriaEntry> | null | undefined;
-  const portfolio = round.portfolio_requirements as Record<string, string> | null | undefined;
+  const portfolio = round.portfolio_requirements as Record<string, unknown> | null | undefined;
   const deadlines = round.deadlines;
 
   // Normalise weights → 0-100
   let weightedEntries: { subject: string; pct: number }[] = [];
   if (criteria) {
-    const entries = Object.entries(criteria).filter(([, v]) => typeof (v as CriteriaEntry).weight === "number");
+    const entries = Object.entries(criteria).filter(([, v]) => v != null && typeof (v as CriteriaEntry).weight === "number");
     if (entries.length > 0) {
       const rawSum = entries.reduce((s, [, v]) => s + ((v as CriteriaEntry).weight ?? 0), 0);
       const scale = rawSum > 0 && rawSum <= 1.01 ? 100 : 1;
@@ -277,8 +322,8 @@ function TcasRoundCard({ round }: { round: import("@/lib/api").TcasRound }) {
     }
   }
 
-  const gradeEntries = criteria ? Object.entries(criteria).filter(([, v]) => (v as CriteriaEntry).grade) : [];
-  const interviewCriteria = criteria ? Object.entries(criteria).flatMap(([, v]) => (v as CriteriaEntry).criteria ?? []) : [];
+  const gradeEntries = criteria ? Object.entries(criteria).filter(([, v]) => v != null && (v as CriteriaEntry).grade) : [];
+  const interviewCriteria = criteria ? Object.entries(criteria).flatMap(([, v]) => v != null ? ((v as CriteriaEntry).criteria ?? []).map((c) => typeof c === "string" ? c : c.item) : []) : [];
   const hasDetail = weightedEntries.length > 0 || gradeEntries.length > 0 || interviewCriteria.length > 0 || portfolio || deadlines;
 
   return (
@@ -336,22 +381,16 @@ function TcasRoundCard({ round }: { round: import("@/lib/api").TcasRound }) {
           )}
 
           {/* Grade requirements */}
-          {gradeEntries.length > 0 && (
-            <div>
-              <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 12 }}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.amber} strokeWidth="2" strokeLinecap="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
-                <span style={{ fontSize: 12, fontWeight: 800, color: C.amber, letterSpacing: ".08em", textTransform: "uppercase" }}>เกรดขั้นต่ำที่ต้องการ</span>
-              </div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                {gradeEntries.map(([subject, v]) => (
-                  <div key={subject} style={{ display: "inline-flex", alignItems: "center", gap: 8, padding: "5px 6px 5px 12px", borderRadius: 12, background: "#fff", border: `1px solid ${C.line}` }}>
-                    <span style={{ fontSize: 13, color: C.ink2 }}>{subject}</span>
-                    <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 12, color: C.greenDeep, background: C.greenSoft, padding: "2px 8px", borderRadius: 7 }}>{(v as CriteriaEntry).grade}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+          {gradeEntries.length > 0 && (() => {
+            const resolveGrade = (v: unknown) => { const g = (v as CriteriaEntry).grade; return typeof g === "string" ? g : g?.item ?? ""; };
+            const grades = gradeEntries.map(([subj, v]) => ({ subj, grade: resolveGrade(v) }));
+            const uniqueGrades = [...new Set(grades.map((r) => r.grade))];
+            const allSame = uniqueGrades.length === 1;
+            const COLLAPSE = 5;
+            return (
+              <GradeTable grades={grades} allSame={allSame} uniqueGrade={uniqueGrades[0]} collapseAt={COLLAPSE} />
+            );
+          })()}
 
           {/* Interview criteria */}
           {interviewCriteria.length > 0 && (
@@ -376,14 +415,24 @@ function TcasRoundCard({ round }: { round: import("@/lib/api").TcasRound }) {
                 <span style={{ fontSize: 12, fontWeight: 800, color: C.rust, letterSpacing: ".08em", textTransform: "uppercase" }}>Portfolio ที่ต้องการ</span>
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                {Object.entries(portfolio).map(([key, value]) => (
-                  <div key={key} style={{ display: "flex", gap: 12, alignItems: "flex-start", padding: "8px 0", borderBottom: `1px solid ${C.lineSoft}` }}>
-                    <span style={{ fontSize: 13, fontWeight: 600, color: C.ink3, minWidth: 150, flexShrink: 0 }}>
-                      {PORTFOLIO_KEY_LABELS[key] ?? key.replace(/_/g, " ")}
-                    </span>
-                    <span style={{ fontSize: 13.5, color: C.ink2, lineHeight: 1.5 }}>{value}</span>
-                  </div>
-                ))}
+                {Object.entries(portfolio).map(([key, value]) => {
+                  const label = PORTFOLIO_KEY_LABELS[key] ?? key.replace(/_/g, " ");
+                  const isArray = Array.isArray(value);
+                  const items = isArray ? (value as Array<string | { item: string }>).map((c) => typeof c === "string" ? c : c.item) : null;
+                  const text = !isArray ? (typeof value === "object" && value !== null ? ("item" in (value as object) ? String((value as { item: unknown }).item) : String(value)) : String(value ?? "")) : null;
+                  return (
+                    <div key={key} style={{ display: "flex", gap: 12, alignItems: "flex-start", padding: "8px 0", borderBottom: `1px solid ${C.lineSoft}` }}>
+                      <span style={{ fontSize: 13, fontWeight: 600, color: C.ink3, minWidth: 150, flexShrink: 0 }}>{label}</span>
+                      {items ? (
+                        <ul style={{ margin: 0, paddingLeft: 18, display: "flex", flexDirection: "column", gap: 4 }}>
+                          {items.map((item, i) => <li key={i} style={{ fontSize: 13.5, color: C.ink2, lineHeight: 1.55 }}>{item}</li>)}
+                        </ul>
+                      ) : (
+                        <span style={{ fontSize: 13.5, color: C.ink2, lineHeight: 1.5 }}>{text}</span>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}
@@ -786,6 +835,22 @@ export default function ProgramDetailPage() {
               ) : (
                 <div style={{ padding: "48px 0", textAlign: "center", color: C.ink3, fontSize: 14 }}>ยังไม่มีข้อมูลอาชีพสำหรับหลักสูตรนี้</div>
               )}
+
+              {/* PLOs from API */}
+              {program.plos.length > 0 && (
+                <div style={{ marginTop: 28, background: "#fff", border: `1px solid ${C.lineSoft}`, borderRadius: 22, padding: 26 }}>
+                  <h4 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 17, letterSpacing: "-.01em", marginBottom: 18, display: "flex", alignItems: "center", gap: 10 }}>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke={C.sky} strokeWidth="2" strokeLinecap="round"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/></svg>
+                    ผลลัพธ์การเรียนรู้ (PLOs)
+                  </h4>
+                  {program.plos.map((plo, i) => (
+                    <div key={i} style={{ display: "flex", gap: 10, padding: "9px 0", borderBottom: i < program.plos.length - 1 ? `1px dashed ${C.line}` : "none", fontSize: 13.5 }}>
+                      <span style={{ flexShrink: 0, fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 11.5, color: C.green, minWidth: 38, paddingTop: 1 }}>{plo.code}</span>
+                      <span style={{ color: C.ink2, lineHeight: 1.55 }}>{plo.description_th}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
@@ -824,7 +889,7 @@ export default function ProgramDetailPage() {
                   )}
                 </div>
 
-                {/* Right: Cost + PLOs */}
+                {/* Right: Cost */}
                 <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
                   {/* Cost card */}
                   {rich && (
@@ -849,21 +914,6 @@ export default function ProgramDetailPage() {
                     </div>
                   )}
 
-                  {/* PLOs from API */}
-                  {program.plos.length > 0 && (
-                    <div style={{ background: "#fff", border: `1px solid ${C.lineSoft}`, borderRadius: 22, padding: 26 }}>
-                      <h4 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 17, letterSpacing: "-.01em", marginBottom: 18, display: "flex", alignItems: "center", gap: 10 }}>
-                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke={C.sky} strokeWidth="2" strokeLinecap="round"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/></svg>
-                        ผลลัพธ์การเรียนรู้ (PLOs)
-                      </h4>
-                      {program.plos.map((plo, i) => (
-                        <div key={i} style={{ display: "flex", gap: 10, padding: "9px 0", borderBottom: i < program.plos.length - 1 ? `1px dashed ${C.line}` : "none", fontSize: 13.5 }}>
-                          <span style={{ flexShrink: 0, fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 11.5, color: C.green, minWidth: 38, paddingTop: 1 }}>{plo.code}</span>
-                          <span style={{ color: C.ink2, lineHeight: 1.55 }}>{plo.description_th}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
                 </div>
               </div>
             </div>
