@@ -1,54 +1,119 @@
-# KUru Backend
+# KUru Backend - B7 Model Service
 
-FastAPI backend for the KUru AI program navigator.
+This folder contains the FastAPI service used for **B7: Model Deployment as a Service**. The backend wraps the real RAG engine from `../pipeline` and exposes it through REST endpoints consumed by the frontend.
 
-## Prerequisites
+## What Graders Should Look At
 
-- Python 3.12+
-- [uv](https://docs.astral.sh/uv/) (`pip install uv`)
+| Item | Path / endpoint | Why it matters |
+|------|-----------------|----------------|
+| Main model endpoint | `POST /api/v1/chat` | B7 deployed model inference |
+| Feedback endpoint | `POST /api/v1/chat/feedback` | A2.4/C1 feedback loop |
+| Program endpoints | `GET /api/v1/programs`, `GET /api/v1/programs/{identifier}` | Program Explorer data |
+| API schema models | `models/schemas.py` | Request/response contract |
+| Route implementation | `api/v1/chat.py` | RAG call, source citations, confidence level |
+| Model artifact | `mlartifacts/MLmodel`, `mlartifacts/pipeline_config.json` | B7 MLflow-model-equivalent artifact |
+
+The full UI-model contract is documented in `../pipeline/docs/C2_interface_contract.md`.
 
 ## Setup
 
-```bash
+```powershell
+cd backend
 uv sync
 uv pip install -e ../pipeline
-cp .env.example .env
-# Fill in .env with your credentials
+Copy-Item .env.example .env
 ```
 
-`../pipeline` is the local RAG package. Without this editable install, the chat endpoint
-falls back to the non-RAG stub because `kuru.rag.query_engine` is not importable.
+`../pipeline` is required. Without this editable install, `kuru.rag.query_engine` is not importable and the chat endpoint falls back to a low-confidence stub.
+
+Fill `backend/.env`:
+
+```env
+SUPABASE_URL=...
+SUPABASE_KEY=...
+OPENROUTER_API_KEY=...
+GEMINI_API_KEY=...
+TYPHOON_API_KEY=...
+```
 
 ## Run
 
-```bash
+```powershell
 uv run uvicorn main:app --reload --port 8000
 ```
 
-> **Windows — "trampoline failed" error?** Your `.venv` is stale. Recreate it:
-> ```powershell
-> Remove-Item -Recurse -Force .venv
-> uv sync
-> uv pip install -e ../pipeline
-> uv run uvicorn main:app --reload --port 8000
-> ```
+The API will be available at:
 
-The API will be available at `http://localhost:8000`.
-
-## Lint
-
-```bash
-uv run black . && uv run ruff check .
+```text
+http://localhost:8000/api/v1
 ```
 
-## Type check
+Health check:
 
-```bash
+```powershell
+curl http://localhost:8000/api/v1/health
+```
+
+## B7 Example Request
+
+```powershell
+$body = @{
+  message = "software and knowledge engineering เข้ายังไง"
+  session_id = "grader-demo"
+  conversation_history = @()
+} | ConvertTo-Json -Depth 5
+
+Invoke-RestMethod `
+  -Uri "http://localhost:8000/api/v1/chat" `
+  -Method Post `
+  -ContentType "application/json" `
+  -Body $body
+```
+
+Expected response shape:
+
+```json
+{
+  "data": {
+    "answer": "...",
+    "session_id": "grader-demo",
+    "confidence_level": "high",
+    "sources": [
+      {
+        "source_file": "...",
+        "section_type": "tcas",
+        "similarity": 0.86
+      }
+    ],
+    "used_tcas_data": true
+  },
+  "sources": [],
+  "error": null
+}
+```
+
+## Useful Test Questions
+
+| Question | Expected behavior |
+|----------|-------------------|
+| `software and knowledge engineering เข้ายังไง` | Thai answer, TCAS/admission grounding |
+| `ค่าเทอมของบัญชีบัณฑิตนานาชาติ` | Structured fee answer from `programs.fees` |
+| `ค่าเทอมของวิศวกรรมซอฟต์แวร์` | Missing fee data, no borrowed tuition hallucination |
+| `What are the PLOs for Computer Engineering?` | English answer with curriculum/PLO sources |
+
+## Development Commands
+
+```powershell
+uv run black .
+uv run ruff check .
 uv run mypy .
 ```
 
-## Health check
+Windows stale venv fix:
 
-```bash
-curl http://localhost:8000/api/v1/health
+```powershell
+Remove-Item -Recurse -Force .venv
+uv sync
+uv pip install -e ../pipeline
+uv run uvicorn main:app --reload --port 8000
 ```

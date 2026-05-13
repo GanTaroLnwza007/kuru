@@ -2,7 +2,7 @@
 
 Date: 2026-05-13
 
-This note records where the B4 experiment tracking evidence lives and what still needs to be captured for the final PDF/slide submission.
+This note records where the B4 experiment tracking evidence lives and which screenshots are ready for the final PDF/slide submission.
 
 ## MLflow Run Store
 
@@ -37,9 +37,9 @@ Important current eval runs:
 
 | Run | Eval set | Result | Note |
 |-----|----------|--------|------|
-| `v6_current_chunks` | `data/eval_set_v6_current_chunks.csv` | 74% good, 2.26 / 3.0 | Headline current retrieval benchmark after lexical rerank |
-| `v7_filtered_rerank_stress` | `data/eval_set_v7_filtered_current_chunks.csv` | 62% good, 1.92 / 3.0 | Harder filtered stress set |
-| `v8_structured_tcas_fees` | `data/eval_set_v8_structured.csv` | 72.7% good, 2.055 / 3.0 | Structured regression suite including fees and TCAS |
+| `latest_submission_headline_v7_rerank_74pct` | `data/eval_set_v6_current_chunks.csv` | 74% good, 2.26 / 3.0 | Latest screenshot-friendly copy of the headline current retrieval benchmark after the v7 lexical rerank code path |
+| `v7_filtered_rerank_stress` | `data/eval_set_v7_filtered_current_chunks.csv` | 62% good, 1.92 / 3.0 | Harder filtered stress set; not a same-set regression |
+| `v8_structured_tcas_fees` | `data/eval_set_v8_structured.csv` | 72.7% good, 2.055 / 3.0 | Selected/latest production regression suite including fees and TCAS |
 
 ## How to Reopen the UI
 
@@ -55,17 +55,21 @@ Then open:
 http://localhost:5000
 ```
 
-## Screenshots To Capture
+## Screenshot Evidence
 
-Save these in `pipeline/docs/figures/`:
+Captured screenshots are stored in:
 
-| Screenshot | Filename |
-|------------|----------|
-| Experiment list | `B4_mlflow_experiments_list.png` |
-| Run comparison table | `B4_mlflow_metrics_comparison.png` |
-| Single best run overview | `B4_mlflow_run_overview.png` |
-| Best run artifacts tab | `B4_mlflow_artifacts.png` |
+```text
+pipeline/screenshots/mlflow/
+```
+
+| Screenshot | File | Status |
+|------------|------|--------|
+| Experiment list / run table | `pipeline/screenshots/mlflow/B4_mlflow_experiments_list.png` | Captured |
+| Metrics comparison charts | `pipeline/screenshots/mlflow/B4_mlflow_metrics_comparison.png` | Captured |
+| Headline run overview | `pipeline/screenshots/mlflow/B4_mlflow_run_overview.png` | Captured |
+| Headline run artifacts tab | `pipeline/screenshots/mlflow/B4_mlflow_artifacts.png` | Captured |
 
 ## Current Alignment Note
 
-The historical B2 MLflow runs compare earlier retrieval settings and are valid for B4 experimentation evidence. The current submission baseline after later ingestion cleanup and targeted lexical reranking is documented in `pipeline/docs/eval_results.md` as v7: 74% good answers and 2.26 / 3.0 average score. The v8 structured regression run adds TCAS and fee questions and is logged as `8a47e44b6c034bbcb83f697ecfdfe603`.
+The historical B2 MLflow runs compare earlier retrieval settings and are valid for B4 experimentation evidence. The current headline retrieval benchmark after later ingestion cleanup and targeted lexical reranking is logged as `latest_submission_headline_v7_rerank_74pct`: 74% good answers and 2.26 / 3.0 average score. The selected/latest production behavior is represented by `v8_structured_tcas_fees`, because that run includes the fee and TCAS fixes needed for real frontend use. The lower `v7_filtered_rerank_stress` score comes from a harder filtered eval set, not from a same-set quality drop.

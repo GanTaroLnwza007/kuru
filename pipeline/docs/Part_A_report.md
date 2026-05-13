@@ -40,10 +40,12 @@ The following objectives satisfy the MAC criteria: each metric is **Measurable**
 | System quality | End-to-end response latency | ≤5 seconds | Measured per request in FastAPI middleware |
 | Coverage | Programs queryable | ≥30 programs | Chunk count > 0 per program in Supabase |
 
-**Current status (v7 rerank on current-chunk eval set, n=50 questions):**
-- Good-answer rate: 74% (target: 80%)
-- Average LLM-as-judge score: 2.26 / 3.0
-- Admission avg: 2.09 | Curriculum avg: 2.23 | PLO avg: 2.40 | General avg: 2.75
+**Current status:**
+- Selected latest production model: v8 structured RAG (`v7` targeted rerank + TCAS relink + structured fee grounding + Thai/English response policy).
+- Headline retrieval benchmark: v7 rerank on current-chunk eval set, n=50 questions, 74% good-answer rate, 2.26 / 3.0 average score (target: 80%).
+- Structured regression benchmark: v8 fee/TCAS suite, n=55 questions, 72.7% good-answer rate, 2.055 / 3.0 average score.
+- v8 confirms the new structured fee and TCAS paths are covered by eval, including a negative Software and Knowledge Engineering fee case that should return missing-data behavior instead of borrowing another program's tuition.
+- v8 MLflow run: `8a47e44b6c034bbcb83f697ecfdfe603`.
 
 ---
 
@@ -246,7 +248,7 @@ feedback table (Supabase)
     ▼ [daily aggregation]
 Low-rated questions / source programs
     │
-    ├── If chunks < 100: re-ingest with full มคอ.2 from data/native/curriculum
+    ├── If chunks < 100: re-ingest with full มคอ.2 from data/scanned/curriculum
     │   (upgraded OCR model: gemini-2.5-flash)
     │
     └── If chunks ≥ 100: investigate chunking quality
@@ -273,8 +275,11 @@ Compare score before/after → log in eval_results.md
 | v5 (ID remap + retrieval fix) | 2.02 / 3.0 | 64% | Remapped cleanup IDs; added curriculum-structure retrieval fixes |
 | v6 (fresh current chunks) | 2.04 / 3.0 | 70% | Regenerated eval set from current chunks after cleanup |
 | v7 (targeted lexical rerank) | 2.26 / 3.0 | 74% | Added targeted reranking and filtered obvious OCR-corrupted generated questions |
+| v7 stress (filtered current chunks) | 1.92 / 3.0 | 62% | Harder filtered stress set; more course-table heavy, not a same-set regression |
+| v8 (fee/TCAS regression) | 2.055 / 3.0 | 72.7% | Added structured fee and TCAS regression questions; logged to MLflow |
 
-The v1→v2 improvement (+25pp) came from fixing program-scoped retrieval. The v4 drop is not a real system regression because it used stale IDs after duplicate cleanup. The current best benchmark is v7 on the fresh current-chunk eval set: 74% good answers, with remaining failures concentrated in dense tables, OCR-noisy rows, and section metadata gaps.
+The v1→v2 improvement (+25pp) came from fixing program-scoped retrieval. The v4 drop is not a real system regression because it used stale IDs after duplicate cleanup. The current best headline retrieval benchmark is v7 on the fresh current-chunk eval set: 74% good answers, with remaining failures concentrated in dense tables, OCR-noisy rows, and section metadata gaps.
+The selected latest production model is v8, because real users ask fee and TCAS questions in addition to curriculum questions. The lower v7 stress result comes from changing the evaluation set, not from the same system getting worse on the same data. The v8 suite is intentionally broader rather than a direct replacement benchmark: it keeps the harder current-chunk cases and adds fee/TCAS coverage to guard against the tuition hallucination and admission-linking regressions found during frontend testing.
 
 ---
 

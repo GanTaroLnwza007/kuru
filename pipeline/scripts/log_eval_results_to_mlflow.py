@@ -47,7 +47,7 @@ RUN_NAME_BY_RESULT = {
     "eval_results_v3.csv": "v3_full_pdf_reingest",
     "eval_results_v4_after_cleanup.csv": "v4_ingestion_cleanup",
     "eval_results_v5_after_remap_retrieval_fix.csv": "v5_remap_retrieval_fix",
-    "eval_results_v6_current_chunks.csv": "v6_current_chunks",
+    "eval_results_v6_current_chunks.csv": "latest_submission_headline_v7_rerank_74pct",
     "eval_results_v7_filtered_rerank.csv": "v7_filtered_rerank_stress",
     "eval_results_v8_structured.csv": "v8_structured_tcas_fees",
 }

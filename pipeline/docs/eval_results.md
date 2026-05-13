@@ -83,7 +83,7 @@
 | API cost | ~$0.0095 |
 
 **Changes made:**
-- Re-ingested 9 engineering bachelor's programs using full มคอ.2 PDFs from `data/native/curriculum` (current runs typically show PyMuPDF plus Typhoon page OCR, not full Gemini OCR) instead of compact TCAS booklets.
+- Re-ingested 9 engineering bachelor's programs using full มคอ.2 PDFs from `data/scanned/curriculum` (current runs typically show PyMuPDF plus Typhoon page OCR, not full Gemini OCR) instead of compact TCAS booklets.
 - Chunk counts improved dramatically: EME 31→332, SemE 56→432, DMriE 21→277, WRE 27→177, MatE 46→192
 
 **Result: No significant improvement vs v2 (+0% good-answer rate, -0.05 avg score)**
@@ -259,9 +259,9 @@ $env:PYTHONUTF8=1; uv run python scripts/run_eval.py --eval data/eval_set_v6_cur
 - Limited lexical reranking to explicit structure/PLO/TCAS-style questions so broad semantic questions stay vector-ranked.
 - Filtered future generated eval sets for obvious OCR-corrupted generated questions.
 
-**Result: current best benchmark.** The biggest gains came from year/semester course-list questions, nationality-policy admission questions, and PLO evidence retrieval.
+**Result: current headline benchmark.** The biggest gains came from year/semester course-list questions, nationality-policy admission questions, and PLO evidence retrieval.
 
-**Experimental note:** `data/eval_set_v7_filtered_current_chunks.csv` removes obvious OCR-corrupted generated pairs, but the sampled set is harder and more course-table heavy. It scored 62% good in `data/eval_results_v7_filtered_rerank.csv`, so treat it as a stress set, not the headline submission benchmark.
+**Benchmark note:** The MLflow run named `latest_submission_headline_v7_rerank_74pct` contains the current headline result after the targeted lexical rerank: 74% good and 2.26 / 3.0. The separate `v7_filtered_rerank_stress` run uses `data/eval_set_v7_filtered_current_chunks.csv`, a harder filtered sample with more course-table/current-chunk stress cases. It scored 62% good and 1.92 / 3.0, so it should be reported as a stress/regression benchmark, not as a same-set drop from 74%.
 
 ---
 
@@ -314,7 +314,7 @@ Existing eval CSVs that were created before MLflow logging was added have been b
 uv run python scripts/log_eval_results_to_mlflow.py
 ```
 
-Backfilled run names include `v1_baseline_unscoped`, `v2_program_named_eval`, `v3_full_pdf_reingest`, `v4_ingestion_cleanup`, `v5_remap_retrieval_fix`, `v6_current_chunks`, and `v7_filtered_rerank_stress`. The existing `baseline`, `wider_retrieval`, `strict_threshold`, and `v8_structured_tcas_fees` runs were already present and were skipped.
+Backfilled run names include `v1_baseline_unscoped`, `v2_program_named_eval`, `v3_full_pdf_reingest`, `v4_ingestion_cleanup`, `v5_remap_retrieval_fix`, `latest_submission_headline_v7_rerank_74pct`, and `v7_filtered_rerank_stress`. The existing `baseline`, `wider_retrieval`, `strict_threshold`, and `v8_structured_tcas_fees` runs were already present and were skipped.
 
 ---
 
@@ -332,7 +332,7 @@ Backfilled run names include `v1_baseline_unscoped`, `v2_program_named_eval`, `v
 | `data/eval_results_v2.csv` | v2 results (65% good) |
 | `data/eval_results_v3.csv` | v3 results (65% good, re-ingested full PDFs) |
 | `data/eval_results_v4_after_cleanup.csv` | v4 results (46% good, after ingestion cleanup + structured repair) |
-| `data/eval_results_v5_after_remap_retrieval_fix.csv` | v5 results (68% good, remapped IDs + retrieval fix) |
+| `data/eval_results_v5_after_remap_retrieval_fix.csv` | v5 results (64% good, remapped IDs + retrieval fix) |
 | `data/eval_results_v6_current_chunks.csv` | current headline result (74% good, current chunks + targeted lexical rerank) |
 | `data/eval_results_v7_filtered_rerank.csv` | v7 stress result (62% good, filtered harder current-chunk set) |
 | `data/eval_results_v8_structured.csv` | v8 structured regression result (72.7% good, fee/TCAS included) |
@@ -341,4 +341,14 @@ Backfilled run names include `v1_baseline_unscoped`, `v2_program_named_eval`, `v
 | `scripts/augment_eval_set_structured.py` | Appends structured fee and TCAS regression cases |
 | `scripts/backfill_program_fees.py` | Backfills source-backed `programs.fees` metadata |
 | `scripts/log_eval_results_to_mlflow.py` | Backfills existing eval result CSVs to MLflow |
+
+## How to Read the Current Benchmarks
+
+The selected latest production model is **v8 structured RAG**: the v7 targeted lexical rerank retrieval path plus TCAS relinking, structured fee grounding, and Thai/English response-policy fixes. This is the model behavior most representative of the real frontend because real users ask curriculum, TCAS, fee, and missing-data questions.
+
+The current eval names are slightly historical:
+
+- `latest_submission_headline_v7_rerank_74pct` in MLflow is the **headline retrieval benchmark** after the v7 targeted lexical rerank code path was applied. It is the 74% good / 2.26 result used for the main submission claim.
+- `v7_filtered_rerank_stress` is a **harder stress benchmark**, not a same-dataset regression. It uses a filtered regenerated set that is more course-table heavy, so its 62% good / 1.92 result is evidence of remaining hard cases rather than proof that the retriever got worse.
+- `v8_structured_tcas_fees` is the **selected/latest production regression benchmark** for the full behavior shipped to the frontend. It includes the harder stress set plus explicit fee/TCAS cases and verifies that the system no longer borrows tuition values across programs.
 | `scripts/remap_eval_program_ids.py` | Remaps stale eval program IDs using cleanup merge map |

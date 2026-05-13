@@ -14,6 +14,13 @@ This note describes the live ingestion behavior after the May 2026 registrar scr
 
 Current registrar scrape result for Bangkhen was approximately 270 public PDF links, with one skipped/dead link during the latest full download.
 
+## Structured TCAS And Fee Data
+
+- TCAS rows are linked back to canonical `programs.id` values after duplicate cleanup. If curriculum sources are re-ingested from a new folder or filename pattern, run the TCAS relink/audit flow before evaluating admission questions.
+- Program fees now live in `programs.fees` as source-backed JSONB metadata. Use `scripts/backfill_program_fees.py` after schema migration or curriculum refresh.
+- Fee questions should prefer `programs.fees` over free-text chunk synthesis. If a requested program has no structured fee data, the RAG answer should say the fee is not available instead of copying numbers from another program.
+- The current regression eval for these paths is `data/eval_set_v8_structured.csv`, logged in MLflow as run `8a47e44b6c034bbcb83f697ecfdfe603`.
+
 ## Extraction And API Usage
 
 The curriculum ingest path is:
