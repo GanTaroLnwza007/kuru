@@ -95,6 +95,7 @@ export default function ChatPage() {
     }
   }, [programId, programName, messages.length, sendMessage]);
 
+
   const hollandCode = riasecResult?.hollandCode ?? null;
 
   return (

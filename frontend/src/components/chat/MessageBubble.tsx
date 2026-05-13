@@ -82,7 +82,7 @@ export function MessageBubble({ message, sourcesLabel, mockBadgeLabel, question,
           className="px-[18px] py-3.5 text-[15px] leading-[1.55]"
           style={
             isUser
-              ? { background: "var(--d-green, #00A651)", color: "#fff", borderRadius: "18px 18px 6px 18px" }
+              ? { background: "var(--ink, #0A1F14)", color: "#fff", borderRadius: "18px 18px 6px 18px" }
               : { background: "#fff", color: "var(--ink)", borderRadius: "18px 18px 18px 6px", boxShadow: "0 1px 4px rgba(15,27,20,.07)" }
           }
         >
