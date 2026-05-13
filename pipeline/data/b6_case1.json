@@ -1,38 +1,135 @@
 {
   "query": "What courses will I take in Computer Engineering?",
-  "answer": "Great news — I found quite a bit of information about the Computer Engineering curriculum! Here's what I know...\n\nThe Computer Engineering program at Kasetsart University (Bangkhen) covers a strong foundation in both theory and practice. In your first two years, you'll build fundamentals in:\n- Mathematics (Calculus, Linear Algebra, Discrete Math)\n- Physics and Engineering basics\n- Programming fundamentals and data structures\n- Digital circuits and computer organization\n\nIn Years 3–4, core engineering courses include:\n- Algorithm design and analysis\n- Operating systems and computer networks\n- Database systems\n- Software engineering\n- Microprocessor and embedded systems\n- Electives in AI, computer graphics, and cybersecurity\n\nThe program requires 138 credit hours total. [Source: วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf]",
+  "answer": "Hello there! It's great you're interested in the Computer Engineering program at Kasetsart University. I can definitely help you with that.\n\nBased on the information I have, here's a look at some of the courses you'll take in the Bachelor of Engineering Program in Computer Engineering:\n\nThe curriculum includes courses divided into several groups:\n\n*   **System Infrastructure Group:** This group has 13 credits and includes courses like:\n    *   Operating Systems\n    *   Software Engineering\n    *   Computer System Security\n    *   Discrete Mathematics and Theory of Computation\n    *   Algorithm Design and Analysis\n    *   Data Communications and Computer Networks\n    *   Computer Networks\n\n*   **Computer Hardware and Architecture Group:** This group has 16 credits and includes courses such as:\n    *   Introduction of Computer Hardware Development\n    *   Digital Systems Design\n    *   Practicum in Computer Engineering\n    *   Logic Circuit Laboratory\n    *   Computer Architecture and Organization\n    *   Embedded System\n    *   Electronic Laboratory for Embedded Systems\n    *   Computer System Laboratory\n\n*   **Professional Skills and Ethics Group:** This group has 5 credits and includes:\n    *   Introduction to Computer Engineering\n    *   Career and Social Skill Development Laboratory\n    *   Computer Engineering Project Preparation\n    *   Computer Engineering Project\n\nAdditionally, there are **Elective Specialized Courses** where you'll need to choose at least 16 credits. Some examples of these specialized courses include:\n\n*   Foundations of Computer Graphics\n*   Computer-Human Interfaces\n*   Digital Image Processing\n\nThe program also includes practical experiences like **Co-operative Education** (On the job training as a temporary employee) and a **Computer Engineering Project**.\n\nPlease note that the document mentions that the source document for this program does NOT contain PLO (Program Learning Outcomes) sections.\n\nI hope this gives you a good overview of the courses! Let me know if you have any other questions.",
   "used_tcas_data": false,
   "debug_info": {
     "is_tcas_query": false,
+    "is_fee_query": false,
     "is_plo_query": false,
     "is_listing_query": false,
     "resolved_program_id": "bangkhen_ddf705a9",
     "fetched": 15,
-    "above_threshold": 12,
+    "above_threshold": 15,
     "threshold": 0.35,
-    "chunks_used": [
-      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "course", "similarity": 0.724},
-      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "course", "similarity": 0.693},
-      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "course", "similarity": 0.671},
-      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "general", "similarity": 0.648},
-      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "course", "similarity": 0.612}
+    "raw_chunks": [
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "general",
+        "similarity": 0.829,
+        "content_preview": "of real-world applications such as histogram transformation, noise reduction, edge \ndetection, image enhancement, image "
+      },
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "general",
+        "similarity": 0.82,
+        "content_preview": "หลักสูตรวิศวกรรมศาสตรบัณฑิต สาขาวิชาวิศวกรรมคอมพิวเตอร์ \n \nภาษาอังกฤษ: Bachelor of Engineering Program in Computer Engin"
+      },
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "general",
+        "similarity": 0.811,
+        "content_preview": "หลักสูตรวิศวกรรมศาสตรบัณฑิต \nสาขาวิชาวิศวกรรมคอมพิวเตอร์"
+      },
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "course",
+        "similarity": 0.809,
+        "content_preview": "9 \n \n \n01204332 \nระบบปฏิบัติการ \n3(3-0-6) \n \n \n(Operating Systems) \n \n01204341 \nวิศวกรรมซอฟต์แวร์ \n4(3-3-8) \n \n \n(Softwa"
+      },
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "general",
+        "similarity": 0.804,
+        "content_preview": "stability; controller design; practical robotic and \nmechatronic systems; sensor and actuators; machine intelligence; in"
+      },
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "course",
+        "similarity": 0.804,
+        "content_preview": "รายวิชาที่เป็นรหัสวิชาของหลักสูตร \n \n 01204113  \nคอมพิวเตอร์และการโปรแกรมส าหรับวิศวกรคอมพิวเตอร์ \n3(2-3-6) \n  \n(Compute"
+      },
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "course",
+        "similarity": 0.804,
+        "content_preview": "(Computer Engineering Project Preparation) \n \n01204499 \nโครงงานวิศวกรรมคอมพิวเตอร์ \n2(0-6-3) \n \n \n(Computer Engineering "
+      },
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "course",
+        "similarity": 0.803,
+        "content_preview": "nd \nwide area networks; communication architecture and protocols. \n \n 01204331 \nส่วนต่อประสานซอฟต์แวร์ระบบ \n3(3-0-6) \n  "
+      },
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "course",
+        "similarity": 0.802,
+        "content_preview": "nd Knowledge Discovery) \n \n01204466  การเรียนรู้เชิงลึก \n3(3-0-6) \n \n \n(Deep learning) \n \n01204467  ศาสตร์หุ่นยนต์เบื้อง"
+      },
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "course",
+        "similarity": 0.802,
+        "content_preview": "2) หมวดวิชาเฉพาะ \nไม่น้อยกว่า \n102 หน่วยกิต \n \n2.1 วิชาแกน \n \n32 หน่วยกิต \n \n \nวิชาทางวิทยาศาสตร์และคณิตศาสตร์ \n \n17 หน่"
+      },
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "course",
+        "similarity": 0.798,
+        "content_preview": "roject) \n  \nวิชาที่ต้องเรียนมาก่อน : 01204495 \nโครงงานที่น่าสนใจในแขนงต่าง ๆ ทางด้านวิศวกรรมคอมพิวเตอร์ \nProject of prac"
+      },
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "admission",
+        "similarity": 0.798,
+        "content_preview": "การออกแบบระบบดิจิทัล \n3(3-0-6) \n \n01204224 ปฏิบัติการวงจรตรรก        \n1(0-3-2) \n \n01205211 การวิเคราะห์วงจรไฟฟ้าI \n3(3-0"
+      },
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "course",
+        "similarity": 0.798,
+        "content_preview": "271 \nวิศวกรรมคอมพิวเตอร์เบื้องต้น \n1(0-3-2) \n  \n(Introduction to Computer Engineering)  \nการฝึกปฏิบัติการเบื้องต้นในหัวข"
+      },
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "course",
+        "similarity": 0.797,
+        "content_preview": "echniques; logicgates; logic \nminimization; standard combinational circuits, sequential circuits; flip-flops; synchronou"
+      },
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "admission",
+        "similarity": 0.796,
+        "content_preview": "1(0-3-2) \n \n01204223 การฝึกปฏิบัติทางวิศวกรรมคอมพิวเตอร์ \n1(0-3-2) \n \n01204225 สถาปัตยกรรมและองค์ประกอบคอมพิวเตอร์ \n3(3-"
+      }
     ],
-    "raw_chunks_summary": [
-      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "course", "similarity": 0.724},
-      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "course", "similarity": 0.693},
-      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "course", "similarity": 0.671},
-      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "general", "similarity": 0.648},
-      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "course", "similarity": 0.612},
-      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "plo", "similarity": 0.521},
-      {"source_file": "วิศวกรรมซอฟต์แวร์_bangkhen_mko2.pdf", "section_type": "course", "similarity": 0.489},
-      {"source_file": "วิศวกรรมไฟฟ้า_bangkhen_mko2.pdf", "section_type": "course", "similarity": 0.431},
-      {"source_file": "วิศวกรรมซอฟต์แวร์_bangkhen_mko2.pdf", "section_type": "general", "similarity": 0.412},
-      {"source_file": "วิศวกรรมไฟฟ้า_bangkhen_mko2.pdf", "section_type": "general", "similarity": 0.387},
-      {"source_file": "วิศวกรรมเครื่องกล_bangkhen_mko2.pdf", "section_type": "course", "similarity": 0.361},
-      {"source_file": "วิศวกรรมเคมี_bangkhen_mko2.pdf", "section_type": "course", "similarity": 0.342},
-      {"source_file": "วิศวกรรมโยธา_bangkhen_mko2.pdf", "section_type": "general", "similarity": 0.298},
-      {"source_file": "วิศวกรรมอุตสาหการ_bangkhen_mko2.pdf", "section_type": "course", "similarity": 0.271},
-      {"source_file": "เกษตรศาสตร์_bangkhen_mko2.pdf", "section_type": "general", "similarity": 0.203}
+    "effective_program_id": "bangkhen_ddf705a9",
+    "chunks_used": [
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "general",
+        "similarity": 0.829
+      },
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "general",
+        "similarity": 0.82
+      },
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "general",
+        "similarity": 0.811
+      },
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "course",
+        "similarity": 0.809
+      },
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "general",
+        "similarity": 0.804
+      }
     ]
   }
 }

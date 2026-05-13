@@ -1,39 +1,139 @@
 {
   "query": "What are the TCAS3 score requirements for Computer Engineering?",
-  "answer": "Here's what I found for TCAS Round 3 (Direct Admission) for Computer Engineering at KU Bangkhen!\n\n**Round 3 — Direct Admission (รับตรงร่วมกัน)**\n- Seats available: 30\n- GPAX minimum: 2.75\n- Required exams: TGAT (Thai General Aptitude Test) + TPAT3 (Science & Technology)\n- Score weights: TGAT 30%, TPAT3 70%\n- Minimum TGAT score: 25 points\n- Minimum TPAT3 score: 30 points\n\nI'd recommend checking the official TCAS portal (mytcas.com) and the KU Faculty of Engineering website for the most current cut-off scores and deadlines. [Source: TCAS_round3_2567.pdf]",
+  "answer": "Hello there, น้อง! I can help you with that.\n\nFor the Computer Engineering program (วศ.บ. สาขาวิชาวิศวกรรมคอมพิวเตอร์) in TCAS Round 3, here are the score requirements I found:\n\n*   **Seats (quota):** 35\n*   **GPAX minimum:** None specified.\n*   **Exam criteria:**\n    *   A-Level: 45% weight\n    *   Applied Mathematics 1 (คณิตศาสตร์ประยุกต์ 1): 15% weight\n    *   Applied Science (วิทยาศาสตร์ประยุกต์): 15% weight\n    *   TGAT1 English Communication (TGAT1 การสื่อสารภาษาอังกฤษ): 20% weight\n\n(Source: 69-TCAS3-เกณฑ์การคัดเลือก-OK.xlsx)\n\nI hope this helps you with your application planning! Let me know if you have any other questions.",
   "used_tcas_data": true,
   "debug_info": {
     "is_tcas_query": true,
+    "is_fee_query": false,
     "is_plo_query": false,
     "is_listing_query": false,
     "resolved_program_id": "bangkhen_ddf705a9",
-    "detected_round": "round3",
-    "tcas_records_found": 5,
     "fetched": 15,
-    "above_threshold": 9,
+    "above_threshold": 15,
     "threshold": 0.35,
+    "raw_chunks": [
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "course",
+        "similarity": 0.809,
+        "content_preview": "9 \n \n \n01204332 \nระบบปฏิบัติการ \n3(3-0-6) \n \n \n(Operating Systems) \n \n01204341 \nวิศวกรรมซอฟต์แวร์ \n4(3-3-8) \n \n \n(Softwa"
+      },
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "course",
+        "similarity": 0.808,
+        "content_preview": "nd Knowledge Discovery) \n \n01204466  การเรียนรู้เชิงลึก \n3(3-0-6) \n \n \n(Deep learning) \n \n01204467  ศาสตร์หุ่นยนต์เบื้อง"
+      },
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "course",
+        "similarity": 0.806,
+        "content_preview": "ารทดสอบซอฟต์แวร์ \n3(3-0-6) \n \n \n(Software Testing) \n \n01219344 \nการพัฒนาซอฟต์แวร์บนอุปกรณ์เคลื่อนที่ \n3(3-0-6) \n \n \n(Mob"
+      },
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "course",
+        "similarity": 0.805,
+        "content_preview": "(Computer Engineering Project Preparation) \n \n01204499 \nโครงงานวิศวกรรมคอมพิวเตอร์ \n2(0-6-3) \n \n \n(Computer Engineering "
+      },
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "general",
+        "similarity": 0.804,
+        "content_preview": "of real-world applications such as histogram transformation, noise reduction, edge \ndetection, image enhancement, image "
+      },
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "course",
+        "similarity": 0.801,
+        "content_preview": "2) หมวดวิชาเฉพาะ \nไม่น้อยกว่า \n102 หน่วยกิต \n \n2.1 วิชาแกน \n \n32 หน่วยกิต \n \n \nวิชาทางวิทยาศาสตร์และคณิตศาสตร์ \n \n17 หน่"
+      },
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "course",
+        "similarity": 0.798,
+        "content_preview": "nd \nwide area networks; communication architecture and protocols. \n \n 01204331 \nส่วนต่อประสานซอฟต์แวร์ระบบ \n3(3-0-6) \n  "
+      },
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "course",
+        "similarity": 0.795,
+        "content_preview": "echniques; logicgates; logic \nminimization; standard combinational circuits, sequential circuits; flip-flops; synchronou"
+      },
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "admission",
+        "similarity": 0.795,
+        "content_preview": "การออกแบบระบบดิจิทัล \n3(3-0-6) \n \n01204224 ปฏิบัติการวงจรตรรก        \n1(0-3-2) \n \n01205211 การวิเคราะห์วงจรไฟฟ้าI \n3(3-0"
+      },
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "course",
+        "similarity": 0.794,
+        "content_preview": "มพิวเตอร์ฝังตัวแบบไร้สาย \n3(3-0-6) \n \n \n(Wireless Embedded Systems) \n \n01204429 \nเครือข่ายไร้สายและการจ าลองเครือข่าย \n3"
+      },
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "course",
+        "similarity": 0.793,
+        "content_preview": "รายวิชาที่เป็นรหัสวิชาของหลักสูตร \n \n 01204113  \nคอมพิวเตอร์และการโปรแกรมส าหรับวิศวกรคอมพิวเตอร์ \n3(2-3-6) \n  \n(Compute"
+      },
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "admission",
+        "similarity": 0.793,
+        "content_preview": "1(0-3-2) \n \n01204223 การฝึกปฏิบัติทางวิศวกรรมคอมพิวเตอร์ \n1(0-3-2) \n \n01204225 สถาปัตยกรรมและองค์ประกอบคอมพิวเตอร์ \n3(3-"
+      },
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "course",
+        "similarity": 0.792,
+        "content_preview": "271 \nวิศวกรรมคอมพิวเตอร์เบื้องต้น \n1(0-3-2) \n  \n(Introduction to Computer Engineering)  \nการฝึกปฏิบัติการเบื้องต้นในหัวข"
+      },
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "general",
+        "similarity": 0.791,
+        "content_preview": "stability; controller design; practical robotic and \nmechatronic systems; sensor and actuators; machine intelligence; in"
+      },
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "course",
+        "similarity": 0.791,
+        "content_preview": "ัฒนาซอฟต์แวร์ \n3(3-0-6) \n  \n(Managing Software Development) \n  \nวิชาที่ต้องเรียนมาก่อน : 01204341 \nหลักการด้านกระบวนการซ"
+      }
+    ],
+    "effective_program_id": "bangkhen_ddf705a9",
+    "tcas_records_found": 5,
+    "detected_round": "round3",
+    "rerank_terms": [
+      "tcas3",
+      "score",
+      "requirements",
+      "computer",
+      "engineering"
+    ],
     "chunks_used": [
-      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "admission", "similarity": 0.681},
-      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "general", "similarity": 0.639},
-      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "admission", "similarity": 0.601}
-    ],
-    "raw_chunks_summary": [
-      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "admission", "similarity": 0.681},
-      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "general", "similarity": 0.639},
-      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "admission", "similarity": 0.601},
-      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "course", "similarity": 0.572},
-      {"source_file": "วิศวกรรมซอฟต์แวร์_bangkhen_mko2.pdf", "section_type": "admission", "similarity": 0.548},
-      {"source_file": "วิศวกรรมไฟฟ้า_bangkhen_mko2.pdf", "section_type": "admission", "similarity": 0.501},
-      {"source_file": "วิศวกรรมเครื่องกล_bangkhen_mko2.pdf", "section_type": "admission", "similarity": 0.467},
-      {"source_file": "วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf", "section_type": "plo", "similarity": 0.389},
-      {"source_file": "วิศวกรรมเคมี_bangkhen_mko2.pdf", "section_type": "general", "similarity": 0.351},
-      {"source_file": "วิศวกรรมโยธา_bangkhen_mko2.pdf", "section_type": "admission", "similarity": 0.312},
-      {"source_file": "เกษตรศาสตร์_bangkhen_mko2.pdf", "section_type": "general", "similarity": 0.289},
-      {"source_file": "วิศวกรรมอุตสาหการ_bangkhen_mko2.pdf", "section_type": "course", "similarity": 0.241},
-      {"source_file": "วิศวกรรมสิ่งแวดล้อม_bangkhen_mko2.pdf", "section_type": "general", "similarity": 0.198},
-      {"source_file": "สัตวศาสตร์_bangkhen_mko2.pdf", "section_type": "general", "similarity": 0.167},
-      {"source_file": "ประมง_bangkhen_mko2.pdf", "section_type": "general", "similarity": 0.143}
-    ],
-    "note_course_chunks_filtered": "3 'course' section chunks were removed from context to prevent prerequisite code hallucination"
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "general",
+        "similarity": 0.804
+      },
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "admission",
+        "similarity": 0.795
+      },
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "admission",
+        "similarity": 0.793
+      },
+      {
+        "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
+        "section_type": "general",
+        "similarity": 0.791
+      }
+    ]
   }
 }
