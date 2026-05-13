@@ -893,7 +893,7 @@ function ChipBtn({ children, active, onClick }: { children: React.ReactNode; act
         background: active ? "var(--ink)" : "#fff",
         color: active ? "#fff" : "var(--ink-2)",
         borderWidth: 1, borderStyle: "solid",
-        borderColor: active ? "var(--ink)" : (!active && hovered ? "var(--ink)" : "var(--line)"),
+        borderColor: active ? "var(--ink)" : (hovered ? "var(--ink)" : "var(--line)"),
         fontSize: 13, fontWeight: 600, fontFamily: "inherit",
         display: "inline-flex", alignItems: "center", gap: 6,
         transition: "all 180ms", cursor: "pointer",
