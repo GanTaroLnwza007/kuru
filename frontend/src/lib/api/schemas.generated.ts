@@ -20,8 +20,12 @@ export const ploItemSchema = z.object({
 
 export const tcasRoundSchema = z.object({
   round: z.string(),
+  track_name: z.string().nullable().optional(),
   quota: z.number().int().nonnegative(),
   min_score: z.number().nonnegative().nullable(),
+  exam_criteria: z.record(z.string(), z.unknown()).nullable().optional(),
+  portfolio_requirements: z.record(z.string(), z.unknown()).nullable().optional(),
+  deadlines: z.record(z.string(), z.string()).nullable().optional(),
 });
 
 export const programSummarySchema = z.object({
