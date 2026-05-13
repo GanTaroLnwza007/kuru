@@ -186,6 +186,7 @@ Operational ingestion status: `pipeline/docs/current-ingestion-state.md`.
 ## Notes for Grading
 
 - This is a RAG system, so "training" means corpus preparation, chunking, embedding, vector indexing, retrieval hyperparameter selection, reranking, and LLM-as-judge validation.
+- We considered RAGAS but used a custom LLM-as-judge rubric because the grading needs Thai/English KU-specific correctness, structured TCAS/fee validation, and missing-data checks.
 - `backend/mlartifacts/MLmodel` and `backend/mlartifacts/pipeline_config.json` are the B7 model artifact equivalent for the deployed RAG pipeline.
 - The best single endpoint to test the model is `POST /api/v1/chat`.
 - The most grader-friendly route through the repo is: `Part_B_alignment.md` -> notebooks -> MLflow screenshots -> backend endpoint.

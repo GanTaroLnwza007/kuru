@@ -7,6 +7,12 @@
 - **Sample size**: 20 questions (random seed 42) from 50-question golden eval set
 - **Eval set**: Synthetic Q&A pairs generated from actual Supabase chunks via `scripts/generate_eval_set.py`
 
+## Why Not RAGAS
+
+RAGAS was considered, but the current POC uses a custom LLM-as-judge evaluator instead. KUru's grading target is domain-specific: Thai/English mixed questions, KU program aliases, OCR-noisy Thai curriculum text, structured TCAS records, structured fee metadata, and missing-data behavior. The custom 0-3 rubric lets us directly grade whether an answer is useful to a KU prospective student, grounded in returned evidence, and honest when source data is missing.
+
+RAGAS can still be added later as a supplementary faithfulness/context-relevance check, but it is not the primary metric for this submission because it would not directly cover TCAS/fee structured evidence or the negative "do not borrow another program's tuition" regression case.
+
 ### Score rubric
 | Score | Meaning |
 |-------|---------|

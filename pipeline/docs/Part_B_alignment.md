@@ -30,6 +30,7 @@ This file maps the official Part B criteria to the current KUru artifacts after 
 ## Conceptual Notes
 
 - Part B should describe this as a RAG system, not a conventional supervised classifier. The "training" surface is corpus preparation, chunking, embedding, vector indexing, retrieval hyperparameters, reranking, and LLM-as-judge validation.
+- RAGAS was considered but not used as the primary metric. The custom LLM-as-judge rubric better fits KUru's Thai/English domain, structured TCAS/fee evidence, and missing-data behavior checks. RAGAS is a reasonable future supplementary metric, not a requirement for the current submission.
 - Fairness is not demographic fairness here. The relevant bias is coverage disparity: programs or section types with sparse/OCR-noisy/table-heavy chunks receive worse answers.
 - B4 MLflow now includes both historical experiment evidence and current eval records. Treat `latest_submission_headline_v7_rerank_74pct` as the 74% headline retrieval benchmark, `v7_filtered_rerank_stress` as a harder stress benchmark, and `v8_structured_tcas_fees` as the selected/latest production regression benchmark that includes fees and TCAS.
 - B7 uses an equivalent artifact rather than a heavyweight `model.pkl`: `MLmodel` plus `pipeline_config.json` declare the deployable RAG pipeline, external vector DB, local embedding model, and generation provider.

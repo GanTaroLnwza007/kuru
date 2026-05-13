@@ -37,6 +37,8 @@ Important MLflow runs:
 | `v8_structured_tcas_fees` | 72.7% good, 2.055 / 3.0 | Selected production regression suite |
 | `v7_filtered_rerank_stress` | 62% good, 1.92 / 3.0 | Harder stress benchmark |
 
+Evaluation uses `scripts/run_eval.py`, a custom LLM-as-judge rubric. RAGAS was considered, but the custom evaluator better captures Thai/English KU-specific correctness, structured TCAS/fee evidence, and missing-data behavior.
+
 ## MLflow
 
 Open B4 evidence:
