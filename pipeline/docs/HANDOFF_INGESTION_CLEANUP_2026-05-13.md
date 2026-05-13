@@ -9,7 +9,7 @@ This handoff summarizes the ingestion/database cleanup work done after merging r
 
 ### 1. Clarified source directories
 
-`data/native/curriculum/` is a historical ingest path. It does **not** mean the registrar PDFs are truly born-digital/native PDFs. Registrar files may be text PDFs, scanned PDFs, or mixed PDFs with image-only pages.
+`data/scanned/curriculum/` is the current local path for the registrar curriculum PDFs. The old `data/native/curriculum/` name was misleading because these files may be text PDFs, scanned PDFs, or mixed PDFs with image-only pages.
 
 Current extraction flow:
 
@@ -173,4 +173,3 @@ Recent relevant commits:
 3. Consider improving section detection for OCR-heavy table pages if PLO/course mappings remain important.
 4. Re-ingest DVM as a dedicated job if chunks are required for that program.
 5. Push `chore/pipeline-reorganize` when ready.
-

@@ -7,9 +7,10 @@ This note describes the live ingestion behavior after the May 2026 registrar scr
 ## Source Folders
 
 - Registrar curriculum PDFs are downloaded from `https://registrar.ku.ac.th/cur/all`.
-- The scraper writes them to `data/native/curriculum/<campus>/<faculty>/` for compatibility with existing ingest commands.
+- The scraper writes them to `data/scanned/curriculum/<campus>/<faculty>/`.
 - The name `native` is historical. Files in that tree are not guaranteed to be born-digital PDFs; many registrar PDFs are scans or mixed PDFs with image-only pages.
-- TCAS files still live under `data/native/tcas/`.
+- TCAS native PDF/XLSX files live under `data/native/tcas/`.
+- To refresh only TCAS source files from Drive, run `uv run kuru-download --tcas-only`.
 
 Current registrar scrape result for Bangkhen was approximately 270 public PDF links, with one skipped/dead link during the latest full download.
 
@@ -105,7 +106,7 @@ Going forward, normal ingestion should reduce these gaps because `kuru-ingest-mk
 
 ## Operational Guidance
 
-- Do not assume `data/native/curriculum` means "no OCR cost".
+- Do not use `data/native/curriculum` for the scanned curriculum set; the local curriculum source tree is now `data/scanned/curriculum`.
 - To use direct Gemini full-document OCR, leave `OCR_MODEL=gemini-2.5-flash` or set it explicitly.
 - To route full-document OCR through OpenRouter, use a provider-prefixed value such as `OCR_MODEL=google/gemini-2.5-flash`.
 - Check Typhoon usage when `coverage.extraction_method` contains `typhoon_pages`.

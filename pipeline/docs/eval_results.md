@@ -265,6 +265,59 @@ $env:PYTHONUTF8=1; uv run python scripts/run_eval.py --eval data/eval_set_v6_cur
 
 ---
 
+## Iteration 8 — Structured fee + TCAS regression eval
+
+Run date: 2026-05-13
+
+Commands:
+
+```powershell
+$env:PYTHONUTF8=1; uv run python scripts/augment_eval_set_structured.py --base data/eval_set_v7_filtered_current_chunks.csv --out data/eval_set_v8_structured.csv
+$env:PYTHONUTF8=1; uv run python scripts/run_eval.py --eval data/eval_set_v8_structured.csv --out data/eval_results_v8_structured.csv --delay 0.2 --mlflow --run-name v8_structured_tcas_fees
+```
+
+| Metric | Value |
+|--------|-------|
+| Average score | **2.055 / 3.0** |
+| Good answers (score ≥ 2) | **72.7%** |
+| Distribution | 3=26, 2=14, 1=7, 0=8 |
+| Curriculum avg | 2.029 (n=34) |
+| Admission avg | 2.091 (n=11) |
+| Fee avg | 2.500 (n=2) |
+| TCAS avg | 2.000 (n=3) |
+| PLO avg | 2.000 (n=3) |
+| API cost | ~$0.0228 |
+| MLflow run | `8a47e44b6c034bbcb83f697ecfdfe603` |
+
+**Changes since Iteration 7:**
+- Added `programs.fees` as structured JSONB metadata and backfilled source-backed fee data.
+- Added fee-aware RAG context so fee questions use `programs.fees` and do not borrow tuition numbers from other programs.
+- Added structured regression questions for fees and TCAS using `scripts/augment_eval_set_structured.py`.
+- Logged this run directly to MLflow through `scripts/run_eval.py --mlflow`.
+
+**Interpretation:** v8 is a broader regression suite, not a pure replacement for the v7 headline benchmark. It includes the harder filtered current-chunk set plus structured fee/TCAS cases. The fee and TCAS slices pass at score ≥2, including the negative SKE fee case that previously hallucinated Accountancy tuition.
+
+---
+
+## MLflow Tracking
+
+Current tracking store:
+
+```powershell
+cd pipeline
+uv run mlflow ui --backend-store-uri sqlite:///mlflow.db --port 5000
+```
+
+Existing eval CSVs that were created before MLflow logging was added have been backfilled with:
+
+```powershell
+uv run python scripts/log_eval_results_to_mlflow.py
+```
+
+Backfilled run names include `v1_baseline_unscoped`, `v2_program_named_eval`, `v3_full_pdf_reingest`, `v4_ingestion_cleanup`, `v5_remap_retrieval_fix`, `v6_current_chunks`, and `v7_filtered_rerank_stress`. The existing `baseline`, `wider_retrieval`, `strict_threshold`, and `v8_structured_tcas_fees` runs were already present and were skipped.
+
+---
+
 ## Files
 
 | File | Description |
@@ -274,6 +327,7 @@ $env:PYTHONUTF8=1; uv run python scripts/run_eval.py --eval data/eval_set_v6_cur
 | `data/eval_set_v3_after_cleanup.csv` | v3 eval set with stale program IDs remapped after cleanup |
 | `data/eval_set_v6_current_chunks.csv` | v6 eval set generated from current cleaned chunks |
 | `data/eval_set_v7_filtered_current_chunks.csv` | v7 filtered current-chunk stress eval set |
+| `data/eval_set_v8_structured.csv` | v8 structured regression eval with fee and TCAS cases |
 | `data/eval_results.csv` | v1 results (40% good) |
 | `data/eval_results_v2.csv` | v2 results (65% good) |
 | `data/eval_results_v3.csv` | v3 results (65% good, re-ingested full PDFs) |
@@ -281,6 +335,10 @@ $env:PYTHONUTF8=1; uv run python scripts/run_eval.py --eval data/eval_set_v6_cur
 | `data/eval_results_v5_after_remap_retrieval_fix.csv` | v5 results (68% good, remapped IDs + retrieval fix) |
 | `data/eval_results_v6_current_chunks.csv` | current headline result (74% good, current chunks + targeted lexical rerank) |
 | `data/eval_results_v7_filtered_rerank.csv` | v7 stress result (62% good, filtered harder current-chunk set) |
+| `data/eval_results_v8_structured.csv` | v8 structured regression result (72.7% good, fee/TCAS included) |
 | `scripts/generate_eval_set.py` | Synthetic eval set generator |
 | `scripts/run_eval.py` | LLM-as-judge evaluation runner |
+| `scripts/augment_eval_set_structured.py` | Appends structured fee and TCAS regression cases |
+| `scripts/backfill_program_fees.py` | Backfills source-backed `programs.fees` metadata |
+| `scripts/log_eval_results_to_mlflow.py` | Backfills existing eval result CSVs to MLflow |
 | `scripts/remap_eval_program_ids.py` | Remaps stale eval program IDs using cleanup merge map |

@@ -9,10 +9,17 @@ This note records where the B4 experiment tracking evidence lives and what still
 Tracking data is stored under:
 
 ```text
-pipeline/notebooks/mlruns/
+pipeline/mlflow.db
 ```
 
-The B2 notebook logs the experiment as `kuru-rag-hyperparameter-search` and records three retrieval configurations:
+Open it from `pipeline/` with backend URI `sqlite:///mlflow.db`.
+
+The experiment name is `kuru-rag-hyperparameter-search`. It now contains:
+
+- the original three B2 retrieval configurations, and
+- backfilled/current eval runs for v1-v8, including the v8 structured fee/TCAS regression run.
+
+The original B2 notebook retrieval configurations are:
 
 | Run | top_k | min_similarity | Purpose |
 |-----|-------|----------------|---------|
@@ -26,12 +33,20 @@ The saved comparison figure is:
 pipeline/docs/figures/B2_experiment_comparison.png
 ```
 
+Important current eval runs:
+
+| Run | Eval set | Result | Note |
+|-----|----------|--------|------|
+| `v6_current_chunks` | `data/eval_set_v6_current_chunks.csv` | 74% good, 2.26 / 3.0 | Headline current retrieval benchmark after lexical rerank |
+| `v7_filtered_rerank_stress` | `data/eval_set_v7_filtered_current_chunks.csv` | 62% good, 1.92 / 3.0 | Harder filtered stress set |
+| `v8_structured_tcas_fees` | `data/eval_set_v8_structured.csv` | 72.7% good, 2.055 / 3.0 | Structured regression suite including fees and TCAS |
+
 ## How to Reopen the UI
 
 From `pipeline/`:
 
 ```powershell
-uv run mlflow ui --backend-store-uri ./notebooks/mlruns --port 5000
+uv run mlflow ui --backend-store-uri sqlite:///mlflow.db --port 5000
 ```
 
 Then open:
@@ -53,4 +68,4 @@ Save these in `pipeline/docs/figures/`:
 
 ## Current Alignment Note
 
-The historical B2 MLflow runs compare earlier retrieval settings and are valid for B4 experimentation evidence. The current submission baseline after later ingestion cleanup and targeted lexical reranking is documented in `pipeline/docs/eval_results.md` as v7: 74% good answers and 2.26 / 3.0 average score.
+The historical B2 MLflow runs compare earlier retrieval settings and are valid for B4 experimentation evidence. The current submission baseline after later ingestion cleanup and targeted lexical reranking is documented in `pipeline/docs/eval_results.md` as v7: 74% good answers and 2.26 / 3.0 average score. The v8 structured regression run adds TCAS and fee questions and is logged as `8a47e44b6c034bbcb83f697ecfdfe603`.
