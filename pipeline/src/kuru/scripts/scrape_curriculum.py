@@ -11,9 +11,10 @@ import httpx
 from bs4 import BeautifulSoup
 
 BASE_URL = "https://registrar.ku.ac.th"
-OUTPUT_DIR = Path("data/raw/curriculum/บางเขน")
+INDEX_URL = f"{BASE_URL}/cur/all"
+OUTPUT_DIR = Path("data/scanned/curriculum/บางเขน")
 
-# Bangkhen campus faculty slugs discovered from /cur/all
+# Bangkhen campus faculty slugs discovered from https://registrar.ku.ac.th/cur/all
 BANGKHEN_SLUGS = [
     "/agri", "/bus", "/fish", "/hum", "/forest", "/sci", "/eng",
     "/edu", "/econ", "/arch", "/soc", "/vet", "/agro", "/vettech",

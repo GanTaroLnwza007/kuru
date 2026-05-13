@@ -11,12 +11,12 @@ from __future__ import annotations
 
 import os
 import re
-from pathlib import Path
 
-from dotenv import load_dotenv
 from supabase import Client, create_client
 
-load_dotenv(dotenv_path=Path(__file__).parent.parent / "backend" / ".env")
+from _env import load_project_env
+
+load_project_env(__file__)
 
 # Canonical 20 program IDs we care about
 TARGET_IDS = {

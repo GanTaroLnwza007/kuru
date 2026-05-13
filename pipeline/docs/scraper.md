@@ -3,7 +3,9 @@
 Scrapes มคอ.2 curriculum PDFs from [registrar.ku.ac.th](https://registrar.ku.ac.th/cur/all) and saves them locally so the existing `kuru-ingest-mko` pipeline can process them unchanged.
 
 **Scope:** Bangkhen campus, latest curriculum version per program only.  
-**Source:** 22 faculty pages, ~273 PDFs (public, no authentication required).
+**Source:** 22 faculty pages, approximately 270 PDFs (public, no authentication required).
+
+The scraper writes to `data/native/curriculum/` because that is the existing ingest path. The folder name is historical: registrar PDFs in this directory may still be scanned or mixed PDFs, not truly native/born-digital PDFs.
 
 ---
 
@@ -41,7 +43,7 @@ Example output:
   found 42 program(s)
   ...
 
-Done — would download: 273, skipped: 0, failed: 0
+Done — would download: 270, skipped: 0, failed: 0
 ```
 
 Check that `failed: 0` before proceeding. Any faculty pages that 404 or time out will show `[ERROR]` lines and increment the failed counter.
@@ -55,7 +57,7 @@ uv run kuru-scrape-curriculum
 PDFs are saved to:
 
 ```
-data/raw/curriculum/บางเขน/
+data/native/curriculum/บางเขน/
 ├── agri/
 │   ├── วท.บ._วิทยาศาสตร์เกษตร_2564.pdf
 │   └── ...
@@ -126,7 +128,7 @@ uv run python - <<'EOF'
 from pathlib import Path
 from kuru.ingestion.text_extractor import extract_text_auto, full_text
 
-pdf = next(Path("data/raw/curriculum/บางเขน").rglob("*.pdf"))
+pdf = next(Path("data/native/curriculum/บางเขน").rglob("*.pdf"))
 pages = extract_text_auto(pdf, verbose=True)
 text = full_text(pages)
 print(f"File : {pdf.name}")
@@ -138,7 +140,7 @@ print(text[:300])
 EOF
 ```
 
-A healthy PDF should show `method: pymupdf`, `chars > 500`, and readable Thai/English text.
+A usable PDF should show `chars > 500` and readable Thai/English text. The method may be `pymupdf` for text PDFs or `typhoon_page` / `pymupdf+typhoon_pages` when low-yield pages needed page OCR.
 
 ### End-to-end: scrape → ingest → query
 
@@ -169,7 +171,7 @@ uv run python -c "import httpx; print(httpx.get('https://registrar.ku.ac.th/<slu
 ```
 
 **PDFs download but ingest produces 0 chunks**  
-The PDF is likely image-only (scanned). The ingest pipeline will fall back to the vision OCR path automatically via OpenRouter. Check the ingest log for `Vision OCR` messages.
+The PDF may be image-only, extremely large, or failing OCR/garbage filtering. Low-yield pages normally use Typhoon page OCR. Fully scanned PDFs use `OCR_MODEL`: direct Gemini for values like `gemini-2.5-flash`, or OpenRouter only for provider-prefixed values like `google/gemini-2.5-flash`. Check `coverage.extraction_method` and the ingest log before assuming which API was billed.
 
 **Windows terminal shows `?` instead of Thai characters**  
 Run the terminal in UTF-8 mode:

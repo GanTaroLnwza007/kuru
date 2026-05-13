@@ -1,0 +1,606 @@
+question,ground_truth_answer,rag_answer,score,reasoning,question_type,source_file,program_id,section_type,sources_used
+หลักสูตรปรับปรุง พ.ศ. 2565 ของปริญญาเอก สาขาวิชากีฏวิทยา มีการยกเลิกรายวิชาอะไรบ้าง?,"หลักสูตรปรับปรุง พ.ศ. 2565 ของปริญญาเอก สาขาวิชากีฏวิทยา มีการยกเลิก 7 รายวิชา ได้แก่ แมลงนาโรตามสุพืช, อนุกรมวิธานของแมลง, การควบคุมแมลงศัตรูและวัชพืชโดยชีววิธี, การประเมินและแนวทางการวิเคราะห์ความเสี่ยงศัตรูพืช, นิเวศวิทยาประชากรแมลง II, พิษวิทยาชนิดของสารฆ่าแมลง II และระเบียบวิธีจึงขึ้นสูงทางกายภาพฯ","สวัสดีครับน้อง! พี่เข้าใจว่าน้องกำลังสนใจหลักสูตรปริญญาเอก สาขาวิชากีฏวิทยา ฉบับปรับปรุงปี พ.ศ. 2565 และอยากทราบว่ามีการยกเลิกรายวิชาอะไรไปบ้างใช่ไหมครับ
+
+จากการตรวจสอบข้อมูลที่พี่มี พี่พบรายละเอียดเกี่ยวกับการปรับปรุงหลักสูตร ปร.ด. สาขาวิชากีฏวิทยา พ.ศ. 2565 ครับ โดยมีการ **เพิ่ม** รายวิชาใหม่เข้ามา 12 รายวิชา แต่ **ไม่ได้ระบุข้อมูลเกี่ยวกับการยกเลิกรายวิชาใดๆ** ไว้ในเอกสารที่พี่มีครับ
+
+ดังนั้น พี่จึงไม่สามารถให้ข้อมูลเกี่ยวกับการยกเลิกรายวิชาได้ในตอนนี้ครับ
+
+หากน้องต้องการข้อมูลที่ละเอียดที่สุด หรือต้องการทราบว่ามีรายวิชาใดถูกยกเลิกไปบ้าง พี่แนะนำให้น้องลองเข้าไปตรวจสอบที่เว็บไซต์ของมหาวิทยาลัยเกษตรศาสตร์โดยตรง หรือติดต่อสอบถามกับทางภาควิชากีฏวิทยา คณะเกษตร กำแพงแสน ได้เลยครับ
+
+มีอะไรที่พี่พอจะช่วยหาข้อมูลเพิ่มเติมให้ได้อีกไหมครับ?",0,"The RAG answer states that it cannot find information about canceled courses, while the ground truth explicitly lists seven canceled courses.",curriculum,ปร.ด._กีฏวิทยา_2565.pdf,bangkhen_agri_54c51c81,course,ปร.ด._กีฏวิทยา_2565.pdf|ปร.ด._กีฏวิทยา_2565.pdf|ปร.ด._กีฏวิทยา_2565.pdf
+ในหลักสูตรปริญญาเอก สาขาวิชากีฏวิทยา แบบ 1.1 ของหลักสูตรปรับปรุง พ.ศ. 2565 มีการเปลี่ยนแปลงรายวิชาเกี่ยวกับระเบียบวิธีเมื่อเทียบกับหลักสูตรเดิม พ.ศ. 2562 อย่างไร?,ในหลักสูตรปริญญาเอก สาขาวิชากีฏวิทยา แบบ 1.1 ของหลักสูตรปรับปรุง พ.ศ. 2565 ได้มีการยกเลิกรายวิชา 01004691 ระเบียบวิธีจึงขึ้นสูง และเพิ่มรายวิชา 01004692 วิธีการทางสถิติขั้นสูงสำหรับ การใช้ทางปฏิวิทยา เข้ามาแทน,"สวัสดีครับน้อง! พี่เข้าใจว่าน้องกำลังสนใจหลักสูตรปริญญาเอก สาขาวิชากีฏวิทยา แบบ 1.1 ที่ปรับปรุงในปี พ.ศ. 2565 และอยากทราบว่ามีการเปลี่ยนแปลงรายวิชาเกี่ยวกับระเบียบวิธีเมื่อเทียบกับหลักสูตรเดิม พ.ศ. 2562 ใช่ไหมครับ
+
+จากการตรวจสอบข้อมูลที่พี่มีนะครับ หลักสูตรปรับปรุง พ.ศ. 2565 มีการเพิ่มรายวิชาใหม่เข้ามาหลายวิชาเลยครับ แต่ข้อมูลที่พี่มีไม่ได้ระบุเจาะจงว่ารายวิชาที่เพิ่มเข้ามานั้นเกี่ยวข้องกับ ""ระเบียบวิธี"" โดยตรงหรือไม่ครับ
+
+อย่างไรก็ตาม พี่พบว่ามีการเพิ่มรายวิชาใหม่เข้ามา 12 รายวิชา ซึ่งอาจมีบางวิชาที่เกี่ยวข้องกับระเบียบวิธีวิจัยหรือการเก็บข้อมูลในสาขาวิชากีฏวิทยาครับ รายวิชาที่เพิ่มเข้ามามีดังนี้ครับ:
+
+*   01004536 กีฬากายนาคมฟิตโนโรงเก็บ 3(2-3-6)
+*   01004541 สรรรวิทยาของแมลง 3(2-3-6)
+*   01004551 การจัดระบบอนุกรมวิธานทางกีฏวิทยา 3(2-3-6)
+*   01004552 การจัดหมวดหมู่ตัวอ่อนแมลง 3(2-3-6)
+*   01004561 กีฏวิทยาสิ่งแวดล้อม 3(3-0-6)
+*   01004563 พฤติกรรมศาสตร์ประยุกต์ของแมลง 3(3-0-6)
+*   01004564 นิเวศวิทยาเชิงชีวโมเลกุลของแมลง 3(2-3-6)
+*   01004572 ระบบร่างกายจัดการศัตรูพืช 3(2-3-6)
+*   01004581 พิวิทยาของการแผ่นแมลง 3(2-3-6)
+*   01004633 การจัดการแมลงศัตรูในชุมชนเชิงบูรณาการขั้นสูง 3(2-3-6)
+
+ข้อมูลที่พี่มีไม่ได้ลงรายละเอียดเกี่ยวกับรายวิชาเก่าที่ถูกปรับปรุงหรือยกเลิกไปครับ
+
+ถ้าหากน้องต้องการทราบรายละเอียดที่ชัดเจนเกี่ยวกับการเปลี่ยนแปลงรายวิชาเกี่ยวกับระเบียบวิธี หรือต้องการดูรายละเอียดของรายวิชาทั้งหมด พี่แนะนำให้น้องลองเข้าไปดูที่เว็บไซต์ของมหาวิทยาลัยเกษตรศาสตร์ หรือติดต่อสอบถามโดยตรงกับทางคณะ/ภาควิชาที่เปิดสอนหลักสูตรนี้โดยตรงเลยนะครับ
+
+มีอะไรที่พี่พอจะช่วยหาข้อมูลเพิ่มเติมได้อีกไหมครับ?",0,"The RAG answer fails to identify the specific changes in methodology courses, instead listing unrelated new courses and stating it lacks specific information.",curriculum,ปร.ด._กีฏวิทยา_2565.pdf,bangkhen_agri_54c51c81,course,ปร.ด._กีฏวิทยา_2565.pdf|ปร.ด._กีฏวิทยา_2565.pdf|ปร.ด._กีฏวิทยา_2565.pdf
+หลักสูตรปรัชญาดุษฎีบัณฑิต สาขาวิชาปฐพีวิทยา แบบ 2.2 ต้องเรียนวิชาเอกบังคับกี่หน่วยกิต?,หลักสูตรปรัชญาดุษฎีบัณฑิต สาขาวิชาปฐพีวิทยา แบบ 2.2 ต้องเรียนวิชาเอกบังคับ 3 หน่วยกิต,"สวัสดีครับน้อง! ยินดีด้วยนะครับที่สนใจหลักสูตรปรัชญาดุษฎีบัณฑิต สาขาวิชาปฐพีวิทยา ของมหาวิทยาลัยเกษตรศาสตร์ครับ
+
+จากข้อมูลที่ผมมีนะครับ สำหรับหลักสูตรปรัชญาดุษฎีบัณฑิต สาขาวิชาปฐพีวิทยา แบบ 2.2 จะต้องเรียนวิชาเอกบังคับ **3 หน่วยกิต** ครับ
+
+นอกจากนี้ ในหมวดวิชาเอก ยังมีสัมมนาอีก 6 หน่วยกิต และวิชาเอกเลือกอีกไม่น้อยกว่า 15 หน่วยกิตด้วยนะครับ
+
+ถ้ามีอะไรสงสัยเพิ่มเติม ถามผมได้เลยนะครับ ยินดีช่วยเหลือเสมอครับผม",3,The RAG answer correctly identifies that 3 credits of compulsory major courses are required for the specified program and plan.,curriculum,ปร.ด._ปฐพีวิทยา_2559.pdf,bangkhen_agri_a1c5cd07,course,ปร.ด._ปฐพีวิทยา_2559.pdf|ปร.ด._ปฐพีวิทยา_2559.pdf|ปร.ด._ปฐพีวิทยา_2559.pdf
+"For the Doctor of Philosophy program in Soil Science (Plan 2.2), what is the minimum total credit requirement for the program?","For the Doctor of Philosophy program in Soil Science (Plan 2.2), the minimum total credit requirement is not less than 72 credits.","Hello there! I can help you with that.
+
+For the Doctor of Philosophy program in Soil Science, Plan 2.2, the minimum total credit requirement for the program is **not less than 72 credits**.
+
+[Source: ปร.ด._ปฐพีวิทยา_2559.pdf]
+
+Let me know if you have any other questions!",3,"The RAG answer correctly identifies the minimum total credit requirement for the Doctor of Philosophy program in Soil Science (Plan 2.2) as not less than 72 credits, matching the ground truth precisely.",curriculum,ปร.ด._ปฐพีวิทยา_2559.pdf,bangkhen_agri_a1c5cd07,course,ปร.ด._ปฐพีวิทยา_2559.pdf|ปร.ด._ปฐพีวิทยา_2559.pdf|ปร.ด._ปฐพีวิทยา_2559.pdf
+หลักสูตรเทคนิคการสัตวแพทย์ ของมหาวิทยาลัยเกษตรศาสตร์ กำหนดหน่วยกิตหมวดวิชาศึกษาทั่วไปไว้อย่างน้อยกี่หน่วยกิต และแบ่งเป็นกลุ่มสาระย่อยอะไรบ้าง?,"หลักสูตรเทคนิคการสัตวแพทย์ กำหนดหมวดวิชาศึกษาทั่วไปไม่น้อยกว่า 30 หน่วยกิต โดยแบ่งเป็น 5 กลุ่มสาระย่อย ได้แก่ อยู่ดีมีสุข, ศาสตร์แห่งผู้ประกอบการ, ภาษากับการสื่อสาร, พลเมืองไทยและพลเมืองโลก, และสุนทรียศาสตร์","สวัสดีครับน้อง! ยินดีด้วยนะครับที่สนใจหลักสูตรเทคนิคการสัตวแพทย์ของมหาวิทยาลัยเกษตรศาสตร์
+
+จากข้อมูลที่ผมมี หลักสูตรเทคนิคการสัตวแพทย์ กำหนด **หมวดวิชาศึกษาทั่วไปไว้ไม่น้อยกว่า 30 หน่วยกิต** ครับ
+
+โดยแบ่งออกเป็นกลุ่มสาระย่อยๆ ดังนี้ครับ:
+
+*   **กลุ่มสาระอยู่ดีมีสุข:** ไม่น้อยกว่า 4 หน่วยกิต
+*   **กลุ่มสาระศาสตร์แห่งผู้ประกอบการ:** ไม่น้อยกว่า 5 หน่วยกิต
+*   **กลุ่มสาระภาษากับการสื่อสาร:** ไม่น้อยกว่า 13 หน่วยกิต (ซึ่งรวมถึงวิชาสารสนเทศ/คอมพิวเตอร์, วิชาภาษาไทย, และวิชาภาษาต่างประเทศ)
+*   **กลุ่มสาระพลเมืองไทยและพลเมืองโลก:** ไม่น้อยกว่า 4 หน่วยกิต
+*   **กลุ่มสาระสุนทรียศาสตร์:** ไม่น้อยกว่า 4 หน่วยกิต
+
+(Source: หลักสูตรเทคนิคการสัตวแพทย์_ฉบับปรับปรุง 2565.pdf)
+
+มีอะไรที่ผมพอจะช่วยหาข้อมูลเพิ่มเติมให้น้องได้อีกไหมครับ?",2,"The RAG answer correctly identifies the total minimum credits for general education and lists the five sub-categories, but it incorrectly specifies minimum credits for each sub-category which are not present in the ground truth.",curriculum,หลักสูตรเทคนิคการสัตวแพทย์_ฉบับปรับปรุง 2565.pdf,bangkhen_5b6f81ed,course,หลักสูตรเทคนิคการสัตวแพทย์_ฉบับปรับปรุง 2565.pdf|หลักสูตรเทคนิคการสัตวแพทย์_ฉบับปรับปรุง 2565.pdf|หลักสูตรเทคนิคการสัตวแพทย์_ฉบับปรับปรุง 2565.pdf
+"For the เทคนิคการสัตวแพทย์ program at Kasetsart University, how many credits are required for the 'Languages and Communication' general education category, and what are the specific requirements within this category?","The เทคนิคการสัตวแพทย์ program requires at least 13 credits for the 'Languages and Communication' general education category. This includes a minimum of 1 credit in Information/Computer, 3 credits in Thai language, and 9 credits in Foreign Language 1.","Hello there! I can help you with that.
+
+For the Veterinary Technology program, the 'Languages and Communication' general education category requires a total of **13 credits**.
+
+Within this category, the specific requirements are:
+*   Information Technology/Computer: at least 1 credit
+*   Thai Language: 3 credits
+*   Foreign Language (1st language): 9 credits
+
+I hope this helps you understand the curriculum better! Let me know if you have any other questions.",3,The RAG answer accurately reflects all the key information present in the ground truth regarding the credit requirements for the 'Languages and Communication' general education category in the Veterinary Technology program.,curriculum,หลักสูตรเทคนิคการสัตวแพทย์_ฉบับปรับปรุง 2565.pdf,bangkhen_5b6f81ed,course,หลักสูตรเทคนิคการสัตวแพทย์_ฉบับปรับปรุง 2565.pdf|หลักสูตรเทคนิคการสัตวแพทย์_ฉบับปรับปรุง 2565.pdf|หลักสูตรเทคนิคการสัตวแพทย์_ฉบับปรับปรุง 2565.pdf
+หลักสูตรภูมิศาสตร์ของ มก. มีการพัฒนาผู้เรียนให้มีทักษะด้านใดบ้างที่เกี่ยวข้องกับเทคโนโลยี?,หลักสูตรภูมิศาสตร์ของ มก. เน้นการพัฒนาทักษะการประยุกต์เทคโนโลยีภูมิสารสนเทศ การเขียนโปรแกรม วิทยาศาสตร์ข้อมูล และปัญญาประดิษฐ์ เพื่อวิเคราะห์ปรากฏการณ์เชิงพื้นที่และติดตามการเปลี่ยนแปลงทางสังคมและวัฒนธรรม,"สวัสดีครับน้อง! ยินดีด้วยนะครับที่สนใจหลักสูตรภูมิศาสตร์ของมหาวิทยาลัยเกษตรศาสตร์
+
+จากข้อมูลที่ผมมี หลักสูตรวิทยาศาสตรบัณฑิต สาขาวิชาภูมิศาสตร์และภูมิสารสนเทศศาสตร์ (ชื่อที่ปรับปรุงใหม่) มีการพัฒนาผู้เรียนให้มีทักษะที่เกี่ยวข้องกับเทคโนโลยีหลายด้านเลยครับ โดยเน้นไปที่:
+
+*   **เทคโนโลยีภูมิสารสนเทศ (Geoinformatics Technology):** หลักสูตรให้ความสำคัญกับการประยุกต์ใช้เทคโนโลยีนี้ในการวิเคราะห์เชิงพื้นที่ เพื่อการวางแผนพัฒนา และการทำความเข้าใจปรากฏการณ์ต่างๆ ทั้งที่เกิดขึ้นตามธรรมชาติและที่มนุษย์สร้างขึ้นครับ
+*   **วิทยาศาสตร์ข้อมูล (Data Science):** มีการนำวิทยาศาสตร์ข้อมูลมาเป็นส่วนหนึ่งของการเรียนการสอน เนื่องจากเป็นศาสตร์ที่มีความสำคัญและเป็นที่ต้องการของตลาดแรงงานในปัจจุบันและอนาคตครับ
+*   **การเขียนโปรแกรม (Programming):** เป็นอีกทักษะที่ถูกกล่าวถึงว่ามีความสำคัญและเป็นที่สนใจของหน่วยงานต่างๆ ครับ
+*   **การรับรู้จากระยะไกล (Remote Sensing):** หลักสูตรมีการสอนเกี่ยวกับหลักการรับรู้จากระยะไกล การประมวลผลข้อมูลภาพถ่ายจากดาวเทียมและอากาศยาน ซึ่งมีความจำเป็นอย่างยิ่งในงานทางด้านภูมิศาสตร์ เช่น การวิเคราะห์เชิงพื้นที่ การจัดการภัยพิบัติ และอื่นๆ ครับ
+
+นอกจากนี้ หลักสูตรยังมุ่งเน้นให้บัณฑิตมีความรู้ความสามารถทางภูมิศาสตร์ ภูมิสารสนเทศศาสตร์ และมีทักษะที่ทันต่อการเปลี่ยนแปลงของโลกครับ
+
+ถ้ามีอะไรที่อยากทราบเพิ่มเติม ถามผมได้เลยนะครับ!",3,"The RAG answer accurately identifies and elaborates on the key technological skills mentioned in the ground truth, including Geoinformatics, Data Science, and Programming, and adds Remote Sensing which is a relevant and often integrated aspect of Geoinformatics.",curriculum,วท.บ. สาขาวิชาภูมิศาสตร์.pdf,bangkhen_2a423ff9,course,วท.บ. สาขาวิชาภูมิศาสตร์.pdf|วท.บ. สาขาวิชาภูมิศาสตร์.pdf|วท.บ. สาขาวิชาภูมิศาสตร์.pdf
+What is a key focus in improving the teaching and learning process for the Geography program at KU?,A key focus is to increase practical hours in relevant courses to emphasize real-world application in organizations.,"Hello there! It's great you're interested in the Geography program at Kasetsart University.
+
+Regarding your question about improving the teaching and learning process, the updated curriculum for the Bachelor of Science Program in Geography and Geoinformatics (starting from the 2022 revision) emphasizes a specific approach. The goal is to produce graduates who are ""spatial analysts with knowledge and ability to apply concepts and theories of geography and geoinformatics to accurately and appropriately explain or analyze the processes of spatial phenomena."" This focus is a unique characteristic of graduates from this program in the Department of Geography, Faculty of Social Sciences.
+
+[Source: วท.บ. สาขาวิชาภูมิศาสตร์.pdf]
+
+I hope this helps clarify the program's direction! Let me know if you have any more questions.",1,The RAG answer describes the overall goal of the program but does not specifically address the key focus of improving the teaching and learning process by increasing practical hours.,curriculum,วท.บ. สาขาวิชาภูมิศาสตร์.pdf,bangkhen_2a423ff9,course,วท.บ. สาขาวิชาภูมิศาสตร์.pdf|วท.บ. สาขาวิชาภูมิศาสตร์.pdf|วท.บ. สาขาวิชาภูมิศาสตร์.pdf
+What are the credit hours for the course 'สิงห์เสือแม่งวงธรรมชาติ' in the revised 2026 curriculum of the Bachelor of Science in Environmental Management at KU?,The course 'สิงห์เสือแม่งวงธรรมชาติ' (code 0168121) in the revised 2026 curriculum of the Bachelor of Science in Environmental Management at KU has 3 credit hours (3-0-6).,"Hello there! I can help you with that.
+
+Great news – I found the credit hours for the course 'สิงห์เสือแม่งวงธรรมชาติ' in the revised 2026 curriculum. According to the provided documents, the course **0168121 สิงห์เสือแม่งวงธรรมชาติ** in the revised curriculum (พ.ศ. 2569) has **3(3-0-6)** credit hours. This indicates 3 lecture hours, 0 laboratory hours, and 6 self-study hours.
+
+[Source: วท.บ._การจัดการสิ่งแวดล้อม_2569.pdf]
+
+Let me know if you have any other questions!",3,"The RAG answer correctly identifies the course name, code, curriculum year, and credit hours, matching the ground truth precisely.",curriculum,วท.บ._การจัดการสิ่งแวดล้อม_2569.pdf,bangkhen_envi_fedd82d0,course,วท.บ._การจัดการสิ่งแวดล้อม_2569.pdf|วท.บ._การจัดการสิ่งแวดล้อม_2569.pdf|วท.บ._การจัดการสิ่งแวดล้อม_2569.pdf
+หลักสูตรศิลปศาสตรบัณฑิต สาขาวิชาภาษาอังกฤษ มีรายวิชาที่อยู่ในหมวดวิชาเฉพาะในหลักสูตรหรือไม่?,ใช่ หลักสูตรศิลปศาสตรบัณฑิต สาขาวิชาภาษาอังกฤษ มีรายวิชาที่อยู่ในหมวดวิชาเฉพาะในหลักสูตรศิลปศาสตรบัณฑิต สาขาวิชาภาษาอังกฤษ,"สวัสดีครับน้อง! ยินดีด้วยนะครับที่สนใจหลักสูตรศิลปศาสตรบัณฑิต สาขาวิชาภาษาอังกฤษของมหาวิทยาลัยเกษตรศาสตร์ครับ
+
+สำหรับคำถามที่ว่าหลักสูตรนี้มีรายวิชาที่อยู่ในหมวดวิชาเฉพาะในหลักสูตรหรือไม่นั้น ผมมีข้อมูลมาแจ้งให้ทราบครับ
+
+จากเอกสารที่ผมมี **หลักสูตรศิลปศาสตรบัณฑิต สาขาวิชาภาษาอังกฤษ มีรายวิชาที่อยู่ในหมวดวิชาเฉพาะในหลักสูตรศิลปศาสตรบัณฑิต สาขาวิชาภาษาอังกฤษ ครับ**
+
+นอกจากนี้ ยังมีข้อมูลเกี่ยวกับรายวิชาที่อยู่ในหมวดวิชาเฉพาะเลือกด้วยครับ
+
+หากน้องต้องการทราบรายละเอียดเพิ่มเติมเกี่ยวกับรายวิชา หรือโครงสร้างหลักสูตร ผมแนะนำให้เข้าไปดูที่เว็บไซต์ของมหาวิทยาลัยเกษตรศาสตร์ หรือติดต่อคณะมนุษยศาสตร์โดยตรงนะครับ
+
+มีอะไรให้ผมช่วยอีกไหมครับ?",3,"The RAG answer correctly confirms that the Bachelor of Arts in English program has courses in the specialized subject category, directly matching the ground truth.",curriculum,ศศ.บ._ภาษาอังกฤษ_2568.pdf,bangkhen_hum_c6bef509,course,ศศ.บ._ภาษาอังกฤษ_2568.pdf|ศศ.บ._ภาษาอังกฤษ_2568.pdf|ศศ.บ._ภาษาอังกฤษ_2568.pdf
+Does the Bachelor of Arts program in English include elective courses within the major?,"Yes, the Bachelor of Arts program in English includes elective courses within the major.","Yes, the Bachelor of Arts program in English does include elective courses within the major.
+
+According to the provided documents:
+
+*   **[ศศ.บ._ภาษาอังกฤษ_2568.pdf | course | similarity: 0.787]** states for the course ""Historical Perspectives of English"" (01355333) that it falls under ""หมวดวิชาเฉพาะในหลักสูตรศิลปศาสตรบัณฑิต สาขาวิชาภาษาอังกฤษ"" (Specialized courses in the Bachelor of Arts program, English major) and is marked as ""วิชาเฉพาะเลือก"" (elective specialized course).
+*   **[ศศ.บ._ภาษาอังกฤษ_2568.pdf | course | similarity: 0.787]** also shows for the course ""English Listening and Speaking Skills"" (01355111) that it is a ""วิชาเฉพาะบังคับ"" (compulsory specialized course), indicating that there are also elective specialized courses.
+*   **[ศศ.บ._ภาษาอังกฤษ_2568.pdf | course | similarity: 0.789]** shows for the course ""English Sound Systems"" (01355133) that it is also a ""วิชาเฉพาะบังคับ"" (compulsory specialized course), further supporting the distinction between compulsory and elective specialized courses.
+
+I hope this helps you understand the program structure better! Let me know if you have any more questions.",3,"The RAG answer correctly confirms that the Bachelor of Arts program in English includes elective courses within the major, directly supported by the provided document excerpts.",curriculum,ศศ.บ._ภาษาอังกฤษ_2568.pdf,bangkhen_hum_c6bef509,course,ศศ.บ._ภาษาอังกฤษ_2568.pdf|ศศ.บ._ภาษาอังกฤษ_2568.pdf|ศศ.บ._ภาษาอังกฤษ_2568.pdf
+Why was the curriculum for the Bachelor of Engineering (Civil and Irrigation Engineering) program at KU revised in 2023?,"The curriculum was revised to ensure its content is up-to-date with technology, meets the changing demands of the labor market, and incorporates feedback for more practical student training in calculations, tool usage, and modern software.","I couldn't find specific information in the provided documents explaining *why* the curriculum for the Bachelor of Engineering (Civil and Irrigation Engineering) program was revised in 2023. The documents mention that the curriculum was updated in 2023, but they don't detail the reasons behind the revision.
+
+For more details on curriculum updates, you might want to check the official Kasetsart University website (ku.ac.th) or contact the faculty directly.
+
+Is there anything else I can help you with regarding this program?",0,"The RAG answer incorrectly states that it could not find information about the reasons for the curriculum revision, despite the ground truth providing a clear explanation.",curriculum,วิศวกรรมศาสตรบัณฑิต(สาขาวิชาวิศวกรรมโยธา-ชลประทาน)ฉบับปรังปรุง พ.ศ. 2566(ปรับปรับปรุงแบบแยก).pdf,bangkhen_f765bc67,course,วิศวกรรมศาสตรบัณฑิต(สาขาวิชาวิศวกรรมโยธา-ชลประทาน)ฉบับปรังปรุง พ.ศ. 2566(ปรับปรับปรุงแบบแยก).pdf|วิศวกรรมศาสตรบัณฑิต(สาขาวิชาวิศวกรรมโยธา-ชลประทาน)ฉบับปรังปรุง พ.ศ. 2566(ปรับปรับปรุงแบบแยก).pdf|วิศวกรรมศาสตรบัณฑิต(สาขาวิชาวิศวกรรมโยธา-ชลประทาน)ฉบับปรังปรุง พ.ศ. 2566(ปรับปรับปรุงแบบแยก).pdf
+What is the purpose of revising the Bachelor of Engineering (Civil and Irrigation Engineering) program curriculum in relation to the Engineering Council?,"The revision aims to align the curriculum content with the criteria and regulations of the Engineering Council regarding fundamental scientific knowledge, engineering knowledge, and specialized engineering knowledge for professional engineering practice certification, ensuring graduates are eligible to apply for a professional engineer license in civil engineering.","I couldn't find specific information about the purpose of revising the Bachelor of Engineering (Civil and Irrigation Engineering) program curriculum in relation to the Engineering Council within the provided documents.
+
+However, I can tell you that the program is called the Bachelor of Engineering Program in Civil Engineering - Irrigation, and the degree awarded is Bachelor of Engineering (Civil Engineering - Irrigation).
+
+For detailed information on curriculum revisions and their relation to the Engineering Council, I recommend checking the official Kasetsart University website (ku.ac.th) or contacting the faculty directly.
+
+Is there anything else I can help you with regarding the Civil Engineering - Irrigation program?",0,"The RAG answer explicitly states it could not find the information, directly contradicting the ground truth which contains the answer.",curriculum,วิศวกรรมศาสตรบัณฑิต(สาขาวิชาวิศวกรรมโยธา-ชลประทาน)ฉบับปรังปรุง พ.ศ. 2566(ปรับปรับปรุงแบบแยก).pdf,bangkhen_f765bc67,course,วิศวกรรมศาสตรบัณฑิต(สาขาวิชาวิศวกรรมโยธา-ชลประทาน)ฉบับปรังปรุง พ.ศ. 2566(ปรับปรับปรุงแบบแยก).pdf|วิศวกรรมศาสตรบัณฑิต(สาขาวิชาวิศวกรรมโยธา-ชลประทาน)ฉบับปรังปรุง พ.ศ. 2566(ปรับปรับปรุงแบบแยก).pdf|วิศวกรรมศาสตรบัณฑิต(สาขาวิชาวิศวกรรมโยธา-ชลประทาน)ฉบับปรังปรุง พ.ศ. 2566(ปรับปรับปรุงแบบแยก).pdf
+หลักสูตรวิทยาศาสตร์สิ่งแวดล้อม ที่ มก. ต้องเรียนหมวดวิชาศึกษาทั่วไปกี่หน่วยกิต และแบ่งเป็นกลุ่มย่อยอย่างไรบ้าง?,"หลักสูตรวิทยาศาสตร์สิ่งแวดล้อม กำหนดให้เรียนหมวดวิชาศึกษาทั่วไปไม่น้อยกว่า 30 หน่วยกิต โดยแบ่งเป็นกลุ่มวิชาวิทยาศาสตร์และคณิตศาสตร์ 6 หน่วยกิต, กลุ่มวิชาภาษา 12 หน่วยกิต, กลุ่มวิชามนุษยศาสตร์ 3 หน่วยกิต, กลุ่มวิชาสังคมศาสตร์ 7 หน่วยกิต และกลุ่มวิชาพลศึกษา 2 หน่วยกิต","สวัสดีครับน้อง! ยินดีด้วยนะครับที่สนใจหลักสูตรวิทยาศาสตร์สิ่งแวดล้อมของ มก. ครับ ผมหาข้อมูลเกี่ยวกับโครงสร้างหลักสูตรมาให้แล้วครับ
+
+สำหรับหลักสูตรวิทยาศาสตรบัณฑิต สาขาวิชาวิทยาศาสตร์สิ่งแวดล้อม (ปรับปรุง พ.ศ. 2554) หมวดวิชาศึกษาทั่วไปนั้น **ไม่น้อยกว่า 30 หน่วยกิต** ครับ โดยแบ่งออกเป็นกลุ่มย่อยๆ ดังนี้ครับ:
+
+*   **กลุ่มวิชาวิทยาศาสตร์และคณิตศาสตร์:** 6 หน่วยกิต
+*   **กลุ่มวิชาภาษา:** 12 หน่วยกิต
+*   **กลุ่มวิชามนุษยศาสตร์:** 3 หน่วยกิต
+*   **กลุ่มวิชาสังคมศาสตร์:** 7 หน่วยกิต
+*   **กลุ่มวิชาพลศึกษา:** 2 หน่วยกิต
+
+(ที่มา: วท.บ._วิทยาศาสตร์สิ่งแวดล้อม_2554.pdf)
+
+หวังว่าข้อมูลนี้จะเป็นประโยชน์นะครับ ถ้ามีอะไรสงสัยอีก ถามผมได้เลยนะครับ!",3,"The RAG answer correctly identifies the total number of general education credits and accurately breaks them down into the specified sub-groups, matching the ground truth precisely.",curriculum,วท.บ._วิทยาศาสตร์สิ่งแวดล้อม_2554.pdf,bangkhen_envi_a34419be,course,วท.บ._วิทยาศาสตร์สิ่งแวดล้อม_2554.pdf|วท.บ._วิทยาศาสตร์สิ่งแวดล้อม_2554.pdf|วท.บ._วิทยาศาสตร์สิ่งแวดล้อม_2554.pdf
+What are the credit requirements for the specialized courses in the Bachelor of Science in Environmental Science program at Kasetsart University?,"The specialized courses in the Bachelor of Science in Environmental Science program at Kasetsart University require a minimum of 97 credits, divided into core courses (24 credits), mandatory specialized courses (52 credits), and elective specialized courses (21 credits).","Hello there! I can help you with that.
+
+For the Bachelor of Science program in Environmental Science, the specialized courses require a total of no less than 97 credits. This is broken down into:
+
+*   **Core Courses:** 24 credits
+*   **Mandatory Specialized Courses:** 52 credits
+*   **Elective Specialized Courses:** 21 credits
+
+[Source: วท.บ._วิทยาศาสตร์สิ่งแวดล้อม_2554.pdf]
+
+Let me know if you have any other questions!",3,The RAG answer accurately reflects all the credit requirements for the specialized courses as stated in the ground truth.,curriculum,วท.บ._วิทยาศาสตร์สิ่งแวดล้อม_2554.pdf,bangkhen_envi_a34419be,course,วท.บ._วิทยาศาสตร์สิ่งแวดล้อม_2554.pdf|วท.บ._วิทยาศาสตร์สิ่งแวดล้อม_2554.pdf|วท.บ._วิทยาศาสตร์สิ่งแวดล้อม_2554.pdf
+หลักสูตรวิศวกรรมคอมพิวเตอร์ ของ มก. ต้องเรียนหมวดวิชาศึกษาทั่วไปกี่หน่วยกิต?,หลักสูตรวิศวกรรมคอมพิวเตอร์ ของ มก. ต้องเรียนหมวดวิชาศึกษาทั่วไปไม่น้อยกว่า 30 หน่วยกิต,"สวัสดีครับน้อง! ยินดีด้วยนะครับที่สนใจหลักสูตรวิศวกรรมคอมพิวเตอร์ของมหาวิทยาลัยเกษตรศาสตร์ครับ
+
+จากข้อมูลที่ผมมี หลักสูตรวิศวกรรมคอมพิวเตอร์ (ปกติ) กำหนดให้เรียนหมวดวิชาศึกษาทั่วไป **ไม่น้อยกว่า 30 หน่วยกิต** ครับ
+
+หมวดวิชานี้จะแบ่งออกเป็นกลุ่มย่อยๆ ดังนี้ครับ:
+*   กลุ่มสาระอยู่ดีมีสุข: ไม่น้อยกว่า 7 หน่วยกิต
+*   กลุ่มสาระศาสตร์แห่งผู้ประกอบการ: ไม่น้อยกว่า 3 หน่วยกิต
+*   กลุ่มสาระภาษากับการสื่อสาร: ไม่น้อยกว่า 15 หน่วยกิต
+*   กลุ่มสาระพลเมืองไทยและพลเมืองโลก: ไม่น้อยกว่า 2 หน่วยกิต
+*   กลุ่มสาระสุนทรียศาสตร์: ไม่น้อยกว่า 3 หน่วยกิต
+
+(Source: 67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf)
+
+มีอะไรที่ผมพอจะช่วยหาข้อมูลเพิ่มเติมให้น้องได้อีกไหมครับ?",3,The RAG answer correctly identifies that the Computer Engineering program at Kasetsart University requires no less than 30 credits of general education and provides a detailed breakdown of these credits by category.,curriculum,67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf,bangkhen_ddf705a9,course,67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf|67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf|67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf
+"For the Computer Engineering program at KU, how many credits are required for the 'Languages and Communication' cluster within General Education?",The Computer Engineering program at KU requires no less than 15 credits for the 'Languages and Communication' cluster within General Education.,"Hello there! I can help you with that.
+
+For the Computer Engineering program at Kasetsart University, the 'Languages and Communication' cluster within General Education requires not less than 15 credits.
+
+[Source: 67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf]
+
+Let me know if you have any more questions!",3,"The RAG answer correctly identifies the required credit count for the 'Languages and Communication' cluster in the Computer Engineering program at KU, matching the ground truth precisely.",curriculum,67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf,bangkhen_ddf705a9,course,67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf|67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf|67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf
+โครงสร้างหลักสูตรใหม่ของ วศ.บ. วิศวกรรมโยธา-ทรัพยากรน้ำ มีการเปลี่ยนแปลงหน่วยกิตในหมวดวิชาศึกษาทั่วไปอย่างไรบ้างเมื่อเทียบกับโครงสร้างเดิม?,"โครงสร้างหลักสูตรใหม่ของ วศ.บ. วิศวกรรมโยธา-ทรัพยากรน้ำ มีการเปลี่ยนแปลงหน่วยกิตในหมวดวิชาศึกษาทั่วไป โดยโครงสร้างเดิมมีไม่น้อยกว่า 30 หน่วยกิต แต่โครงสร้างใหม่มีไม่น้อยกว่า 30 หน่วยกิต, ไม่น้อยกว่า 118 หน่วยกิต, ไม่น้อยกว่า 37 หน่วยกิต, และไม่น้อยกว่า 14 หน่วยกิต","สวัสดีครับน้อง! ยินดีด้วยนะครับที่สนใจหลักสูตร วศ.บ. วิศวกรรมโยธา-ทรัพยากรน้ำ ของเราครับ
+
+จากข้อมูลที่ผมมี โครงสร้างหลักสูตรใหม่ของ วศ.บ. วิศวกรรมโยธา-ทรัพยากรน้ำ มีการเปลี่ยนแปลงหน่วยกิตในหมวดวิชาศึกษาทั่วไปเมื่อเทียบกับโครงสร้างเดิม ดังนี้ครับ
+
+*   **โครงสร้างเดิม:** หมวดวิชาศึกษาทั่วไป ไม่น้อยกว่า 30 หน่วยกิต
+*   **โครงสร้างใหม่:** หมวดวิชาศึกษาทั่วไป ไม่น้อยกว่า 30 หน่วยกิต
+
+จะเห็นว่าจำนวนหน่วยกิตรวมในหมวดวิชาศึกษาทั่วไป **ยังคงเท่าเดิม** คือไม่น้อยกว่า 30 หน่วยกิตครับ
+
+อย่างไรก็ตาม ในโครงสร้างใหม่มีการแบ่งหมวดวิชาศึกษาทั่วไปออกเป็นกลุ่มย่อยๆ พร้อมจำนวนหน่วยกิตที่กำหนดไว้ ดังนี้ครับ:
+*   กลุ่มสาระอยู่ดีมีสุข: ไม่น้อยกว่า 6 หน่วยกิต
+*   กลุ่มสาระศาสตร์แห่งผู้ประกอบการ: ไม่น้อยกว่า 3 หน่วยกิต
+*   กลุ่มสาระภาษากับการสื่อสาร: ไม่น้อยกว่า 13 หน่วยกิต
+*   กลุ่มสาระพลเมืองไทยและพลเมืองโลก: ไม่น้อยกว่า 5 หน่วยกิต
+*   กลุ่มสาระลุนทรียศาสตร์: ไม่น้อยกว่า 3 หน่วยกิต
+
+(อ้างอิง: [วศ.บ._วิศวกรรมโยธา-ทรัพยากรน้ำ_2565.pdf])
+
+ถ้ามีอะไรสงสัยเพิ่มเติม ถามผมได้เลยนะครับ ยินดีช่วยเหลือเสมอครับ!",1,The RAG answer correctly identifies that the total credits for general education remain the same but fails to mention the other credit requirements listed in the ground truth.,curriculum,วศ.บ._วิศวกรรมโยธา-ทรัพยากรน้ำ_2565.pdf,bangkhen_eng_dba25831,course,วศ.บ._วิศวกรรมโยธา-ทรัพยากรน้ำ_2565.pdf|วศ.บ._วิศวกรรมโยธา-ทรัพยากรน้ำ_2565.pdf|วศ.บ._วิศวกรรมโยธา-ทรัพยากรน้ำ_2565.pdf
+What is the total credit requirement for the Bachelor of Engineering program in Civil Engineering - Water Resources (วศ.บ. วิศวกรรมโยธา-ทรัพยากรน้ำ) at KU?,The total credit requirement for the Bachelor of Engineering program in Civil Engineering - Water Resources (วศ.บ. วิศวกรรมโยธา-ทรัพยากรน้ำ) at KU is not less than 120 credits.,"Hello there! I can help you with that.
+
+According to the provided documents, the total credit requirement for the Bachelor of Engineering program in Civil-Water Resources Engineering (วศ.บ. วิศวกรรมโยธา-ทรัพยากรน้ำ) at Kasetsart University is **not less than 155 credits**.
+
+[Source: วศ.บ._วิศวกรรมโยธา-ทรัพยากรน้ำ_2565.pdf | general]
+
+Let me know if you have any other questions!",0,"The RAG answer states the credit requirement is not less than 155 credits, which contradicts the ground truth of not less than 120 credits.",curriculum,วศ.บ._วิศวกรรมโยธา-ทรัพยากรน้ำ_2565.pdf,bangkhen_eng_dba25831,course,วศ.บ._วิศวกรรมโยธา-ทรัพยากรน้ำ_2565.pdf|วศ.บ._วิศวกรรมโยธา-ทรัพยากรน้ำ_2565.pdf|วศ.บ._วิศวกรรมโยธา-ทรัพยากรน้ำ_2565.pdf
+โครงสร้างหลักสูตร พยาบาลศาสตร์ ของมหาวิทยาลัยเกษตรศาสตร์ มีรายละเอียดเกี่ยวกับอะไรบ้าง?,โครงสร้างหลักสูตร พยาบาลศาสตร์ ของมหาวิทยาลัยเกษตรศาสตร์ มีรายละเอียดเกี่ยวกับจำนวนหน่วยกิตรวมตลอดหลักสูตร โครงสร้างหลักสูตร รายวิชา คำอธิบายรายวิชา และแผนการศึกษา,"สวัสดีครับน้อง! พี่เข้าใจว่าน้องกำลังสนใจเกี่ยวกับโครงสร้างหลักสูตรพยาบาลศาสตร์ของมหาวิทยาลัยเกษตรศาสตร์ใช่ไหมครับ ดีเลยครับ พี่พอจะมีข้อมูลเกี่ยวกับเรื่องนี้อยู่บ้างครับ
+
+จากข้อมูลที่พี่มี หลักสูตรพยาบาลศาสตรบัณฑิตของมหาวิทยาลัยเกษตรศาสตร์ มีรายละเอียดดังนี้ครับ:
+
+*   **รหัสและชื่อหลักสูตร:** หลักสูตรพยาบาลศาสตรบัณฑิต (Bachelor of Nursing Science)
+*   **ชื่อปริญญาและสาขาวิชา:**
+    *   ชื่อเต็ม: พยาบาลศาสตรบัณฑิต
+    *   ชื่อย่อ: B.N.S.
+    *   สาขา: เภสัชกรรมศาสตร์ (ตามข้อมูลที่ให้มานะครับ)
+*   **วิชาเอก:** ไม่มีวิชาเอก
+*   **จำนวนหน่วยกิตที่เรียนตลอดหลักสูตร:** ไม่น้อยกว่า 124 หน่วยกิต
+*   **รูปแบบของหลักสูตร:**
+    *   เป็นหลักสูตรระดับปริญญาตรี 4 ปี (ทางวิชาชีพ)
+    *   ใช้ภาษาไทยและภาษาอังกฤษในการเรียนการสอน
+    *   รับเฉพาะนิสิตไทย
+    *   เป็นหลักสูตรเฉพาะของสถาบัน (ไม่มีสถาบันร่วมผลิต)
+    *   ให้ปริญญาเพียงสาขาวิชาเดียว
+
+ข้อมูลนี้มาจากเอกสาร ""เล่มหลักสูตรพยาบาลศาตรบัณฑิต ผ่านการรับรองจากสภาการพยาบาล.pdf"" ครับ
+
+อย่างไรก็ตาม ข้อมูลที่พี่มีอาจจะยังไม่ครบถ้วนทั้งหมดนะครับ หากน้องต้องการรายละเอียดเพิ่มเติมเกี่ยวกับโครงสร้างหลักสูตร เช่น รายวิชาที่เปิดสอน หรือรายละเอียดอื่นๆ ที่เจาะจงกว่านี้ พี่แนะนำให้น้องลองเข้าไปดูที่เว็บไซต์ของคณะพยาบาลศาสตร์ มหาวิทยาลัยเกษตรศาสตร์ โดยตรง หรือติดต่อสอบถามกับทางคณะโดยตรงจะดีที่สุดครับ
+
+มีอะไรที่พี่พอจะช่วยหาข้อมูลเพิ่มเติมได้อีกไหมครับ?",2,"The RAG answer provides some details about the nursing program at Kasetsart University, such as the degree name, total credits, and program format, but it incorrectly states the field of study as 'Pharmacy' and misses key structural components like course descriptions and study plans mentioned in the ground truth.",curriculum,เล่มหลักสูตรพยาบาลศาตรบัณฑิต ผ่านการรับรองจากสภาการพยาบาล.pdf,bangkhen_13e0215f,course,เล่มหลักสูตรพยาบาลศาตรบัณฑิต ผ่านการรับรองจากสภาการพยาบาล.pdf|เล่มหลักสูตรพยาบาลศาตรบัณฑิต ผ่านการรับรองจากสภาการพยาบาล.pdf|เล่มหลักสูตรพยาบาลศาตรบัณฑิต ผ่านการรับรองจากสภาการพยาบาล.pdf
+Where can I find the course descriptions for the พยาบาลศาสตร์ program at KU?,Course descriptions for the พยาบาลศาสตร์ program at KU can be found in section 3.5 of the curriculum document.,"Hello there, น้อง! I can help you with that.
+
+I found some information about the Bachelor of Nursing Science program at Kasetsart University. It looks like a new curriculum for 2025 (พ.ศ. 2568) has been approved by the Nursing Council.
+
+Regarding course descriptions, I don't have specific details on where to find them directly in the documents I have. However, the information I found mentions that the program is a Bachelor of Nursing Science (หลักสูตรพยาบาลศาสตรบัณฑิต) and the degree is Bachelor of Nursing Science (B.N.S.). It also states that the total credits for the program are not less than 124 credits.
+
+For detailed course descriptions, program structure, and learning outcomes, I highly recommend checking the official Kasetsart University website, specifically the Faculty of Nursing section. You can usually find comprehensive curriculum details there.
+
+Would you like me to look for any other information about the nursing program based on the documents I have?",1,The RAG answer is tangentially related as it discusses the nursing program at KU but fails to provide the specific location of the course descriptions as requested.,curriculum,เล่มหลักสูตรพยาบาลศาตรบัณฑิต ผ่านการรับรองจากสภาการพยาบาล.pdf,bangkhen_13e0215f,course,เล่มหลักสูตรพยาบาลศาตรบัณฑิต ผ่านการรับรองจากสภาการพยาบาล.pdf|เล่มหลักสูตรพยาบาลศาตรบัณฑิต ผ่านการรับรองจากสภาการพยาบาล.pdf|เล่มหลักสูตรพยาบาลศาตรบัณฑิต ผ่านการรับรองจากสภาการพยาบาล.pdf
+หลักสูตรวิศวกรรมไฟฟ้า ของ มก. มีวิชาเลือกปฏิบัติการทางวิศวกรรมไฟฟ้าหรือไม่,หลักสูตรวิศวกรรมไฟฟ้า ของ มก. มีกลุ่มวิชาปฏิบัติการทางวิศวกรรมไฟฟ้า ซึ่งประกอบด้วยวิชาเลือกปฏิบัติการทางวิศวกรรมไฟฟ้า,"สวัสดีครับน้อง! ผมเข้าใจว่าน้องกำลังสนใจเกี่ยวกับหลักสูตรวิศวกรรมไฟฟ้าของมหาวิทยาลัยเกษตรศาสตร์ และอยากทราบว่ามีวิชาเลือกปฏิบัติการทางวิศวกรรมไฟฟ้าหรือไม่ใช่ไหมครับ
+
+ข่าวดีเลยครับ! จากข้อมูลที่ผมมี หลักสูตรวิศวกรรมศาสตรบัณฑิต สาขาวิชาวิศวกรรมไฟฟ้า มี **กลุ่มวิชาปฏิบัติการทางวิศวกรรมไฟฟ้า** ครับ โดยในกลุ่มนี้จะประกอบไปด้วยวิชาเลือกปฏิบัติการทางวิศวกรรมไฟฟ้าครับ
+
+นอกจากนี้ ในปีการศึกษา 2565 ยังมีการเปิดรายวิชาใหม่ๆ ที่เกี่ยวข้องกับปฏิบัติการด้วยนะครับ เช่น วิชาปฏิบัติการออกแบบอิเล็กทรอนิกส์ และวิชาปฏิบัติการไมโครโพรเซสเซอร์ เป็นต้นครับ
+
+ถ้ามีอะไรที่น้องอยากทราบเพิ่มเติมเกี่ยวกับหลักสูตรนี้ ถามผมได้เลยนะครับ ยินดีช่วยเหลือครับผม!",3,"The RAG answer correctly confirms the existence of the 'Electrical Engineering Laboratory Electives' group and its constituent electives, aligning perfectly with the ground truth.",curriculum,วศ.บ._วิศวกรรมไฟฟ้า_2565.pdf,bangkhen_5a8d741f,course,วศ.บ._วิศวกรรมไฟฟ้า_2565.pdf|วศ.บ._วิศวกรรมไฟฟ้า_2565.pdf|วศ.บ._วิศวกรรมไฟฟ้า_2565.pdf
+What are the new courses offered in the Electrical Engineering program at KU?,"The Electrical Engineering program at KU offers 10 new courses, including 'วิทยาศาสตร์อุดมภาพสำหรับวิศวกรไฟฟ้า', 'ระบบทักเก็บพลังงาน', 'ยานยนต์ไฟฟ้า', 'การใช้งานเครื่องแปลงผันกำลังในงานวิศวกรรมไฟฟ้า', 'ปฏิบัติการออกแบบอิเล็กทรอนิกส์', 'การเตรียมโครงงานวิศวกรรมไฟฟ้า', 'การประยุกต์ใช้การวิเคราะห์สัญญาณในการเงิน', 'ระบบถ้อยแขนและสกู๊ตเตอร์ชิลดอลในงานวิศวกรรมไฟฟ้า', 'ความเป็นเจ้าของธุรกิจในงานวิศวกรรมไฟฟ้า', and 'โซลาเร่อินเวอร์เตอร์สำหรับระบบผลิตไฟฟ้าพลังงานแสงอาทิตย์'.","Hello there! I can help you with that.
+
+Based on the documents I have, it looks like there are a few courses that have been updated or are new.
+
+Specifically, the following courses are marked as ""updated"" or ""new"":
+
+*   **01205499 Electrical Engineering Project II** (marked as updated)
+*   **01205491 Electrical Engineering Project I** (marked as updated)
+*   **01205391 Electrical Engineering Project Preparation** (marked as a new course)
+
+It's great that you're looking into the specifics of the curriculum! If you'd like to know more about the content of these courses or any other part of the Electrical Engineering program, I recommend checking the official Kasetsart University website (ku.ac.th) or contacting the faculty directly.
+
+Is there anything else I can help you find regarding the Electrical Engineering program?",0,"The RAG answer incorrectly identifies only three courses as new or updated and provides course codes, which are not present in the ground truth, while the ground truth lists ten specific new courses by name.",curriculum,วศ.บ._วิศวกรรมไฟฟ้า_2565.pdf,bangkhen_5a8d741f,course,วศ.บ._วิศวกรรมไฟฟ้า_2565.pdf|วศ.บ._วิศวกรรมไฟฟ้า_2565.pdf|วศ.บ._วิศวกรรมไฟฟ้า_2565.pdf
+หลักสูตรปรับปรุง พ.ศ. 2569 ของ คหกรรมศาสตร์ มีรายวิชาอะไรบ้างที่ถูกยกเลิกไปจากหลักสูตรเดิม พ.ศ. 2564?,"หลักสูตรปรับปรุง พ.ศ. 2569 ของ คหกรรมศาสตร์ มีหลายรายวิชาที่ถูกยกเลิกไปจากหลักสูตรเดิม พ.ศ. 2564 ได้แก่ ผลิตภัณฑ์อาหารหมักและโภชนาการ, การพัฒนาผลิตภัณฑ์อาหารเพื่อโภชนาการ, เทคนิคกราฟวิเคราะห์ขั้นสูงทางอาหารและโภชนาการ, แนวโน้มงานวิจัยด้านอาหารและโภชนาการ, การจัดการธุรกิจอาหารและโภชนาการ, โภชนาศาสตร์ชั้นสูงในปัจจุบันวิชา, โภชนาการทางคลินิกกับสูง, โภชนาศาสตร์และแผนเทียบซีสม, โภชนาทิราชวิทยา, การใช้โปรแกรมสำเร็จรูปในงานวิจัยทางอาหารและโภชนาการ และอาหารและโภชนาการจากข้าวและผลิตภัณฑ์จากข้าว","สวัสดีครับน้อง! เข้าใจเลยว่าอยากรู้ว่าหลักสูตรปรับปรุง พ.ศ. 2569 ของสาขาวิชาคหกรรมศาสตร์ มีการเปลี่ยนแปลงอะไรไปบ้าง โดยเฉพาะรายวิชาที่ถูกยกเลิกไป ผมหาข้อมูลมาให้แล้วครับ
+
+ตามเอกสารที่ผมมี หลักสูตรปรับปรุง พ.ศ. 2569 ของสาขาวิชาคหกรรมศาสตร์ ได้มีการ **ยกเลิกจำนวน 24 รายวิชา** ครับ
+
+รายวิชาที่ถูกยกเลิกไปมีดังนี้ครับ:
+*   01006543 การจัดการธุรกิจเครื่องแต่งกาย
+*   01006544 สีและการย้อมสี
+*   01006545 ความคิดสร้างสรรค์สำหรับสิ่งท่อและเครื่องนุ่งห่ม
+*   01006546 เทคโนโลยีย่อยธรรมชาติ
+*   01006547 การพัฒนาโยธรรมชาติสำหรับสิ่งทอฟื้นเมือง
+*   01006548 การพัฒนาสิ่งทอฟื้นเมืองไทย
+*   01006549 พัฒนาการสิ่งทอ
+*   01006551 อาหารและโภชนาการจากกัญเชียง พิษณุ และพิซตะรูกถั่ว
+*   01006552 อาหารและโภชนาการจากเนื้อสัตว์
+*   01006553 อาหารเพื่อสุขภาพ
+*   01006554 สถานการณ์อาหารและโภชนาการ
+*   01006555 สมบัติขององค์ประกอบอาหาร
+*   01006556 ผลิตภัณฑ์อาหารหมักและโภชนาการ
+*   01006557 การพัฒนาผลิตภัณฑ์อาหารเพื่อโภชนาการ
+*   01006558 เทคนิคการวิเคราะห์ชั้นสูงทางอาหารและโภชนาการ
+*   01006559 แนวโมฆงานวิจัยด้านอาหารและโภชนาการ
+*   01006581 การจัดการธุรกิจอาหารและโภชนาการ
+*   01006582 โภชนาคาสดระดับสูงในวัวปฏิชาร์วิต
+*   01006583 โภชนาการทางคลินิกชั้นสูง
+*   01006585 โภชนศาสตร์และแมทบอลิซึม
+
+(Source: ปร.ด._คหกรรมศาสตร์_2569.pdf)
+
+หวังว่าข้อมูลนี้จะเป็นประโยชน์นะครับ ถ้ามีอะไรสงสัยเพิ่มเติม ถามผมได้เลยนะครับ!",1,"The RAG answer lists some courses that were cancelled, but it also includes courses that were not mentioned in the ground truth and incorrectly states the total number of cancelled courses.",curriculum,ปร.ด._คหกรรมศาสตร์_2569.pdf,bangkhen_agri_bc9eb883,course,ปร.ด._คหกรรมศาสตร์_2569.pdf|ปร.ด._คหกรรมศาสตร์_2569.pdf|ปร.ด._คหกรรมศาสตร์_2569.pdf
+What courses in the revised คหกรรมศาสตร์ curriculum (B.E. 2569) have been updated from the previous curriculum (B.E. 2564)?,The revised คหกรรมศาสตร์ curriculum (B.E. 2569) has updated the courses 'Advanced Thesis' (เล่มเทคโนโลยีชั้นสูง) and 'Innovation and Technology Transfer and Fragrance Tools' (นวัตกรรมและเทคโนโลยีส่งทอดและเครื่องไม้หอม) from the previous curriculum (B.E. 2564).,"Hello there! I can help you with that. You're asking about the courses that have been updated in the revised Home Economics curriculum (B.E. 2569) compared to the previous one (B.E. 2564).
+
+Great news – I found information about this! According to the provided documents, several courses have been updated. Some courses from the previous curriculum have been canceled, while others have been revised.
+
+Here are the courses that have been updated:
+
+**Courses that have been revised:**
+
+*   01006641 Advanced Technology (3-0-6 credits)
+*   01006642 Innovation and Technology Transfer in Arts and Crafts (3-0-6 credits)
+*   01006643 ASEAN Textile Substitutes (3-0-6 credits)
+*   01006651 Techniques for Food and Nutrition Research (3-0-6 credits)
+*   01006652 Current Issues in Food and Nutrition (3-0-6 credits)
+*   01006653 Food and Nutrition Genomics (3-0-6 credits)
+*   01006654 Food Innovation for Nutrition (3-0-6 credits)
+
+**Courses that have been canceled:**
+
+*   01006556 Fermented Food Products and Nutrition (3-0-6 credits)
+*   01006557 Food Product Development for Nutrition (3-0-6 credits)
+*   01006558 Advanced Analytical Techniques in Food and Nutrition (3-0-6 credits)
+*   01006559 Research Trends in Food and Nutrition (3-0-6 credits)
+*   01006581 Food and Nutrition Business Management (3-0-6 credits)
+*   01006582 Advanced Nutrition in Current Animals (3-0-6 credits)
+*   01006583 Advanced Clinical Nutrition (3-0-6 credits)
+*   01006585 Nutrition and Metabolism (3-0-6 credits)
+*   01006586 Nutritional Toxicology (3-0-6 credits)
+*   01006587 Application of Software Programs in Food and Nutrition Research (3-0-6 credits)
+*   01006588 Food and Nutrition from Rice and Rice Products (3-0-6 credits)
+
+Additionally, the document mentions that course 01006691 ""Advanced Research Methodology in Home Economics"" has had its ""donation study"" canceled. Course 01006699 ""Thesis"" has also been revised.
+
+(Source: [ปร.ด._คหกรรมศาสตร์_2569.pdf])
+
+I hope this helps you understand the changes in the curriculum! Do you have any other questions about this program or anything else related to Kasetsart University? I'm here to help!",1,The RAG answer lists several revised courses but does not specifically identify the two courses mentioned in the ground truth as being updated from the previous curriculum.,curriculum,ปร.ด._คหกรรมศาสตร์_2569.pdf,bangkhen_agri_bc9eb883,course,ปร.ด._คหกรรมศาสตร์_2569.pdf|ปร.ด._คหกรรมศาสตร์_2569.pdf|ปร.ด._คหกรรมศาสตร์_2569.pdf
+What are the courses offered under the 'Fisheries Biotechnology' group in the Doctor of Philosophy Program in Fisheries Science and Technology (International Program) at KU?,"The 'Fisheries Biotechnology' group in the Doctor of Philosophy Program in Fisheries Science and Technology (International Program) at KU includes 11 courses: Molecular Taxonomy in Fisheries, Practical Phylogenetics in Fisheries, Bioactive Compounds from Algae, Elementary Algology, Advanced Algal Biotechnology, Fishery Product Biotechnology, Osmotic Substances of Aquatic Resources, Marine Natural Products, Marine Pigments, Marine Environmental Biotechnology, and Bioactive Compounds from Marine Natural Products.","Hello there, น้อง! It's great you're looking into the Doctor of Philosophy Program in Fishery Science and Technology (International Program) at KU. I can help you with that!
+
+Based on the information I have, I couldn't find a specific group called 'Fisheries Biotechnology' listed within the curriculum. However, I did find a course that seems related to that area:
+
+*   **0125661 Green Technology in Fisheries** (3 credits)
+    This course covers the use of biotechnology, nanotechnology, and genetic engineering for sustainable fishery development. It also touches upon organic aquaculture, nutrition, and fishery products, as well as resource and environmental management technology, food safety, and traceability in fisheries.
+
+The program structure includes core courses and a thesis. For the international program, there are two plans:
+*   **Plan 1.1 and 2.1:** Requires a minimum of 48 credits and is a 3-year program.
+*   **Plan 1.2 and 2.2:** Requires a minimum of 72 credits and is a 5-year program.
+
+The program is taught in English and is open to both Thai and international students. It also has collaborations with several international institutions for teaching, research, and student exchange.
+
+I don't have a complete list of all course groups or a detailed breakdown of every single course offered. For the most comprehensive information, including a full course catalog and specific details about any 'Fisheries Biotechnology' specializations, I'd recommend checking the official Kasetsart University Faculty of Fisheries website or contacting the faculty directly.
+
+Let me know if there's anything else I can help you find!",1,"The RAG answer states that it could not find a specific group called 'Fisheries Biotechnology' and only mentions one related course, while the ground truth lists 11 specific courses under that group.",curriculum,ปร.ด._วิทยาศาสตร์การประมงและเทคโนโลยี_(นานาชาติ)_2567.pdf,bangkhen_fish_563c2887,course,ปร.ด._วิทยาศาสตร์การประมงและเทคโนโลยี_(นานาชาติ)_2567.pdf|ปร.ด._วิทยาศาสตร์การประมงและเทคโนโลยี_(นานาชาติ)_2567.pdf|ปร.ด._วิทยาศาสตร์การประมงและเทคโนโลยี_(นานาชาติ)_2567.pdf
+หลักสูตรปรัชญาดุษฎีบัณฑิต สาขาวิชาวิทยาศาสตร์การประมงและเทคโนโลยี (นานาชาติ) ของ มก. มีรายวิชาเกี่ยวกับเทคโนโลยีชีวภาพทางการประมงอะไรบ้าง?,"หลักสูตรปรัชญาดุษฎีบัณฑิต สาขาวิชาวิทยาศาสตร์การประมงและเทคโนโลยี (นานาชาติ) ของ มก. มีรายวิชาในกลุ่มเทคโนโลยีชีวภาพทางการประมง 11 รายวิชา ได้แก่ อนุกรมวิธานเชิงโมเลกุลทางการประมง, สายวิวัฒนาการเชิงปฏิบัติศาสตร์ทางการประมง, สารออกฤทธิ์ทางชีวภาพจากสาหร่าย, สาหร่ายวิทยาขั้นปฐมยุค, เทคโนโลยีชีวภาพของสาหร่ายขั้นสูง, เทคโนโลยีชีวภาพผลิตภัณฑ์ประมง, สารชีวภาพออสโมธิเจ้าทรัพยากรแหล่งน้ำ, ผลิตภัณฑ์ธรรมชาติทางทะเล, สารสีในทะเล, เทคโนโลยีชีวภาพทางสิ่งแวดล้อมในทะเล, และสารออกฤทธิ์จากผลิตภัณฑ์ธรรมชาติทางทะเล","สวัสดีครับน้อง! ยินดีด้วยนะครับที่สนใจหลักสูตรปรัชญาดุษฎีบัณฑิต สาขาวิชาวิทยาศาสตร์การประมงและเทคโนโลยี (หลักสูตรนานาชาติ) ของมหาวิทยาลัยเกษตรศาสตร์ครับ
+
+จากข้อมูลที่ผมมี ผมพบว่ามีรายวิชาที่เกี่ยวข้องกับเทคโนโลยีชีวภาพทางการประมงนะครับ คือวิชา **""แนวโน้มการจัดการและความหลากหลายทางชีวภาพทางการประมง""** (Trends in Fisheries Biodiversity Management and Conservation) ครับ
+
+วิชานี้มีความสำคัญในการส่งเสริมการอนุรักษ์และการจัดการความหลากหลายทางชีวภาพ ซึ่งเกี่ยวข้องกับการประมงอย่างยั่งยืน การปกป้องแหล่งที่อยู่อาศัยของทรัพยากรประมง และการศึกษาผลกระทบต่อทรัพยากรชีวภาพครับ ผลลัพธ์การเรียนรู้ของหลักสูตร (PLOs) ที่เกี่ยวข้องกับวิชานี้คือ PLO2 ซึ่งเกี่ยวกับการกำหนดแนวทางแก้ไขปัญหาการประมงโดยการบูรณาการองค์ความรู้ที่เกี่ยวข้องกับเทคโนโลยีการประมง และ PLO3 ที่เกี่ยวกับการสื่อสารเชิงวิชาการด้านการประมงครับ
+
+นอกจากนี้ ยังมีวิชาที่เกี่ยวกับเภสัชจุลศาสตร์ของสัตว์น้ำ ซึ่งเป็นการประยุกต์ใช้ความรู้ทางวิทยาศาสตร์เพื่อการรักษาโรคสัตว์น้ำอย่างเหมาะสม ซึ่งก็ถือเป็นส่วนหนึ่งของเทคโนโลยีชีวภาพทางการประมงเช่นกันครับ
+
+หากน้องต้องการทราบรายละเอียดเกี่ยวกับรายวิชาอื่นๆ หรือโครงสร้างหลักสูตรทั้งหมด ผมแนะนำให้เข้าไปดูที่เว็บไซต์ของคณะประมง มหาวิทยาลัยเกษตรศาสตร์ โดยตรงเลยนะครับ
+
+มีอะไรให้ผมช่วยอีกไหมครับ?",1,"The RAG answer mentions one course related to fisheries biodiversity management, which is tangentially related to biotechnology, but fails to list the specific biotechnology courses mentioned in the ground truth.",curriculum,ปร.ด._วิทยาศาสตร์การประมงและเทคโนโลยี_(นานาชาติ)_2567.pdf,bangkhen_fish_563c2887,course,ปร.ด._วิทยาศาสตร์การประมงและเทคโนโลยี_(นานาชาติ)_2567.pdf|ปร.ด._วิทยาศาสตร์การประมงและเทคโนโลยี_(นานาชาติ)_2567.pdf|ปร.ด._วิทยาศาสตร์การประมงและเทคโนโลยี_(นานาชาติ)_2567.pdf
+หลักสูตรปริญญาเอก กีฏวิทยา ของ มก. มีการกำหนดเป้าหมายจำนวนรับนิสิตอย่างไรบ้างครับ?,หลักสูตรปริญญาเอก กีฏวิทยา ของ มก. มีการกำหนดเป้าหมายจำนวนรับนิสิตตามแผนการรับนิสิตของหลักสูตรในแต่ละปีการศึกษาครับ,"สวัสดีครับน้อง! พี่เข้าใจว่าน้องกำลังสนใจหลักสูตรปรัชญาดุษฎีบัณฑิต สาขาวิชากีฏวิทยา ของมหาวิทยาลัยเกษตรศาสตร์ใช่ไหมครับ
+
+สำหรับคำถามเรื่องการกำหนดเป้าหมายจำนวนรับนิสิต พี่เจอข้อมูลในเอกสาร [ปร.ด._กีฏวิทยา_2565.pdf | admission] ครับ โดยระบุไว้ว่า:
+
+*   **กำหนดเป้าหมายจำนวนรับนิสิต โดยแต่ละปีการศึกษาตามแผนการรับนิสิตของหลักสูตร**
+
+นอกจากนี้ พี่ก็เจอข้อมูลเกี่ยวกับแผนการรับนิสิตในเอกสาร [ปร.ด._กีฏวิทยา_2565.pdf | general] ด้วยครับ ซึ่งแสดงจำนวนรับนิสิตในแต่ละปีการศึกษาสำหรับหลักสูตรแบบ 1.1 ดังนี้ครับ:
+
+*   **ปีการศึกษา 2565:** รับ 2 คน
+*   **ปีการศึกษา 2566:** รับ 4 คน
+*   **ปีการศึกษา 2567:** รับ 6 คน
+*   **ปีการศึกษา 2568:** รับ 6 คน
+*   **ปีการศึกษา 2569:** รับ 6 คน
+
+ส่วนแผนการรับนิสิตสำหรับหลักสูตรแบบ 1.2 พี่ไม่เจอรายละเอียดในเอกสารที่พี่มีนะครับ
+
+หวังว่าข้อมูลนี้จะเป็นประโยชน์นะครับ ถ้ามีอะไรสงสัยเพิ่มเติม ถามพี่ได้เลยนะ!",3,"The RAG answer correctly identifies that the target number of students is determined by the annual admission plan and provides specific numbers for several academic years, which aligns with the ground truth and adds relevant detail.",admission,ปร.ด._กีฏวิทยา_2565.pdf,bangkhen_agri_54c51c81,admission,ปร.ด._กีฏวิทยา_2565.pdf|ปร.ด._กีฏวิทยา_2565.pdf|ปร.ด._กีฏวิทยา_2565.pdf
+What are the basic qualifications for applicants to the Ph.D. Entomology program at KU?,The Ph.D. Entomology program at KU clearly specifies the basic qualifications for applicants and the desired characteristics of graduates in the TQF 2 document.,"Hello there, น้อง! I'm happy to help you with your questions about Kasetsart University.
+
+Regarding the basic qualifications for applicants to the Ph.D. Entomology program, I couldn't find specific details about the general admission requirements in the documents I have.
+
+However, I did find some information about the curriculum and research areas within the Ph.D. Entomology program. For example, the program emphasizes research methodology, statistical analysis, and specific topics in entomology. Some courses mentioned include:
+
+*   **Research Ethics** (01004693)
+*   **Applied Entomology with Phytochemical for Insect Control** (01004582)
+*   **Research Methods in Entomology** (01004591)
+*   **Advanced Statistical Methods for Entomological Research** (01004692)
+*   **Microbial Control of Insects** (01004672)
+*   **Selected Topics in Entomology** (01004696)
+*   **Seminar** (01004697)
+*   **Thesis**
+
+The program also involves research in areas like medical and veterinary entomology, as well as fundamental entomology.
+
+For the most accurate and up-to-date information on admission qualifications, I highly recommend checking the official Kasetsart University admissions website or contacting the Faculty of Agriculture directly.
+
+Is there anything else I can help you with regarding the Ph.D. Entomology program or other programs at KU?",0,"The RAG answer incorrectly states that it could not find specific details about general admission requirements, despite the ground truth explicitly mentioning that the TQF 2 document specifies these qualifications.",admission,ปร.ด._กีฏวิทยา_2565.pdf,bangkhen_agri_54c51c81,admission,ปร.ด._กีฏวิทยา_2565.pdf|ปร.ด._กีฏวิทยา_2565.pdf|ปร.ด._กีฏวิทยา_2565.pdf
+หลักสูตรปริญญาเอก ปฐพีวิทยา ของมหาวิทยาลัยเกษตรศาสตร์ รับนิสิตต่างชาติหรือไม่,หลักสูตรปริญญาเอก ปฐพีวิทยา ของมหาวิทยาลัยเกษตรศาสตร์ รับเฉพาะนิสิตไทยเท่านั้น,"สวัสดีครับน้อง! ผมเข้าใจว่าน้องกำลังสนใจหลักสูตรปริญญาเอก สาขาวิชาปฐพีวิทยา ของมหาวิทยาลัยเกษตรศาสตร์ และอยากทราบว่ารับนิสิตต่างชาติด้วยไหมนะครับ
+
+จากข้อมูลที่ผมมี หลักสูตรปริญญาเอก สาขาวิชาปฐพีวิทยา **รับเฉพาะนิสิตไทย** ครับผม
+
+ถ้ามีอะไรที่ผมพอจะช่วยหาข้อมูลเพิ่มเติมได้อีก บอกได้เลยนะครับ!",3,"The RAG answer correctly states that the PhD program in Soil Science at Kasetsart University only accepts Thai students, which aligns perfectly with the ground truth.",admission,ปร.ด._ปฐพีวิทยา_2559.pdf,bangkhen_agri_a1c5cd07,admission,ปร.ด._ปฐพีวิทยา_2559.pdf|ปร.ด._ปฐพีวิทยา_2559.pdf|ปร.ด._ปฐพีวิทยา_2559.pdf
+What is the status of the Ph.D. in Soil Science (ปฐพีวิทยา) program at Kasetsart University?,"The Ph.D. in Soil Science (ปฐพีวิทยา) program is an adjusted curriculum, first offered in the first semester of the academic year 2016. It was adjusted from the previous curriculum and has been in use since the academic year 1977.","Hello there! It's great you're interested in the Ph.D. in Soil Science program at Kasetsart University. I can help you with that!
+
+Based on the information I have, the program is called the **Doctor of Philosophy Program in Soil Science**. It's offered at Kasetsart University, specifically at the Bangkhen Campus, Faculty of Agriculture, Department of Soil Science. The program was last revised in 2016.
+
+Here's a breakdown of the credit requirements:
+*   **Plan 1.1 and 2.1:** A minimum of 48 credits are required.
+*   **Plan 1.2 and 2.2:** A minimum of 72 credits are required.
+
+The program also has specific requirements for the major courses:
+*   **Major Courses:** A minimum of 12 credits are needed.
+    *   **Seminar:** 4 credits (Course code 01009697)
+    *   **Compulsory Major Courses:** 3 credits (Course code 01009691 - Advanced Research Methods in Soil Science)
+    *   **Elective Major Courses:** A minimum of 5 credits, chosen from a list of courses within the Soil Science department (courses starting with 010096xx). Some examples of elective courses include:
+        *   Clay Mineralogy (01009632)
+        *   Biogeochemistry of Wetland Soils (01009634)
+        *   Techniques in Land Use Planning (01009642)
+        *   Tropical Soil Management (01009643)
+        *   Selected Topics in Soil Science (01009696)
+
+I also found some examples of research and publications by faculty members in the Soil Science department, which gives you an idea of the research areas.
+
+I don't have details on admission requirements like GPAX or specific exam scores for this program, as that information wasn't in the provided context. For the most up-to-date admission details, I'd recommend checking the official Kasetsart University admissions website or contacting the Faculty of Agriculture directly.
+
+Let me know if you have any other questions!",1,"The RAG answer provides details about the Ph.D. in Soil Science program, such as credit requirements and course examples, but it fails to mention the key information from the ground truth: that the program is an adjusted curriculum first offered in 2016, adjusted from a previous curriculum used since 1977.",general,ปร.ด._ปฐพีวิทยา_2559.pdf,bangkhen_agri_a1c5cd07,admission,ปร.ด._ปฐพีวิทยา_2559.pdf|ปร.ด._ปฐพีวิทยา_2559.pdf|ปร.ด._ปฐพีวิทยา_2559.pdf
+หลักสูตรเทคนิคการสัตวแพทย์ ของ มก. รับนักศึกษาต่างชาติหรือไม่?,หลักสูตรเทคนิคการสัตวแพทย์ ของ มก. รับทั้งนิสิตไทย และนิสิตต่างชาติ,"สวัสดีครับน้อง! ผมเข้าใจว่าน้องกำลังสนใจหลักสูตรเทคนิคการสัตวแพทย์ ของมหาวิทยาลัยเกษตรศาสตร์ และอยากทราบว่ารับนักศึกษาต่างชาติด้วยหรือเปล่าใช่ไหมครับ
+
+จากข้อมูลที่ผมมี **หลักสูตรเทคนิคการสัตวแพทย์ รับนิสิตต่างชาติด้วยครับ**
+
+นอกจากนี้ หลักสูตรนี้เป็นหลักสูตรระดับปริญญาตรี 4 ปี (ทางวิชาการ) ใช้ภาษาไทยและภาษาอังกฤษในการเรียนการสอน และให้ปริญญาเพียงสาขาวิชาเดียวครับ
+
+ถ้ามีอะไรที่อยากทราบเพิ่มเติม ถามผมได้เลยนะครับ ยินดีช่วยเหลือครับผม",3,"The RAG answer correctly states that the Veterinary Technology program at Kasetsart University accepts international students, which is the main point of the ground truth.",admission,หลักสูตรเทคนิคการสัตวแพทย์_ฉบับปรับปรุง 2565.pdf,bangkhen_5b6f81ed,admission,หลักสูตรเทคนิคการสัตวแพทย์_ฉบับปรับปรุง 2565.pdf|หลักสูตรเทคนิคการสัตวแพทย์_ฉบับปรับปรุง 2565.pdf|หลักสูตรเทคนิคการสัตวแพทย์_ฉบับปรับปรุง 2565.pdf
+What languages are used in the เทคนิคการสัตวแพทย์ program at KU?,The languages used in the เทคนิคการสัตวแพทย์ program at KU are Thai and English.,"Hello there, น้อง! I'm happy to help you with your questions about Kasetsart University.
+
+Regarding the languages used in the Veterinary Technology program, I found that the program is offered in both Thai and English. The official name in English is ""Bachelor of Science Program in Veterinary Technology.""
+
+[Source: หลักสูตรเทคนิคการสัตวแพทย์_ฉบับปรับปรุง 2565.pdf]
+
+Is there anything else I can help you with today?",3,"The RAG answer correctly identifies both Thai and English as the languages used in the program, matching the ground truth.",general,หลักสูตรเทคนิคการสัตวแพทย์_ฉบับปรับปรุง 2565.pdf,bangkhen_5b6f81ed,admission,หลักสูตรเทคนิคการสัตวแพทย์_ฉบับปรับปรุง 2565.pdf|หลักสูตรเทคนิคการสัตวแพทย์_ฉบับปรับปรุง 2565.pdf|หลักสูตรเทคนิคการสัตวแพทย์_ฉบับปรับปรุง 2565.pdf
+หลักสูตร วท.บ. สาขาวิชาภูมิศาสตร์ ของ มก. ใช้ภาษาอะไรในการเรียนการสอน?,หลักสูตร วท.บ. สาขาวิชาภูมิศาสตร์ ของ มก. ใช้ภาษาไทยและภาษาอังกฤษในการเรียนการสอน,"สวัสดีครับน้อง! ยินดีด้วยนะครับที่สนใจหลักสูตร วท.บ. สาขาวิชาภูมิศาสตร์ ของมหาวิทยาลัยเกษตรศาสตร์ครับ
+
+สำหรับคำถามที่ว่าหลักสูตรนี้ใช้ภาษาอะไรในการเรียนการสอนนั้น จากข้อมูลที่ผมมี หลักสูตรวิทยาศาสตรบัณฑิต สาขาวิชาภูมิศาสตร์และภูมิสารสนเทศศาสตร์ (Bachelor of Science Program in Geography and Geoinformatics) มีการระบุชื่อหลักสูตรเป็นภาษาอังกฤษด้วยครับ ซึ่งโดยทั่วไปแล้ว หลักสูตรระดับปริญญาตรีของมหาวิทยาลัยเกษตรศาสตร์จะจัดการเรียนการสอนเป็นภาษาไทยเป็นหลักครับ
+
+อย่างไรก็ตาม ในบางรายวิชา หรือในส่วนของการเรียนการสอนที่เกี่ยวข้องกับเทคโนโลยีหรือองค์ความรู้ที่เป็นสากล อาจมีการใช้ภาษาอังกฤษประกอบ หรือมีเอกสารประกอบการเรียนการสอนเป็นภาษาอังกฤษด้วยครับ
+
+หากน้องต้องการข้อมูลที่เจาะจงมากขึ้นเกี่ยวกับสัดส่วนการใช้ภาษาในการเรียนการสอน หรือรายวิชาที่สอนเป็นภาษาอังกฤษ ผมแนะนำให้น้องลองเข้าไปดูรายละเอียดเพิ่มเติมที่เว็บไซต์ของคณะสังคมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์ หรือติดต่อสอบถามโดยตรงกับภาควิชาภูมิศาสตร์นะครับ
+
+มีอะไรให้ผมช่วยอีกไหมครับ?",2,"The RAG answer correctly identifies that the program uses Thai and English but incorrectly states that Thai is the primary language, whereas the ground truth implies both are used significantly.",curriculum,วท.บ. สาขาวิชาภูมิศาสตร์.pdf,bangkhen_2a423ff9,admission,วท.บ. สาขาวิชาภูมิศาสตร์.pdf|วท.บ. สาขาวิชาภูมิศาสตร์.pdf|วท.บ. สาขาวิชาภูมิศาสตร์.pdf
+วุฒิการศึกษาที่ใช้ในการสมัครเข้าศึกษาต่อในหลักสูตร วท.บ. สาขาวิชาภูมิศาสตร์ ของ มก. คือวุฒิอะไร?,หลักสูตร วท.บ. สาขาวิชาภูมิศาสตร์ ของ มก. รับทั้งนิสิตไทยและนิสิตต่างชาติ โดยไม่ได้ระบุวุฒิการศึกษาที่เฉพาะเจาะจงในส่วนนี้,"สวัสดีครับน้อง! พี่เข้าใจว่าน้องกำลังสงสัยเกี่ยวกับวุฒิการศึกษาที่ใช้ในการสมัครเข้าศึกษาต่อในหลักสูตร วท.บ. สาขาวิชาภูมิศาสตร์ ของมหาวิทยาลัยเกษตรศาสตร์ใช่ไหมครับ
+
+จากข้อมูลที่พี่มี หลักสูตรนี้มีการปรับปรุงและเปลี่ยนชื่อเป็น ""สาขาวิชาภูมิศาสตร์และภูมิสารสนเทศศาสตร์"" ครับ โดยหลักสูตรนี้ปรับปรุงจากหลักสูตรวิทยาศาสตรบัณฑิต สาขาวิชาภูมิศาสตร์ ที่เริ่มใช้มาตั้งแต่ปีการศึกษา 2544 และมีการปรับปรุงครั้งสุดท้ายเมื่อปีการศึกษา 2560 ครับ
+
+สำหรับวุฒิการศึกษาที่ใช้ในการสมัครเข้าศึกษาต่อในหลักสูตรนี้ จะขึ้นอยู่กับรอบและเกณฑ์การรับสมัครของแต่ละปีการศึกษาครับ โดยทั่วไปแล้ว การสมัครเข้าศึกษาต่อในระดับปริญญาตรี จะต้องใช้วุฒิการศึกษาระดับมัธยมศึกษาตอนปลาย (ม.6) หรือเทียบเท่าครับ
+
+พี่มีข้อมูลเกณฑ์การรับสมัครบางส่วนของหลักสูตร ""วท.บ. สาขาวิชาภูมิศาสตร์และภูมิสารสนเทศศาสตร์"" ในรอบ TCAS 1 และ TCAS 3 ดังนี้ครับ:
+
+*   **รอบที่ 1 (Portfolio):**
+    *   ต้องมี GPAX ขั้นต่ำ 3.00
+    *   ใช้เกณฑ์การพิจารณาจาก GPAX (40%), การสัมภาษณ์ (10%), และแฟ้มสะสมผลงาน (Portfolio) (50%)
+    *   สำหรับ Portfolio มีข้อกำหนดเรื่องความยาวไม่เกิน 10 หน้า A4 (ไม่รวมส่วนประกอบอื่นๆ) และต้องส่งเป็นไฟล์เดียวครับ
+    *   มีกำหนดการสัมภาษณ์และประกาศรายชื่อผู้มีสิทธิ์สัมภาษณ์ด้วยครับ (ข้อมูล ณ ปี 2565)
+    *   (Source: 69_TCAS1_ช้างเผือก(1.1)_ประกาศรับสมัคร-ลงนาม.pdf, 69_TCAS1_โอลิมปิก(1.1)_ประกาศรับสมัคร-ลงนาม.pdf)
+
+*   **รอบที่ 3 (Admission):**
+    *   **วท.บ. สาขาวิชาภูมิศาสตร์และสารสนเทศศาสตร์:** รับจำนวน 20 ที่นั่ง โดยใช้คะแนน TGAT (45%), คณิตศาสตร์ (15%), วิทยาศาสตร์ (12%), ภาษาต่างประเทศ (9%), และคณิตศาสตร์ประยุกต์ 2 (55%) (Source: 69-TCAS3-เกณฑ์การคัดเลือก-OK.xlsx)
+    *   **วท.บ. สาขาวิชาภูมิศาสตร์และสารสนเทศศาสตร์ (ภาคพิเศษ):** รับจำนวน 100 ที่นั่ง โดยใช้คะแนน TGAT (40%) และคณิตศาสตร์ประยุกต์ 2 (60%) (Source: 69-TCAS3-เกณฑ์การคัดเลือก-OK.xlsx)
+
+อย่างไรก็ตาม เกณฑ์การรับสมัครอาจมีการเปลี่ยนแปลงในแต่ละปีการศึกษาครับ แนะนำให้น้องตรวจสอบข้อมูลล่าสุดจากประกาศรับสมัครของมหาวิทยาลัยเกษตรศาสตร์ หรือเว็บไซต์ของคณะสังคมศาสตร์ ภาควิชาภูมิศาสตร์ โดยตรงอีกครั้งนะครับ
+
+มีอะไรที่พี่พอจะช่วยอธิบายเพิ่มเติมได้อีกไหมครับ?",1,"The RAG answer incorrectly states that a high school diploma is required, while the ground truth indicates no specific qualification is mentioned.",admission,วท.บ. สาขาวิชาภูมิศาสตร์.pdf,bangkhen_2a423ff9,admission,วท.บ. สาขาวิชาภูมิศาสตร์.pdf|วท.บ. สาขาวิชาภูมิศาสตร์.pdf|วท.บ. สาขาวิชาภูมิศาสตร์.pdf
+การรับนิสิตเข้าศึกษาในหลักสูตรวิทยาศาสตรบัณฑิต สาขาวิชาการจัดการสิ่งแวดล้อม ใช้ระบบการคัดเลือกแบบใด?,หลักสูตรวิทยาศาสตรบัณฑิต สาขาวิชาการจัดการสิ่งแวดล้อม ดำเนินการรับนิสิตผ่านระบบการคัดเลือกเข้าอุดมศึกษากลาง (TCAS) ของมหาวิทยาลัยเกษตรศาสตร์,"สวัสดีครับน้อง! ยินดีด้วยนะครับที่สนใจหลักสูตรวิทยาศาสตรบัณฑิต สาขาวิชาการจัดการสิ่งแวดล้อม ของมหาวิทยาลัยเกษตรศาสตร์ครับ
+
+สำหรับคำถามเรื่องระบบการคัดเลือกเข้าศึกษา ผมหาข้อมูลมาให้แล้วครับ หลักสูตรนี้จะรับนิสิตผ่านระบบการคัดเลือกเข้าอุดมศึกษากลาง (TCAS) ของมหาวิทยาลัยเกษตรศาสตร์ครับ โดยจะมีคณะกรรมการประจำหลักสูตรคอยพิจารณาคัดเลือกผู้ที่มีคุณสมบัติเหมาะสมตามเงื่อนไขที่กำหนดไว้ครับ
+
+นอกจากนี้ ผมยังพบข้อมูลเกี่ยวกับรอบการคัดเลือกต่างๆ ด้วยครับ:
+
+*   **รอบที่ 1 (Portfolio):** มีหลายประเภทการรับ เช่น
+    *   **ช้างเผือก:** รับจำนวน 60 คน ต้องมี GPAX ขั้นต่ำ 2.75 และพิจารณาจาก Portfolio, Video Clip, Statement of Purpose ครับ (Source: 69_TCAS1_ช้างเผือก(1.1)_ประกาศรับสมัคร-ลงนาม.pdf)
+    *   **นักกีฬาดีเด่นฯ:** รับจำนวน 2 คน (Source: 69_TCAS1_นักกีฬาดีเด่นฯ(1.1)_ประกาศรับสมัคร-ลงนาม.pdf)
+    *   **เรียนล่วงหน้า:** รับจำนวน 5 คน มีเกณฑ์คะแนนขั้นต่ำวิชาเคมี ชีววิทยา และคณิตศาสตร์ (อย่างน้อย C+) (Source: 69_TCAS1_เรียนล่วงหน้า(1.1)_ประกาศรับสมัคร-ลงนาม.pdf)
+*   **รอบที่ 3 (Admission):** รับจำนวน 20 คน โดยใช้คะแนน TGAT (50%) และ A-Level (50%) ซึ่งในส่วนของ A-Level จะเน้นวิชาคณิตศาสตร์ (22%) และวิทยาศาสตร์ (12%) ครับ (Source: 69-TCAS3-เกณฑ์การคัดเลือก-OK.xlsx)
+
+หวังว่าข้อมูลนี้จะเป็นประโยชน์นะครับ หากมีคำถามเพิ่มเติม ถามผมได้เลยนะครับ!",3,"The RAG answer correctly identifies that the program uses the TCAS system for admission and provides additional relevant details about specific admission rounds and requirements, which aligns with the ground truth's core information.",admission,วท.บ._การจัดการสิ่งแวดล้อม_2569.pdf,bangkhen_envi_fedd82d0,admission,วท.บ._การจัดการสิ่งแวดล้อม_2569.pdf|วท.บ._การจัดการสิ่งแวดล้อม_2569.pdf|วท.บ._การจัดการสิ่งแวดล้อม_2569.pdf
+Who is responsible for selecting qualified students for the Bachelor of Science in Environmental Management program at KU?,The undergraduate program committee reviews and selects qualified candidates based on the program's criteria.,"Hello there! I can help you with that.
+
+According to the documents I have, the selection of qualified students for the Bachelor of Science in Environmental Management program at Kasetsart University is handled by a committee. Specifically, the undergraduate curriculum committee for the program reviews applicants and selects those who meet the specified criteria.
+
+[Source: วท.บ._การจัดการสิ่งแวดล้อม_2569.pdf]
+
+Let me know if you have any other questions!",3,"The RAG answer correctly identifies the undergraduate program committee as responsible for selecting qualified students, aligning perfectly with the ground truth.",admission,วท.บ._การจัดการสิ่งแวดล้อม_2569.pdf,bangkhen_envi_fedd82d0,admission,วท.บ._การจัดการสิ่งแวดล้อม_2569.pdf|วท.บ._การจัดการสิ่งแวดล้อม_2569.pdf|วท.บ._การจัดการสิ่งแวดล้อม_2569.pdf
+หลักสูตรวิศวกรรมศาสตรบัณฑิต สาขาวิชาวิศวกรรมโยธา-ชลประทาน ของ มก. เปิดรับนิสิตทั้งชาวไทยและชาวต่างชาติหรือไม่,ใช่ หลักสูตรวิศวกรรมศาสตรบัณฑิต สาขาวิชาวิศวกรรมโยธา-ชลประทาน ของ มก. เปิดรับทั้งนิสิตไทยและนิสิตต่างชาติ,"สวัสดีครับน้อง! ยินดีด้วยนะครับที่สนใจหลักสูตรวิศวกรรมศาสตรบัณฑิต สาขาวิชาวิศวกรรมโยธา-ชลประทาน ของมหาวิทยาลัยเกษตรศาสตร์ครับ
+
+สำหรับคำถามที่ว่าหลักสูตรนี้เปิดรับนิสิตทั้งชาวไทยและชาวต่างชาติหรือไม่นั้น ผมมีข้อมูลมาแจ้งให้ทราบครับ
+
+จากเอกสารที่ผมมี ระบุไว้ชัดเจนว่า หลักสูตรวิศวกรรมศาสตรบัณฑิต สาขาวิชาวิศวกรรมโยธา-ชลประทาน **รับทั้งนิสิตไทยและนิสิตต่างชาติ** ครับ
+
+[Source: วิศวกรรมศาสตรบัณฑิต(สาขาวิชาวิศวกรรมโยธา-ชลประทาน)ฉบับปรังปรุง พ.ศ. 2566(ปรับปรับปรุงแบบแยก).pdf | admission]
+
+หากน้องมีคำถามเพิ่มเติม หรืออยากทราบรายละเอียดอื่นๆ เกี่ยวกับหลักสูตรนี้ ถามผมได้เลยนะครับ ยินดีช่วยเหลือเต็มที่ครับ!",3,"The RAG answer correctly and completely addresses the question by confirming that the program accepts both Thai and international students, matching the ground truth.",admission,วิศวกรรมศาสตรบัณฑิต(สาขาวิชาวิศวกรรมโยธา-ชลประทาน)ฉบับปรังปรุง พ.ศ. 2566(ปรับปรับปรุงแบบแยก).pdf,bangkhen_f765bc67,admission,วิศวกรรมศาสตรบัณฑิต(สาขาวิชาวิศวกรรมโยธา-ชลประทาน)ฉบับปรังปรุง พ.ศ. 2566(ปรับปรับปรุงแบบแยก).pdf|วิศวกรรมศาสตรบัณฑิต(สาขาวิชาวิศวกรรมโยธา-ชลประทาน)ฉบับปรังปรุง พ.ศ. 2566(ปรับปรับปรุงแบบแยก).pdf|วิศวกรรมศาสตรบัณฑิต(สาขาวิชาวิศวกรรมโยธา-ชลประทาน)ฉบับปรังปรุง พ.ศ. 2566(ปรับปรับปรุงแบบแยก).pdf
+What is the language of instruction for the Bachelor of Engineering program in Civil and Irrigation Engineering (วิศวกรรมโยธา-ชลประทาน) at Kasetsart University?,"The languages used in the Bachelor of Engineering program in Civil and Irrigation Engineering (วิศวกรรมโยธา-ชลประทาน) at Kasetsart University are Thai and a foreign language, specifically English.","Hello there! I can help you with that.
+
+Based on the information I have, the Bachelor of Engineering program in Civil Engineering - Irrigation (วิศวกรรมโยธา-ชลประทาน) is taught in **English**.
+
+[Source: วิศวกรรมศาสตรบัณฑิต(สาขาวิชาวิศวกรรมโยธา-ชลประทาน)ฉบับปรังปรุง พ.ศ. 2566(ปรับปรับปรุงแบบแยก).pdf]
+
+Let me know if you have any other questions!",1,"The RAG answer incorrectly states that the program is taught solely in English, while the ground truth specifies both Thai and English are used.",curriculum,วิศวกรรมศาสตรบัณฑิต(สาขาวิชาวิศวกรรมโยธา-ชลประทาน)ฉบับปรังปรุง พ.ศ. 2566(ปรับปรับปรุงแบบแยก).pdf,bangkhen_f765bc67,admission,วิศวกรรมศาสตรบัณฑิต(สาขาวิชาวิศวกรรมโยธา-ชลประทาน)ฉบับปรังปรุง พ.ศ. 2566(ปรับปรับปรุงแบบแยก).pdf|วิศวกรรมศาสตรบัณฑิต(สาขาวิชาวิศวกรรมโยธา-ชลประทาน)ฉบับปรังปรุง พ.ศ. 2566(ปรับปรับปรุงแบบแยก).pdf|วิศวกรรมศาสตรบัณฑิต(สาขาวิชาวิศวกรรมโยธา-ชลประทาน)ฉบับปรังปรุง พ.ศ. 2566(ปรับปรับปรุงแบบแยก).pdf
+"What are some of the courses offered in Year 3, Semester 1 of the วิศวกรรมคอมพิวเตอร์ program at KU?","In Year 3, Semester 1 of the วิศวกรรมคอมพิวเตอร์ program at KU, courses include ปฏิบัติการระบบคอมพิวเตอร์, การสื่อสารข้อมูลและเครือข่ายคอมพิวเตอร์, ระบบปฏิบัติการ, and วิศวกรรมซอฟต์แวร์.","Hello there! I can help you with that. You're interested in the courses offered in the third year, first semester of the Computer Engineering program at KU, right?
+
+Great news! I found some of the courses listed for Year 3, Semester 1. Here's what I know:
+
+*   **01204324** ปฏิบัติการระบบคอมพิวเตอร์ (Computer Systems Laboratory) - 1 credit
+*   **01204325** การสื่อสารข้อมูลและเครือข่ายคอมพิวเตอร์ (Data Communication and Computer Networks) - 3 credits
+*   **01204332** ระบบปฏิบัติการ (Operating Systems) - 3 credits
+*   **01204341** วิศวกรรมซอฟต์แวร์ (Software Engineering) - 4 credits
+*   ภาษาต่างประเทศ 1 ภาษา (Foreign Language 1) - 3 credits
+*   วิชาเฉพาะเลือก (Elective Courses) - 3 credits
+*   วิชาศึกษาทั่วไปกลุ่มสาระอยู่ดีมีสุข (General Education: Well-being Cluster) - 3 credits
+
+The total credits for this semester are listed as 20.
+
+It's worth noting that for some courses like ""Elective Courses"" and ""Foreign Language,"" the specific credit breakdown for lecture, practice, and self-study hours isn't detailed in this document.
+
+I hope this helps you get a clearer picture of the curriculum! Let me know if there's anything else I can assist you with.",2,"The RAG answer correctly identifies most of the core courses but also includes additional courses not present in the ground truth, such as electives and general education.",curriculum,67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf,bangkhen_ddf705a9,admission,67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf|67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf|67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf
+"How many credits are allocated for 'ภาษาต่างประเทศ 1 ภาษา' in Year 3, Semester 1 of the วิศวกรรมคอมพิวเตอร์ program at KU?","The course 'ภาษาต่างประเทศ 1 ภาษา' in Year 3, Semester 1 of the วิศวกรรมคอมพิวเตอร์ program at KU is allocated 3 credits.","Hello there! I can help you with that.
+
+According to the provided documents, the course 'ภาษาต่างประเทศ 1 ภาษา' (Foreign Language 1 Language) in Year 3, Semester 1 of the Computer Engineering program is allocated 3 credits.
+
+[Source: 67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf]
+
+Let me know if you have any other questions!",3,"The RAG answer correctly identifies the course, program, year, semester, and the allocated credits, matching the ground truth precisely.",curriculum,67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf,bangkhen_ddf705a9,admission,67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf|67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf|67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf
+หลักสูตรวิศวกรรมศาสตรบัณฑิต สาขาวิชาวิศวกรรมโยธา-ทรัพยากรน้ำ ของมหาวิทยาลัยเกษตรศาสตร์ เปิดรับนิสิตประเภทใดบ้าง?,หลักสูตรวิศวกรรมศาสตรบัณฑิต สาขาวิชาวิศวกรรมโยธา-ทรัพยากรน้ำ รับทั้งนิสิตไทยและนิสิตต่างชาติ,"สวัสดีครับน้อง! ยินดีด้วยนะครับที่สนใจหลักสูตรวิศวกรรมศาสตรบัณฑิต สาขาวิชาวิศวกรรมโยธา-ทรัพยากรน้ำ ของมหาวิทยาลัยเกษตรศาสตร์ครับ ผมหาข้อมูลมาให้น้องแล้วครับ
+
+สำหรับหลักสูตรนี้ **รับทั้งนิสิตไทยและนิสิตต่างชาติ** ครับ
+
+นอกจากนี้ ผมยังพบข้อมูลเกี่ยวกับการรับสมัครในระบบ TCAS ด้วยนะครับ โดยมีรายละเอียดดังนี้ครับ:
+
+*   **รอบที่ 1 (Portfolio)**:
+    *   มี 3 รูปแบบการรับสมัครครับ
+    *   **แบบที่ 1**: รับ 5 ที่นั่ง โดยใช้เกณฑ์การพิจารณาจาก Portfolio (แฟ้มสะสมผลงาน) 70% และการสัมภาษณ์ 30% ต้องมี GPAX ไม่ต่ำกว่า 3.00 ครับ (Source: 69\_TCAS1\_ช้างเผือก(1.1)_ประกาศรับสมัคร-ลงนาม.pdf)
+    *   **แบบที่ 2**: รับ 15 ที่นั่ง โดยใช้เกณฑ์การพิจารณาจาก Portfolio (แฟ้มสะสมผลงาน) ที่แสดงผลงานโครงงาน การประดิษฐ์ ผลการแข่งขัน หรือผลการประกวดที่เกี่ยวข้องกับคณิตศาสตร์ วิทยาศาสตร์ หรือเทคโนโลยี และมีประวัติการเข้าร่วมกิจกรรม ค่าย หรือการประกวดที่จัดโดยภาควิชา/คณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์ โดยมีน้ำหนักคะแนน TPAT3 50% และ TGAT (ไม่ระบุสัดส่วน) ครับ (Source: 69\_TCAS1\_ช้างเผือก(1.2)_ประกาศรับสมัคร-ลงนาม.pdf)
+    *   **แบบที่ 3**: รับ 1 ที่นั่ง โดยใช้เกณฑ์การพิจารณาจาก TGAT 30%, TPAT3 40% และการสัมภาษณ์ 30% ซึ่งการสัมภาษณ์จะพิจารณาจากบุคลิกภาพ ทัศนคติ ความฉลาดไหวพริบ ความรู้ความเข้าใจ และศักยภาพในสาขาวิชาที่เลือกครับ นอกจากนี้ ยังมีเงื่อนไขเพิ่มเติมเกี่ยวกับหน่วยกิตวิชาคณิตศาสตร์ วิทยาศาสตร์ และภาษาต่างประเทศ รวมถึงการเข้าร่วมค่ายโอลิมปิกด้วยครับ (Source: 69\_TCAS1\_โอลิมปิก(1.2)_ประกาศรับสมัคร-ลงนาม.pdf)
+    *   สำหรับรอบที่ 1 ทั้งหมด ต้องมี GPAX ไม่ต่ำกว่า 3.00 ครับ
+
+*   **รอบที่ 3 (Admission)**:
+    *   รับ 15 ที่นั่ง โดยใช้เกณฑ์การพิจารณาจาก TGAT1 การสื่อสารภาษาอังกฤษ 20%, TGAT2 การคิดอย่างมีเหตุผล 20%, คณิตศาสตร์ประยุกต์ 1 20%, วิทยาศาสตร์ประยุกต์ 20% และ A-Level 20% ครับ (Source: 69-TCAS3-เกณฑ์การคัดเลือก-OK.xlsx)
+
+หวังว่าข้อมูลนี้จะเป็นประโยชน์นะครับ หากน้องมีคำถามเพิ่มเติม ถามผมได้เลยนะครับ!",2,The RAG answer correctly identifies that the program accepts both Thai and international students but includes extensive additional information about TCAS admission rounds which was not requested in the original question.,admission,วศ.บ._วิศวกรรมโยธา-ทรัพยากรน้ำ_2565.pdf,bangkhen_eng_dba25831,admission,วศ.บ._วิศวกรรมโยธา-ทรัพยากรน้ำ_2565.pdf|วศ.บ._วิศวกรรมโยธา-ทรัพยากรน้ำ_2565.pdf|วศ.บ._วิศวกรรมโยธา-ทรัพยากรน้ำ_2565.pdf
+หลักสูตรวิศวกรรมศาสตรบัณฑิต สาขาวิชาวิศวกรรมโยธา-ทรัพยากรน้ำ ฉบับปรับปรุง พ.ศ. 2565 นี้ เริ่มเปิดสอนเมื่อภาคการศึกษาใด?,หลักสูตรวิศวกรรมศาสตรบัณฑิต สาขาวิชาวิศวกรรมโยธา-ทรัพยากรน้ำ ฉบับปรับปรุง พ.ศ. 2565 กำหนดเปิดสอนในภาคการศึกษาที่ 1 ปีการศึกษา 2565,"สวัสดีครับน้อง! ยินดีด้วยนะครับที่สนใจหลักสูตรวิศวกรรมศาสตรบัณฑิต สาขาวิชาวิศวกรรมโยธา-ทรัพยากรน้ำ ของมหาวิทยาลัยเกษตรศาสตร์ครับ
+
+จากข้อมูลที่ผมมี หลักสูตรปรับปรุงฉบับ พ.ศ. 2565 นี้ **เริ่มใช้กับนิสิตในปีการศึกษา 2565 ตั้งแต่ภาคการศึกษาที่ 1 เป็นต้นไป** ครับ
+
+(Source: วศ.บ._วิศวกรรมโยธา-ทรัพยากรน้ำ_2565.pdf | general | similarity: 0.874)
+
+มีอะไรที่ผมพอจะช่วยหาข้อมูลเพิ่มเติมให้น้องได้อีกไหมครับ?",3,"The RAG answer correctly identifies that the revised curriculum (B.E. 2565) started in the first semester of the academic year 2565, matching the ground truth precisely.",curriculum,วศ.บ._วิศวกรรมโยธา-ทรัพยากรน้ำ_2565.pdf,bangkhen_eng_dba25831,admission,วศ.บ._วิศวกรรมโยธา-ทรัพยากรน้ำ_2565.pdf|วศ.บ._วิศวกรรมโยธา-ทรัพยากรน้ำ_2565.pdf|วศ.บ._วิศวกรรมโยธา-ทรัพยากรน้ำ_2565.pdf
+หลักสูตรพยาบาลศาสตรบัณฑิต ของ มก. รับนิสิตปีละกี่คน และมีรอบการรับสมัครกี่รอบ?,หลักสูตรพยาบาลศาสตรบัณฑิต ของ มก. รับนิสิตปีละ 70 คน และมีระบบการรับนิสิต 3 รอบ ได้แก่ ประเภทแฟ้มสะสมผลงาน (Portfolio) ประเภทโควตา และประเภทคัดเลือกจากระบบ TCAS,"สวัสดีครับน้อง! ยินดีด้วยนะครับที่สนใจหลักสูตรพยาบาลศาสตรบัณฑิตของมหาวิทยาลัยเกษตรศาสตร์ ผมหาข้อมูลมาให้แล้วครับ
+
+หลักสูตรพยาบาลศาสตรบัณฑิตของ มก. มีแผนการรับนิสิตปีละ **70 คน** ครับ และมีการเปิดรับสมัคร **3 รอบ** ด้วยกัน ได้แก่ ประเภทแฟ้มสะสมผลงาน (Portfolio), ประเภทโควตา และประเภทคัดเลือกจากระบบ TCAS ครับ
+
+[Source: เล่มหลักสูตรพยาบาลศาตรบัณฑิต ผ่านการรับรองจากสภาการพยาบาล.pdf | admission | similarity: 0.881]
+
+มีอะไรอีกที่น้องอยากทราบเกี่ยวกับหลักสูตรนี้ ถามผมได้เลยนะครับ!",3,"The RAG answer correctly identifies the number of students admitted annually (70) and the number of admission rounds (3), matching the ground truth precisely.",admission,เล่มหลักสูตรพยาบาลศาตรบัณฑิต ผ่านการรับรองจากสภาการพยาบาล.pdf,bangkhen_13e0215f,admission,เล่มหลักสูตรพยาบาลศาตรบัณฑิต ผ่านการรับรองจากสภาการพยาบาล.pdf|เล่มหลักสูตรพยาบาลศาตรบัณฑิต ผ่านการรับรองจากสภาการพยาบาล.pdf|เล่มหลักสูตรพยาบาลศาตรบัณฑิต ผ่านการรับรองจากสภาการพยาบาล.pdf
+What are the admission rounds for the Bachelor of Science in Nursing program at Kasetsart University?,"The Bachelor of Science in Nursing program at Kasetsart University has 3 admission rounds: Portfolio, Quota, and TCAS selection.","I couldn't find specific information about the admission rounds for the Bachelor of Science in Nursing program at Kasetsart University in the provided documents. The documents focus on the curriculum details, program accreditation, and the rationale for opening the program, highlighting the demand for nursing graduates and the expectations for their competencies.
+
+For detailed information on admission rounds, quotas, GPAX requirements, and application periods, I recommend checking the official Kasetsart University admissions website or contacting the Faculty of Nursing directly.
+
+Would you like me to help you find information on other aspects of the Bachelor of Science in Nursing program?",0,"The RAG answer incorrectly states that it could not find information about the admission rounds, directly contradicting the ground truth which clearly lists them.",admission,เล่มหลักสูตรพยาบาลศาตรบัณฑิต ผ่านการรับรองจากสภาการพยาบาล.pdf,bangkhen_13e0215f,admission,เล่มหลักสูตรพยาบาลศาตรบัณฑิต ผ่านการรับรองจากสภาการพยาบาล.pdf|เล่มหลักสูตรพยาบาลศาตรบัณฑิต ผ่านการรับรองจากสภาการพยาบาล.pdf|เล่มหลักสูตรพยาบาลศาตรบัณฑิต ผ่านการรับรองจากสภาการพยาบาล.pdf
+What are the key areas of study within the advanced soil chemistry course (01009531) for the ปฐพีวิทยา program at KU?,"The advanced soil chemistry course covers environmental soil chemistry, application of physical chemistry in soils, surface chemistry, chemical processes in soils, sorption phenomena, carbonate and phosphate chemistry, kinetics of soil chemical processes, and synchrotron techniques for elemental speciation.","Hello there! I can certainly help you with that. You're interested in the key areas of study within the Advanced Soil Chemistry course (01009531) for the Soil Science program at Kasetsart University, right?
+
+Great news – I found some information about it!
+
+The Advanced Soil Chemistry course (01009531) delves into advanced knowledge concerning soil chemistry and its environmental aspects. It covers the application of physical chemistry in soils, the surface chemistry and charge characteristics of soil colloidal systems, chemical processes within soils, sorption phenomena, carbonate and phosphate chemistry, the kinetics of soil chemical processes, and the principles of using synchrotron techniques for elemental speciation.
+
+This course is listed as having a credit structure of 3(3-0-6) or 3(3-6-6), indicating lectures, practical sessions, and self-study hours.
+
+[Source: ปร.ด._ปฐพีวิทยา_2559.pdf]
+
+I hope this helps you understand what the course is about! Let me know if you have any more questions.",3,The RAG answer accurately and completely lists all the key areas of study mentioned in the ground truth for the advanced soil chemistry course.,curriculum,ปร.ด._ปฐพีวิทยา_2559.pdf,bangkhen_agri_a1c5cd07,plo,ปร.ด._ปฐพีวิทยา_2559.pdf|ปร.ด._ปฐพีวิทยา_2559.pdf|ปร.ด._ปฐพีวิทยา_2559.pdf
+What analytical techniques are mentioned for studying soil minerals in the Soil Mineralogy course (01009532) for the ปฐพีวิทยา program?,"The Soil Mineralogy course mentions X-ray diffraction, polarized light microscopy, and electron microscopy as analytical techniques for studying soil minerals.","Hello there! It's great you're looking into the details of the Soil Science program.
+
+Regarding the Soil Mineralogy course (01009532), the context mentions that analytical techniques for identifying minerals in soils include:
+
+*   X-ray diffraction
+*   DTA (Differential Thermal Analysis)
+*   Polarizing microscope
+*   Electron microscope
+
+These techniques are used to study the mineralogical composition, properties, structure, weathering, and formation of soil minerals, with a focus on clay minerals.
+
+I hope this helps you with your research! Let me know if you have any more questions.",2,"The RAG answer correctly identifies X-ray diffraction, polarized light microscopy, and electron microscopy but incorrectly includes DTA, which is not present in the ground truth.",curriculum,ปร.ด._ปฐพีวิทยา_2559.pdf,bangkhen_agri_a1c5cd07,plo,ปร.ด._ปฐพีวิทยา_2559.pdf|ปร.ด._ปฐพีวิทยา_2559.pdf|ปร.ด._ปฐพีวิทยา_2559.pdf
+How are the Program Learning Outcomes (PLOs) of the ภูมิศาสตร์ program translated into practice?,"The PLOs of the ภูมิศาสตร์ program are translated into practice by adapting the teaching management of elective courses into modules. This aims to make the PLOs clearly reflected in the graduate qualifications of the Bachelor of Science in Geography and Geoinformatics program, revised edition B.E. 2565.","Hello there! It's great you're interested in the Geography program at Kasetsart University. I can help you understand how the Program Learning Outcomes (PLOs) are put into practice.
+
+According to the documents I have, the Geography program (specifically the Bachelor of Science in Geography and Geoinformatics, revised in 2022) translates its PLOs into practice by adjusting the teaching methods in elective courses to be modular. This is done to ensure that the PLOs are clearly reflected in the qualifications of the graduates.
+
+Here's how they connect the PLOs to practical application:
+*   They link the 6 Program Learning Outcomes (PLOs) with 9 learning outcomes across 5 aspects, as detailed in Appendix A, Section 2.
+*   They also adjust the teaching and learning processes for students in their 3rd and 4th years, particularly for certain courses.
+
+The goal is to make sure that graduates are ""spatial analysts with knowledge and ability to apply concepts and theories of geography and geoinformatics to accurately and appropriately explain or analyze the processes of spatial phenomena."" This is a unique characteristic they aim for in their graduates.
+
+[Source: วท.บ. สาขาวิชาภูมิศาสตร์.pdf]
+
+I hope this helps clarify how the PLOs are put into practice! Let me know if you have any more questions.",2,"The RAG answer correctly identifies that PLOs are translated into practice by adapting elective course teaching into modules, but it adds extra details not present in the ground truth.",plo,วท.บ. สาขาวิชาภูมิศาสตร์.pdf,bangkhen_2a423ff9,plo,วท.บ. สาขาวิชาภูมิศาสตร์.pdf|วท.บ. สาขาวิชาภูมิศาสตร์.pdf|วท.บ. สาขาวิชาภูมิศาสตร์.pdf
+"What is the approach for implementing the PLOs in the ภูมิศาสตร์ program, considering the diverse technological backgrounds of students?","The approach involves linking the 6 learning outcomes of the program with the 9 learning outcomes according to the 5 aspects of the learning standards, detailed in Appendix A, item 2. Additionally, the teaching and learning processes for students in years 3 and 4, specifically for elective courses, are adjusted.","Hello there! It's great you're looking into the Geography program. I can help you with that.
+
+Regarding the implementation of Program Learning Outcomes (PLOs) in the Geography program, especially considering the diverse technological backgrounds of students, the approach involves adapting the elective courses into modules. This is done to ensure that the PLOs are clearly reflected in the qualifications of graduates from the Bachelor of Science in Geography and Geoinformatics program, revised in 2022.
+
+To accommodate the varied knowledge and skills in geoinformatics among learners, the program has established guidelines for putting the PLOs into practice. This includes linking the 6 PLOs to 9 learning outcomes across 5 areas, as detailed in Appendix A, Section 2. Additionally, the teaching and learning processes for students in their 3rd and 4th years, specifically for certain courses, are being adjusted.
+
+[Source: วท.บ. สาขาวิชาภูมิศาสตร์.pdf]
+
+I hope this helps clarify the approach! Let me know if you have any more questions.",2,"The RAG answer correctly identifies the linking of PLOs to learning outcomes and the adjustment of teaching processes for later years, but it omits the specific detail about linking to the 5 aspects of learning standards.",plo,วท.บ. สาขาวิชาภูมิศาสตร์.pdf,bangkhen_2a423ff9,plo,วท.บ. สาขาวิชาภูมิศาสตร์.pdf|วท.บ. สาขาวิชาภูมิศาสตร์.pdf|วท.บ. สาขาวิชาภูมิศาสตร์.pdf
+What are the expected skills for students in the การจัดการสิ่งแวดล้อม program regarding digital technology?,"Students in the การจัดการสิ่งแวดล้อม program are expected to use digital and information technology correctly according to principles for communication, work, or collaboration with others.","Hello there! It's great you're interested in the Environmental Management program. I can help you with that.
+
+Based on the information I have, students in the Environmental Management program are expected to develop skills related to digital technology in a few key areas:
+
+*   **Using Digital Technologies for Environmental Management:** The curriculum emphasizes the use of Geographic Information Systems (GIS) and other digital technologies as tools for managing environmental issues.
+*   **Digital Media Production for Environmental Advocacy:** There's a specific course focused on ""Digital Media Production for Environmental Advocacy."" The objective of this course is to enhance students' capabilities in producing and disseminating digital media effectively. This is seen as a crucial tool for communicating and driving environmental issues within society. The program aims for graduates to have digital communication skills, be able to simplify complex information, and engage in creative advocacy.
+*   **Information Technology, Digital, or Artificial Intelligence:** The program aims for graduates to be able to analyze environmental management information by applying information technology, digital tools, or artificial intelligence.
+
+These skills are designed to equip students to be not just technical experts but also effective communicators and leaders in environmental management.
+
+I hope this helps you understand the digital technology aspects of the program! Let me know if you have any more questions.",1,"The RAG answer is tangentially related as it discusses digital technology skills for the program but does not directly address the specific expectation mentioned in the ground truth about using digital technology correctly for communication, work, or collaboration.",plo,วท.บ._การจัดการสิ่งแวดล้อม_2569.pdf,bangkhen_envi_fedd82d0,plo,วท.บ._การจัดการสิ่งแวดล้อม_2569.pdf|วท.บ._การจัดการสิ่งแวดล้อม_2569.pdf|วท.บ._การจัดการสิ่งแวดล้อม_2569.pdf

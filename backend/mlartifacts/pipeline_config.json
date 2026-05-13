@@ -1,8 +1,11 @@
 {
   "model_name": "KUru RAG Pipeline",
   "version": "1.0.0",
-  "selected_from_experiment": "wider_retrieval",
-  "mlflow_run_id": "8cfd3e502e82424ba08e8958e62c3e86",
+  "selected_model": "v8_structured_rag",
+  "selected_from_experiment": "v8_structured_tcas_fees",
+  "headline_retrieval_experiment": "latest_submission_headline_v7_rerank_74pct",
+  "mlflow_run_id": "8a47e44b6c034bbcb83f697ecfdfe603",
+  "selection_rationale": "Selected for deployment because it combines the v7 targeted lexical rerank retrieval path with TCAS relinking, structured fee grounding, and Thai/English response-policy fixes needed for real frontend use.",
   "components": {
     "embedder": {
       "model_id": "intfloat/multilingual-e5-base",
@@ -15,10 +18,14 @@
     "retriever": {
       "backend": "supabase_pgvector",
       "index_type": "IVFFlat",
-      "index_probes": 50,
-      "top_k": 8,
+      "index_probes": 10,
+      "top_k": 5,
       "fetch_multiplier": 3,
-      "min_similarity": 0.30
+      "min_similarity": 0.35,
+      "keyword_fallback": "same-program fallback for structure/PLO/policy/TCAS/fee terms",
+      "targeted_lexical_rerank": true,
+      "tcas_relinked_to_programs": true,
+      "structured_fee_grounding": true
     },
     "reranker": {
       "method": "pythainlp_token_overlap",
@@ -27,10 +34,11 @@
       "language": "th+en"
     },
     "generator": {
-      "model_id": "google/gemini-2.5-flash-lite-preview-06-17",
+      "model_id": "google/gemini-2.5-flash-lite",
       "provider": "openrouter",
       "temperature": 0.2,
-      "system_prompt_version": "kuru-v3"
+      "system_prompt_version": "kuru-v4",
+      "response_language_policy": "answer in Thai for Thai or Thai-intent mixed-language queries; answer in English for English-only queries unless explicitly requested otherwise"
     }
   },
   "pipeline_config": {
@@ -38,8 +46,33 @@
     "chunk_overlap": 200,
     "tcas_keywords_regex": "TCAS|GPAX|คะแนน|สมัคร|รอบ|score|admission|apply|requirement",
     "plo_keywords_regex": "PLO|plo|ผลลัพธ์การเรียนรู้",
+    "fee_keywords_regex": "ค่าเทอม|ค่าธรรมเนียม|tuition|fee|fees",
     "max_tcas_records": 30,
     "max_conversation_history_turns": 5
+  },
+  "evaluation": {
+    "headline_retrieval": {
+      "run_name": "latest_submission_headline_v7_rerank_74pct",
+      "eval_set": "data/eval_set_v6_current_chunks.csv",
+      "result_file": "data/eval_results_v6_current_chunks.csv",
+      "avg_score": 2.26,
+      "pct_good": 74.0
+    },
+    "selected_structured_regression": {
+      "run_name": "v8_structured_tcas_fees",
+      "run_id": "8a47e44b6c034bbcb83f697ecfdfe603",
+      "eval_set": "data/eval_set_v8_structured.csv",
+      "result_file": "data/eval_results_v8_structured.csv",
+      "avg_score": 2.055,
+      "pct_good": 72.7
+    },
+    "stress": {
+      "run_name": "v7_filtered_rerank_stress",
+      "eval_set": "data/eval_set_v7_filtered_current_chunks.csv",
+      "avg_score": 1.92,
+      "pct_good": 62.0,
+      "note": "Harder filtered current-chunk stress set, not a same-set regression."
+    }
   },
   "serving": {
     "api_framework": "FastAPI",

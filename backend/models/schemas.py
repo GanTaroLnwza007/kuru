@@ -47,8 +47,12 @@ class PloItem(BaseModel):
 
 class TcasRound(BaseModel):
     round: str = Field(description="TCAS round name")
+    track_name: str | None = Field(default=None, description="Admission track / project name extracted from source file")
     quota: int = Field(description="Number of seats")
     min_score: float | None = Field(default=None, description="Minimum score if applicable")
+    exam_criteria: dict | None = Field(default=None, description="Exam subjects with weights or grade requirements")
+    portfolio_requirements: dict | None = Field(default=None, description="Portfolio and prerequisite requirements")
+    deadlines: dict | None = Field(default=None, description="Key dates in the admission timeline")
 
 
 class ProgramDetail(ProgramSummary):

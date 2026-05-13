@@ -1,3 +1,5 @@
+import re
+
 from fastapi import APIRouter, Query
 from fastapi.responses import JSONResponse
 
@@ -67,6 +69,16 @@ def _derive_faculty(name_en: str) -> tuple[str, str]:
         if keyword.lower() in name_en.lower():
             return th, en
     return "มหาวิทยาลัยเกษตรศาสตร์", "Kasetsart University"
+
+
+def _extract_track_name(source_file: str | None) -> str | None:
+    """Extract admission track/project name from TCAS source filename.
+    e.g. '69_TCAS1_ช้างเผือก(1.1)_ประกาศ.pdf' → 'ช้างเผือก'
+    """
+    if not source_file:
+        return None
+    m = re.search(r"TCAS\d+_(.+?)\(", source_file)
+    return m.group(1).strip("_") if m else None
 
 
 def _row_to_summary(row: dict) -> ProgramSummary:
@@ -166,15 +178,19 @@ async def get_program(identifier: str) -> JSONResponse:
     # TCAS from tcas_records table
     tcas_resp = (
         sb.table("tcas_records")
-        .select("round,quota,gpax_min")
+        .select("round,quota,gpax_min,source_file,exam_criteria,portfolio_requirements,deadlines")
         .eq("program_id", program_id)
         .execute()
     )
     tcas_rounds = [
         TcasRound(
             round=t["round"],
+            track_name=_extract_track_name(t.get("source_file")),
             quota=t["quota"] or 0,
             min_score=t.get("gpax_min"),
+            exam_criteria=t.get("exam_criteria"),
+            portfolio_requirements=t.get("portfolio_requirements"),
+            deadlines=t.get("deadlines"),
         )
         for t in (tcas_resp.data or [])
     ]

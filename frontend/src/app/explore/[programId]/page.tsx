@@ -206,6 +206,326 @@ function YearVibeSwitcher({ years }: { years: YearVibeItem[] }) {
   );
 }
 
+// ── TCAS helpers ─────────────────────────────────────────────────
+const ROUND_COLORS: Record<string, { bg: string; color: string; border: string }> = {
+  "1": { bg: C.greenSoft, color: C.greenDeep, border: C.green },
+  "2": { bg: C.skySoft, color: C.sky, border: C.sky },
+  "3": { bg: "#F0F4FF", color: "#3B5BDB", border: "#7C93E8" },
+  "4": { bg: "#F4F1FB", color: "#5B3FA6", border: "#9B7FD4" },
+};
+
+const ROUND_DESC: Record<string, string> = {
+  "1": "Portfolio",
+  "2": "โควตา",
+  "3": "Admission",
+  "4": "Direct Admission",
+};
+
+const DEADLINE_LABELS: Record<string, string> = {
+  apply_start: "เปิดรับสมัคร",
+  apply_end: "ปิดรับสมัคร",
+  interview_list_announce: "ประกาศรายชื่อสัมภาษณ์",
+  interview_date: "วันสัมภาษณ์",
+  interview_result_announce: "ประกาศผลสัมภาษณ์",
+  confirm_admission_start: "เริ่มยืนยันสิทธิ์",
+  confirm_admission_end: "สิ้นสุดยืนยันสิทธิ์",
+  reject_admission_date: "วันสละสิทธิ์",
+  final_admission_announce: "ประกาศผลสุดท้าย",
+};
+
+const PORTFOLIO_KEY_LABELS: Record<string, string> = {
+  portfolio_type: "ประเภท Portfolio",
+  min_award_level: "ระดับรางวัลขั้นต่ำ",
+  math_credits: "หน่วยกิตคณิตศาสตร์",
+  science_credits: "หน่วยกิตวิทยาศาสตร์",
+  foreign_language_credits: "หน่วยกิตภาษาต่างประเทศ",
+  olympic_training_camp: "ค่ายโอลิมปิกวิชาการ",
+  gpa_requirement: "เกรดเฉลี่ยขั้นต่ำ",
+  award_type: "ประเภทรางวัล",
+  competition_level: "ระดับการแข่งขัน",
+  portfolio_description: "รายละเอียด Portfolio",
+  other_requirements: "ข้อกำหนดอื่น ๆ",
+  criteria: "เกณฑ์ที่ต้องการ",
+  description: "คำอธิบาย",
+  length_limit: "จำนวนหน้าสูงสุด",
+  statement_of_purpose: "Statement of Purpose",
+  Statement_of_Purpose: "Statement of Purpose",
+};
+
+const MONTHS_TH = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
+
+function formatThaiDate(iso: string): string {
+  const d = new Date(iso);
+  return `${d.getDate()} ${MONTHS_TH[d.getMonth()]} ${d.getFullYear() + 543}`;
+}
+
+type CriteriaEntry = { weight?: number; grade?: string | { item: string }; criteria?: Array<string | { item: string }> };
+
+function GradeTable({ grades, allSame, uniqueGrade, collapseAt }: {
+  grades: { subj: string; grade: string }[];
+  allSame: boolean;
+  uniqueGrade: string;
+  collapseAt: number;
+}) {
+  const [expanded, setExpanded] = useState(false);
+  const visible = !expanded && grades.length > collapseAt ? grades.slice(0, collapseAt) : grades;
+  return (
+    <div>
+      <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 10 }}>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.amber} strokeWidth="2" strokeLinecap="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
+        <span style={{ fontSize: 12, fontWeight: 800, color: C.amber, letterSpacing: ".08em", textTransform: "uppercase" }}>เกรดขั้นต่ำที่ต้องการ</span>
+      </div>
+      {allSame && (
+        <div style={{ marginBottom: 8, fontSize: 12.5, color: C.ink3 }}>
+          ทุกวิชาต้องได้เกรด{" "}
+          <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 11.5, color: C.greenDeep, background: C.greenSoft, padding: "1px 7px", borderRadius: 5 }}>{uniqueGrade}</span>
+          {" "}ขึ้นไป
+        </div>
+      )}
+      <div style={{ borderRadius: 10, overflow: "hidden", border: `1px solid ${C.lineSoft}` }}>
+        {visible.map(({ subj, grade }, i) => (
+          <div key={subj} style={{ display: "grid", gridTemplateColumns: "1fr auto", alignItems: "center", padding: "7px 12px", background: i % 2 === 0 ? "#fff" : "#F9FAFB", borderBottom: i < visible.length - 1 ? `1px solid ${C.lineSoft}` : "none" }}>
+            <span style={{ fontSize: 13, color: C.ink2 }}>{subj}</span>
+            {!allSame && (
+              <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 11.5, color: C.greenDeep, background: C.greenSoft, padding: "1px 7px", borderRadius: 5 }}>{grade}</span>
+            )}
+          </div>
+        ))}
+      </div>
+      {grades.length > collapseAt && (
+        <button type="button" onClick={() => setExpanded((v) => !v)} style={{ marginTop: 6, fontSize: 12.5, color: C.green, fontWeight: 700, background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+          {expanded ? "ย่อรายการ ▲" : `ดูทั้งหมด ${grades.length} วิชา ▼`}
+        </button>
+      )}
+    </div>
+  );
+}
+
+// Track card inside a round group
+function TcasRoundCard({ round }: { round: import("@/lib/api").TcasRound }) {
+  const [open, setOpen] = useState(false);
+  const criteria = round.exam_criteria as Record<string, CriteriaEntry> | null | undefined;
+  const portfolio = round.portfolio_requirements as Record<string, unknown> | null | undefined;
+  const deadlines = round.deadlines;
+
+  // Normalise weights → 0-100
+  let weightedEntries: { subject: string; pct: number }[] = [];
+  if (criteria) {
+    const entries = Object.entries(criteria).filter(([, v]) => v != null && typeof (v as CriteriaEntry).weight === "number");
+    if (entries.length > 0) {
+      const rawSum = entries.reduce((s, [, v]) => s + ((v as CriteriaEntry).weight ?? 0), 0);
+      const scale = rawSum > 0 && rawSum <= 1.01 ? 100 : 1;
+      weightedEntries = entries.map(([subj, v]) => ({
+        subject: subj,
+        pct: Math.round(((v as CriteriaEntry).weight ?? 0) * scale),
+      }));
+    }
+  }
+
+  const gradeEntries = criteria ? Object.entries(criteria).filter(([, v]) => v != null && (v as CriteriaEntry).grade) : [];
+  const interviewCriteria = criteria ? Object.entries(criteria).flatMap(([, v]) => v != null ? ((v as CriteriaEntry).criteria ?? []).map((c) => typeof c === "string" ? c : c.item) : []) : [];
+  const hasDetail = weightedEntries.length > 0 || gradeEntries.length > 0 || interviewCriteria.length > 0 || portfolio || deadlines;
+
+  return (
+    <div style={{ background: "#fff", border: `1px solid ${C.lineSoft}`, borderRadius: 22, overflow: "hidden" }}>
+      {/* Track header — accordion trigger */}
+      <button
+        type="button"
+        onClick={() => hasDetail && setOpen((v) => !v)}
+        style={{ width: "100%", padding: "18px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 14, background: "none", border: "none", borderBottom: open ? `1px solid ${C.lineSoft}` : "none", cursor: hasDetail ? "pointer" : "default", fontFamily: "inherit", textAlign: "left" }}
+      >
+        <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          {round.track_name ? (
+            <span style={{ fontSize: 15, fontWeight: 700, color: C.ink, lineHeight: 1.4 }}>{round.track_name}</span>
+          ) : (
+            <span style={{ fontSize: 13, color: C.ink3, fontStyle: "italic" }}>ไม่ระบุชื่อโครงการ</span>
+          )}
+          {round.min_score != null && (
+            <span style={{ fontSize: 13, color: C.ink3 }}>เกรดเฉลี่ยขั้นต่ำ {round.min_score}</span>
+          )}
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+          <div style={{ textAlign: "right" }}>
+            <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 20, color: C.green, fontVariantNumeric: "tabular-nums" }}>{round.quota}</span>
+            <span style={{ fontSize: 13, fontWeight: 600, color: C.ink3, marginLeft: 4 }}>คน</span>
+          </div>
+          {hasDetail && (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={C.ink3} strokeWidth="2" strokeLinecap="round" style={{ flexShrink: 0, transition: "transform 200ms", transform: open ? "rotate(180deg)" : "rotate(0deg)" }}>
+              <path d="m6 9 6 6 6-6"/>
+            </svg>
+          )}
+        </div>
+      </button>
+
+      {hasDetail && open && (
+        <div style={{ padding: "20px 24px", display: "flex", flexDirection: "column", gap: 22 }}>
+          {/* Score weights */}
+          {weightedEntries.length > 0 && (
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 12 }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.sky} strokeWidth="2" strokeLinecap="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+                <span style={{ fontSize: 12, fontWeight: 800, color: C.sky, letterSpacing: ".08em", textTransform: "uppercase" }}>สัดส่วนคะแนน</span>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                {weightedEntries.map(({ subject, pct }) => (
+                  <div key={subject} style={{ display: "grid", gridTemplateColumns: "1fr 80px 36px", gap: 10, alignItems: "center" }}>
+                    <span style={{ fontSize: 13, color: C.ink2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{subject}</span>
+                    <div style={{ height: 6, background: C.lineSoft, borderRadius: 999, overflow: "hidden" }}>
+                      <div style={{ height: "100%", width: `${pct}%`, background: `linear-gradient(90deg, ${C.sky}, ${C.green})`, borderRadius: 999 }} />
+                    </div>
+                    <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 12.5, color: C.green, textAlign: "right", fontVariantNumeric: "tabular-nums" }}>{pct}%</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Grade requirements */}
+          {gradeEntries.length > 0 && (() => {
+            const resolveGrade = (v: unknown) => { const g = (v as CriteriaEntry).grade; return typeof g === "string" ? g : g?.item ?? ""; };
+            const grades = gradeEntries.map(([subj, v]) => ({ subj, grade: resolveGrade(v) }));
+            const uniqueGrades = [...new Set(grades.map((r) => r.grade))];
+            const allSame = uniqueGrades.length === 1;
+            const COLLAPSE = 5;
+            return (
+              <GradeTable grades={grades} allSame={allSame} uniqueGrade={uniqueGrades[0]} collapseAt={COLLAPSE} />
+            );
+          })()}
+
+          {/* Interview criteria */}
+          {interviewCriteria.length > 0 && (
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 12 }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.green} strokeWidth="2" strokeLinecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                <span style={{ fontSize: 12, fontWeight: 800, color: C.green, letterSpacing: ".08em", textTransform: "uppercase" }}>เกณฑ์การสัมภาษณ์</span>
+              </div>
+              <ul style={{ margin: 0, paddingLeft: 18, display: "flex", flexDirection: "column", gap: 5 }}>
+                {interviewCriteria.map((item, i) => (
+                  <li key={i} style={{ fontSize: 13.5, color: C.ink2, lineHeight: 1.55 }}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Portfolio */}
+          {portfolio && Object.keys(portfolio).length > 0 && (
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 12 }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.rust} strokeWidth="2" strokeLinecap="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                <span style={{ fontSize: 12, fontWeight: 800, color: C.rust, letterSpacing: ".08em", textTransform: "uppercase" }}>Portfolio ที่ต้องการ</span>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                {Object.entries(portfolio).map(([key, value]) => {
+                  const label = PORTFOLIO_KEY_LABELS[key] ?? key.replace(/_/g, " ");
+                  const isArray = Array.isArray(value);
+                  const items = isArray ? (value as Array<string | { item: string }>).map((c) => typeof c === "string" ? c : c.item) : null;
+                  const text = !isArray ? (typeof value === "object" && value !== null ? ("item" in (value as object) ? String((value as { item: unknown }).item) : String(value)) : String(value ?? "")) : null;
+                  return (
+                    <div key={key} style={{ display: "flex", gap: 12, alignItems: "flex-start", padding: "8px 0", borderBottom: `1px solid ${C.lineSoft}` }}>
+                      <span style={{ fontSize: 13, fontWeight: 600, color: C.ink3, minWidth: 150, flexShrink: 0 }}>{label}</span>
+                      {items ? (
+                        <ul style={{ margin: 0, paddingLeft: 18, display: "flex", flexDirection: "column", gap: 4 }}>
+                          {items.map((item, i) => <li key={i} style={{ fontSize: 13.5, color: C.ink2, lineHeight: 1.55 }}>{item}</li>)}
+                        </ul>
+                      ) : (
+                        <span style={{ fontSize: 13.5, color: C.ink2, lineHeight: 1.5 }}>{text}</span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Deadlines */}
+          {deadlines && Object.keys(deadlines).length > 0 && (
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 14 }}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={C.sky} strokeWidth="2" strokeLinecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                <span style={{ fontSize: 12, fontWeight: 800, color: C.sky, letterSpacing: ".08em", textTransform: "uppercase" }}>ปฏิทินสำคัญ</span>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                {Object.entries(deadlines)
+                  .filter(([k]) => DEADLINE_LABELS[k])
+                  .sort(([, a], [, b]) => a.localeCompare(b))
+                  .map(([key, date], i, arr) => (
+                    <div key={key} style={{ display: "flex", gap: 14, alignItems: "stretch" }}>
+                      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: 20, flexShrink: 0 }}>
+                        <div style={{ width: 10, height: 10, borderRadius: "50%", background: C.sky, border: `2px solid #fff`, boxShadow: `0 0 0 2px ${C.sky}`, flexShrink: 0, marginTop: 2 }} />
+                        {i < arr.length - 1 && <div style={{ flex: 1, width: 2, background: `${C.sky}30`, minHeight: 22 }} />}
+                      </div>
+                      <div style={{ paddingBottom: i < arr.length - 1 ? 14 : 0 }}>
+                        <div style={{ fontSize: 12, fontWeight: 700, color: C.ink3 }}>{DEADLINE_LABELS[key]}</div>
+                        <div style={{ fontSize: 14, fontWeight: 800, color: C.ink, fontVariantNumeric: "tabular-nums", marginTop: 1 }}>{formatThaiDate(date)}</div>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Accordion group for all tracks within one round number
+function TcasRoundGroup({ roundNum, tracks }: { roundNum: string; tracks: import("@/lib/api").TcasRound[] }) {
+  const [open, setOpen] = useState(roundNum === "1");
+  const pal = ROUND_COLORS[roundNum] ?? { bg: C.lineSoft, color: C.ink3, border: C.line };
+  const totalQuota = tracks.reduce((s, r) => s + (r.quota ?? 0), 0);
+  const desc = ROUND_DESC[roundNum] ?? "";
+
+  return (
+    <div style={{ borderRadius: 20, border: `1px solid ${C.lineSoft}`, overflow: "hidden", background: "#fff" }}>
+      {/* Group header — accordion trigger */}
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        style={{
+          width: "100%", padding: "18px 22px", display: "flex", alignItems: "center", gap: 14,
+          background: open ? "#fff" : C.paper, border: "none", borderBottom: open ? `1px solid ${C.lineSoft}` : "none",
+          cursor: "pointer", fontFamily: "inherit", textAlign: "left", transition: "background 180ms",
+        }}
+      >
+        {/* Round badge */}
+        <span style={{
+          flexShrink: 0, display: "inline-flex", alignItems: "center", justifyContent: "center",
+          width: 40, height: 40, borderRadius: 12,
+          background: pal.bg, color: pal.color,
+          fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 18,
+          border: `1.5px solid ${pal.border}33`,
+        }}>
+          {roundNum}
+        </span>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 16, color: C.ink }}>รอบ {roundNum}</span>
+            {desc && <span style={{ fontSize: 13, fontWeight: 600, color: pal.color, background: pal.bg, padding: "2px 9px", borderRadius: 999 }}>{desc}</span>}
+          </div>
+          <div style={{ fontSize: 12.5, color: C.ink3, marginTop: 2 }}>
+            {tracks.length} โครงการ · รับรวม {totalQuota} คน
+          </div>
+        </div>
+        {/* Chevron */}
+        <svg
+          width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.ink3} strokeWidth="2" strokeLinecap="round"
+          style={{ flexShrink: 0, transition: "transform 220ms", transform: open ? "rotate(180deg)" : "rotate(0deg)" }}
+        >
+          <path d="m6 9 6 6 6-6"/>
+        </svg>
+      </button>
+
+      {/* Track list */}
+      {open && (
+        <div style={{ padding: "16px 20px", display: "flex", flexDirection: "column", gap: 12 }}>
+          {tracks.map((t, i) => <TcasRoundCard key={i} round={t} />)}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── Career card ──────────────────────────────────────────────────
 const CAREER_PALETTES = [
   { bg: C.greenSoft, color: C.green },
@@ -285,7 +605,7 @@ export default function ProgramDetailPage() {
   const rich: RichProgram | undefined = RICH_PROGRAMS[program.slug] ?? RICH_PROGRAMS[program.id];
   const matchScore = rich && riasecScores
     ? computeProgramMatch(rich.riasec, riasecScores, rich.baseFit)
-    : rich ? rich.baseFit : null;
+    : null;
 
   const TABS: { id: TabId; label: string }[] = [
     { id: "vibe", label: "Year-by-Year Vibe" },
@@ -375,8 +695,8 @@ export default function ProgramDetailPage() {
               {/* quick stats */}
               <div className="pgm-quick-stats" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12, padding: "28px 0 0", borderTop: `1px solid ${C.lineSoft}`, marginTop: 32 }}>
                 {[
-                  { val: matchScore !== null ? `${matchScore}` : "—", unit: "%", label: "Match Score", valColor: C.green },
-                  { val: rich ? `${rich.seats}` : "—", unit: "", label: "ที่นั่ง/ปี", valColor: C.ink },
+                  { val: matchScore !== null ? `${matchScore}` : "—", unit: matchScore !== null ? "%" : "", label: "Match Score", valColor: C.green },
+                  { val: program.tcas_rounds.length > 0 ? `${program.tcas_rounds.reduce((s, r) => s + (r.quota ?? 0), 0)}` : rich ? `${rich.seats}` : "—", unit: "", label: "ที่นั่ง/ปี", valColor: C.ink },
                   { val: program.tcas_rounds[0]?.min_score?.toLocaleString() ?? "—", unit: "", label: "คะแนนต่ำสุด", valColor: C.ink },
                   { val: rich?.cost ?? "—", unit: "", label: "ค่าเทอม (฿)", valColor: C.ink },
                 ].map(({ val, unit, label, valColor }) => (
@@ -515,6 +835,22 @@ export default function ProgramDetailPage() {
               ) : (
                 <div style={{ padding: "48px 0", textAlign: "center", color: C.ink3, fontSize: 14 }}>ยังไม่มีข้อมูลอาชีพสำหรับหลักสูตรนี้</div>
               )}
+
+              {/* PLOs from API */}
+              {program.plos.length > 0 && (
+                <div style={{ marginTop: 28, background: "#fff", border: `1px solid ${C.lineSoft}`, borderRadius: 22, padding: 26 }}>
+                  <h4 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 17, letterSpacing: "-.01em", marginBottom: 18, display: "flex", alignItems: "center", gap: 10 }}>
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke={C.sky} strokeWidth="2" strokeLinecap="round"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/></svg>
+                    ผลลัพธ์การเรียนรู้ (PLOs)
+                  </h4>
+                  {program.plos.map((plo, i) => (
+                    <div key={i} style={{ display: "flex", gap: 10, padding: "9px 0", borderBottom: i < program.plos.length - 1 ? `1px dashed ${C.line}` : "none", fontSize: 13.5 }}>
+                      <span style={{ flexShrink: 0, fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 11.5, color: C.green, minWidth: 38, paddingTop: 1 }}>{plo.code}</span>
+                      <span style={{ color: C.ink2, lineHeight: 1.55 }}>{plo.description_th}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
@@ -529,60 +865,56 @@ export default function ProgramDetailPage() {
                   TCAS + <em style={{ fontFamily: "Georgia, serif", fontStyle: "italic", fontWeight: 400, color: C.green }}>ค่าใช้จ่าย</em>
                 </h2>
               </div>
-              <div className="pgm-tcas-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
-                {/* TCAS rounds */}
-                {program.tcas_rounds.length > 0 && (
-                  <div style={{ background: "#fff", border: `1px solid ${C.lineSoft}`, borderRadius: 22, padding: 26 }}>
-                    <h4 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 18, letterSpacing: "-.01em", marginBottom: 18, display: "flex", alignItems: "center", gap: 10 }}>
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.green} strokeWidth="2" strokeLinecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-                      TCAS — ข้อมูลการรับ
-                    </h4>
-                    {program.tcas_rounds.map((round, i) => (
-                      <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", padding: "10px 0", borderBottom: i < program.tcas_rounds.length - 1 ? `1px dashed ${C.line}` : "none", fontSize: 14 }}>
-                        <span style={{ color: C.ink3 }}>{round.round}</span>
-                        <span style={{ fontWeight: 700, color: C.ink, textAlign: "right" }}>
-                          รับ {round.quota} คน {round.min_score !== null ? `· ขั้นต่ำ ${round.min_score}` : ""}
-                        </span>
+
+              <div className="pgm-tcas-outer" style={{ display: "grid", gridTemplateColumns: "1.35fr 1fr", gap: 22, alignItems: "start" }}>
+                {/* Left: TCAS rounds grouped by round number */}
+                <div>
+                  {program.tcas_rounds.length > 0 ? (() => {
+                    const groups = program.tcas_rounds.reduce<Record<string, import("@/lib/api").TcasRound[]>>((acc, r) => {
+                      const num = r.round.match(/\d+/)?.[0] ?? "?";
+                      (acc[num] ??= []).push(r);
+                      return acc;
+                    }, {});
+                    return (
+                      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                        {Object.entries(groups).sort(([a], [b]) => a.localeCompare(b)).map(([num, tracks]) => (
+                          <TcasRoundGroup key={num} roundNum={num} tracks={tracks} />
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                )}
-                {/* Cost */}
-                {rich && (
-                  <div style={{ background: "#fff", border: `1px solid ${C.lineSoft}`, borderRadius: 22, padding: 26 }}>
-                    <h4 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 18, letterSpacing: "-.01em", marginBottom: 18, display: "flex", alignItems: "center", gap: 10 }}>
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.amber} strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-                      ค่าใช้จ่าย
-                    </h4>
-                    {[
-                      ["ค่าเทอม", rich.cost],
-                      ["ตลอดหลักสูตร 4 ปี (ประมาณ)", `~ ${(parseInt(rich.cost.replace(/[^0-9]/g, "")) * 8).toLocaleString()} ฿`],
-                      ["จำนวนที่รับ", `${rich.seats} คน`],
-                      ["ทุนการศึกษา", "15+ แหล่ง"],
-                      ["หอพักในมหาวิทยาลัย", "4,000–8,000 ฿/เทอม"],
-                    ].map(([k, v]) => (
-                      <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", padding: "10px 0", borderBottom: k !== "หอพักในมหาวิทยาลัย" ? `1px dashed ${C.line}` : "none", fontSize: 14 }}>
-                        <span style={{ color: C.ink3 }}>{k}</span>
-                        <span style={{ fontWeight: 700, color: C.ink, textAlign: "right" }}>{v}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-                {/* PLOs from API */}
-                {program.plos.length > 0 && (
-                  <div style={{ gridColumn: "span 2", background: "#fff", border: `1px solid ${C.lineSoft}`, borderRadius: 22, padding: 26 }}>
-                    <h4 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 18, letterSpacing: "-.01em", marginBottom: 18, display: "flex", alignItems: "center", gap: 10 }}>
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke={C.sky} strokeWidth="2" strokeLinecap="round"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/></svg>
-                      ผลลัพธ์การเรียนรู้ (PLOs)
-                    </h4>
-                    {program.plos.map((plo, i) => (
-                      <div key={i} style={{ display: "flex", gap: 12, padding: "10px 0", borderBottom: i < program.plos.length - 1 ? `1px dashed ${C.line}` : "none", fontSize: 14 }}>
-                        <span style={{ flexShrink: 0, fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 12, color: C.green, minWidth: 40 }}>{plo.code}</span>
-                        <span style={{ color: C.ink2, lineHeight: 1.55 }}>{plo.description_th}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                    );
+                  })() : (
+                    <div style={{ padding: "40px 24px", textAlign: "center", background: "#fff", borderRadius: 22, border: `1px solid ${C.lineSoft}`, color: C.ink3, fontSize: 14 }}>
+                      ยังไม่มีข้อมูล TCAS สำหรับหลักสูตรนี้
+                    </div>
+                  )}
+                </div>
+
+                {/* Right: Cost */}
+                <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+                  {/* Cost card */}
+                  {rich && (
+                    <div style={{ background: "#fff", border: `1px solid ${C.lineSoft}`, borderRadius: 22, padding: 26 }}>
+                      <h4 style={{ fontFamily: "'Plus Jakarta Sans', sans-serif", fontWeight: 800, fontSize: 17, letterSpacing: "-.01em", marginBottom: 18, display: "flex", alignItems: "center", gap: 10 }}>
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke={C.amber} strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+                        ค่าใช้จ่ายโดยประมาณ
+                      </h4>
+                      {[
+                        ["ค่าเทอม", rich.cost],
+                        ["ตลอดหลักสูตร 4 ปี (ประมาณ)", `~ ${(parseInt(rich.cost.replace(/[^0-9]/g, "")) * 8).toLocaleString()} ฿`],
+                        ["จำนวนที่รับทั้งหมด", `${program.tcas_rounds.length > 0 ? program.tcas_rounds.reduce((s, r) => s + (r.quota ?? 0), 0) : rich.seats} คน`],
+                        ["เงินเดือนเริ่มต้น (ประมาณการ)", rich.salary],
+                        ["ทุนการศึกษา", "15+ แหล่ง"],
+                        ["หอพักในมหาวิทยาลัย", "4,000–8,000 ฿/เทอม"],
+                      ].map(([k, v]) => (
+                        <div key={k} style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", padding: "9px 0", borderBottom: k !== "หอพักในมหาวิทยาลัย" ? `1px dashed ${C.line}` : "none", fontSize: 13.5 }}>
+                          <span style={{ color: C.ink3 }}>{k}</span>
+                          <span style={{ fontWeight: 700, color: C.ink, textAlign: "right" }}>{v}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                </div>
               </div>
             </div>
           )}
@@ -629,7 +961,7 @@ export default function ProgramDetailPage() {
         @media (max-width: 640px) { .pgm-quick-stats { grid-template-columns: repeat(2,1fr) !important; } }
         @media (max-width: 768px) { .pgm-career-grid { grid-template-columns: repeat(2,1fr) !important; } }
         @media (max-width: 480px) { .pgm-career-grid { grid-template-columns: 1fr !important; } }
-        @media (max-width: 680px) { .pgm-tcas-grid { grid-template-columns: 1fr !important; } .pgm-tcas-grid [style*="span 2"] { grid-column: span 1 !important; } }
+        @media (max-width: 900px) { .pgm-tcas-outer { grid-template-columns: 1fr !important; } }
         @media (max-width: 640px) { .pgm-ask-grid { grid-template-columns: 1fr !important; padding: 28px 22px !important; } }
         .pgm-career-card:hover { border-color: var(--ink, #0A1F14) !important; transform: translateY(-2px); }
       `}</style>

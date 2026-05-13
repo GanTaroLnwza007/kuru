@@ -23,7 +23,7 @@ from rich.console import Console
 from kuru.db import supabase_client as db
 from kuru.ingestion.chunker import chunk_document
 from kuru.ingestion.embedder import embed_and_store, _get_model
-from kuru.ingestion.structured_extractor import StructuredProgram, extract_structured
+from kuru.ingestion.structured_extractor import StructuredProgram, extract_structured_complete
 from kuru.ingestion.text_extractor import PageText, extract_text_auto, full_text
 from kuru.llm import session_usage
 
@@ -43,7 +43,7 @@ def _program_id_from_path(pdf_path: Path, campus: str) -> str:
     }.get(campus, re.sub(r"\s+", "_", campus).lower())
 
     # Use the faculty subfolder (e.g. "eng", "agri") as a stable prefix.
-    campus_dir = Path("data/native/curriculum") / campus
+    campus_dir = Path("data/scanned/curriculum") / campus
     try:
         rel = pdf_path.relative_to(campus_dir)
         faculty_part = rel.parts[0] if len(rel.parts) > 1 else ""
@@ -83,7 +83,9 @@ _DEGREE_PAREN_RE = re.compile(
 )
 
 _EN_NAME_RE = re.compile(
-    r"(?:Bachelor|Master|Doctor)\s+of\s+[\w\s,\-]+?Program\s+in\s+[^\n\r]{5,80}",
+    r"(?:Bachelor|Master|Doctor)\s+of\s+[A-Za-z][A-Za-z\s,&()/.-]{2,120}?"
+    r"Program(?:me)?(?:\s+in\s+[A-Za-z][A-Za-z\s,&()/.-]{2,120})?"
+    r"(?:\s*\([^)]{3,60}\))?",
     re.IGNORECASE,
 )
 
@@ -154,23 +156,32 @@ _EN_LABEL_RE = re.compile(
 )
 # Broad fallback: "Master/Bachelor/Doctor of ... Program in ..."
 _EN_NAME_BROAD_RE = re.compile(
-    r"(?:Bachelor|Master|Doctor|Programme|Program)\s+of\s+[\w\s,\-]+?(?:Program(?:me)?\s+in\s+)?[A-Z][^\n\r]{5,80}",
+    r"(?:Bachelor|Master|Doctor)\s+of\s+[A-Za-z][A-Za-z\s,&()/.-]{5,140}"
+    r"(?:\s*\([^)]{3,60}\))?",
     re.IGNORECASE,
 )
+
+
+def _clean_name_en(raw: str) -> str:
+    name = " ".join(raw.replace("\n", " ").split())
+    for marker in (" ชื่อย", " 1.", " 2.", " ปรัชญา", " จำนวน", " สถานภาพ"):
+        if marker in name:
+            name = name.split(marker, 1)[0].strip()
+    return name.strip(" :;-")[:150]
 
 
 def _extract_name_en(doc_text: str) -> str | None:
     # Try มคอ.2 ภาษาอังกฤษ label first (works for both native and OCR'd text)
     m = _EN_LABEL_RE.search(doc_text[:8000])
     if m:
-        return m.group(1).strip()[:150]
+        return _clean_name_en(m.group(1))
     # Fallback: "Bachelor/Master/Doctor of ... Program in ..."
     m = _EN_NAME_RE.search(doc_text[:8000])
     if m:
-        return m.group(0).strip()[:150]
+        return _clean_name_en(m.group(0))
     # Broad fallback — search full text (handles chunk-split labels)
     m = _EN_NAME_BROAD_RE.search(doc_text)
-    return m.group(0).strip()[:150] if m else None
+    return _clean_name_en(m.group(0)) if m else None
 
 
 def _extract_name_th_from_content(doc_text: str) -> str | None:
@@ -248,27 +259,40 @@ def ingest_document(pdf_path: Path, campus: str, name_mapping: dict, verbose: bo
 
     client = db.get_client()
 
-    name_th = _program_name_from_stem(pdf_path.stem)
-
     # Resolve English name: CSV mapping first, auto-extract from text later
     mapping = name_mapping.get(program_id, {})
+    name_th = mapping.get("name_th_canonical") or _program_name_from_stem(pdf_path.stem)
     name_en_from_csv = mapping.get("name_en")
     name_en_source: str | None = "csv_mapping" if name_en_from_csv else None
-
-    db.upsert_program(client, {
-        "id": program_id,
-        "name_th": name_th,
-        "name_en": name_en_from_csv,
-        "faculty": campus,
-        "degree_level": _degree_level(pdf_path.stem),
-    })
 
     # ── Resume: skip if already fully ingested ──────────────────────────────
     existing = db.count_chunks(client, pdf_path.name)
     if existing > 0:
+        # On resume, avoid overwriting corrected DB names with filename guesses.
+        resume_update = {
+            "id": program_id,
+            "faculty": campus,
+            "degree_level": _degree_level(pdf_path.stem),
+        }
+        if mapping.get("name_th_canonical"):
+            resume_update["name_th"] = name_th
+        if name_en_from_csv:
+            resume_update["name_en"] = name_en_from_csv
+        if len(resume_update) > 3:
+            db.upsert_program(client, resume_update)
         status["chunks"] = existing
         status["skipped"] = True
         return status
+
+    program_row = {
+        "id": program_id,
+        "name_th": name_th,
+        "faculty": campus,
+        "degree_level": _degree_level(pdf_path.stem),
+    }
+    if name_en_from_csv:
+        program_row["name_en"] = name_en_from_csv
+    db.upsert_program(client, program_row)
 
     # ── Text extraction ─────────────────────────────────────────────────────
     try:
@@ -293,7 +317,7 @@ def ingest_document(pdf_path: Path, campus: str, name_mapping: dict, verbose: bo
 
     # ── Backfill names from document content (overrides stem-based name_th) ──
     # Content-extracted names are more accurate than filename stems, especially
-    # for data/raw files with short Thai naming like วศ.ม._วิศวกรรมไฟฟ้า_2565.pdf
+    # for registrar/source PDFs with short Thai naming like วศ.ม._วิศวกรรมไฟฟ้า_2565.pdf
     name_updates: dict = {}
     if not name_en_from_csv:
         name_en_auto = _extract_name_en(doc_text)
@@ -328,7 +352,7 @@ def ingest_document(pdf_path: Path, campus: str, name_mapping: dict, verbose: bo
         status["errors"].append(f"embedding ({type(exc).__name__}): {exc}")
 
     # ── Structured extraction ───────────────────────────────────────────────
-    structured = extract_structured(doc_text, verbose=verbose)
+    structured = extract_structured_complete(doc_text, chunks, verbose=verbose)
     coverage = _build_coverage(pages, structured, name_en_source)
 
     db.update_program_structured(client, program_id, {
@@ -424,9 +448,9 @@ def main(campus: str | None = None, sample: int | None = None) -> None:
             elif a == "--sample" and args.index(a) + 1 < len(args):
                 sample = int(args[args.index(a) + 1])
 
-    base_dir = Path("data/native/curriculum")
+    base_dir = Path("data/scanned/curriculum")
     if not base_dir.exists():
-        console.print("[red]data/native/curriculum/ not found. Run kuru-download first.[/red]")
+        console.print("[red]data/scanned/curriculum/ not found. Run kuru-download first.[/red]")
         sys.exit(1)
 
     name_mapping = _load_name_mapping()

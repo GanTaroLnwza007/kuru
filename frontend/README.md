@@ -19,6 +19,8 @@ cp .env.example .env.local
 
 # Set the backend API base URL in .env.local
 # NEXT_PUBLIC_API_BASE_URL=http://localhost:8000/api/v1
+# NEXT_PUBLIC_USE_MOCK=false
+# NEXT_PUBLIC_USE_MOCK_CHAT=false
 ```
 
 ### Development

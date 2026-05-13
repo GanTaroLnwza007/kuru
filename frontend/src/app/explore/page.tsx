@@ -263,7 +263,7 @@ function FeaturedCard({ program, rank, pinned, onPin }: { program: EnrichedProgr
           {rich && (
             <div>
               <div style={{ fontWeight: 800, fontSize: 17, color: "#fff", fontVariantNumeric: "tabular-nums", lineHeight: 1 }}>{rich.salary.split("–")[0].trim()}</div>
-              <div style={{ fontSize: 10.5, color: "rgba(255,255,255,0.5)", fontWeight: 600, letterSpacing: "0.04em" }}>เงินเดือนเริ่มต้น</div>
+              <div style={{ fontSize: 10.5, color: "rgba(255,255,255,0.5)", fontWeight: 600, letterSpacing: "0.04em" }}>เริ่มต้น (ประมาณ)</div>
             </div>
           )}
         </div>
@@ -373,7 +373,7 @@ function ProgramCard({ program, rank, pinned, onPin }: { program: EnrichedProgra
           {rich && (
             <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
               <span style={{ fontWeight: 800, color: "var(--ink)", fontSize: 17, fontVariantNumeric: "tabular-nums", letterSpacing: "-0.01em", lineHeight: 1 }}>{rich.salary.split("–")[0].trim()}</span>
-              <span style={{ fontSize: 10.5, color: "var(--ink-3)", fontWeight: 600, letterSpacing: "0.04em" }}>เริ่มต้น</span>
+              <span style={{ fontSize: 10.5, color: "var(--ink-3)", fontWeight: 600, letterSpacing: "0.04em" }}>เริ่มต้น (ประมาณ)</span>
             </div>
           )}
         </div>
@@ -492,7 +492,7 @@ export default function ExplorePage() {
       const rich = RICH_PROGRAMS[p.slug] ?? RICH_PROGRAMS[p.id];
       const match = rich && riasecScores
         ? computeProgramMatch(rich.riasec, riasecScores, rich.baseFit)
-        : rich ? rich.baseFit : null;
+        : null;
       return { ...p, match, rich } as EnrichedProgram;
     });
 
@@ -892,12 +892,12 @@ function ChipBtn({ children, active, onClick }: { children: React.ReactNode; act
         height: 32, padding: "0 14px", borderRadius: 999,
         background: active ? "var(--ink)" : "#fff",
         color: active ? "#fff" : "var(--ink-2)",
-        border: `1px solid ${active ? "var(--ink)" : "var(--line)"}`,
+        borderWidth: 1, borderStyle: "solid",
+        borderColor: active ? "var(--ink)" : (hovered ? "var(--ink)" : "var(--line)"),
         fontSize: 13, fontWeight: 600, fontFamily: "inherit",
         display: "inline-flex", alignItems: "center", gap: 6,
         transition: "all 180ms", cursor: "pointer",
         transform: !active && hovered ? "translateY(-1px)" : "none",
-        borderColor: !active && hovered ? "var(--ink)" : (active ? "var(--ink)" : "var(--line)"),
         minHeight: 0, minWidth: 0,
       }}
     >

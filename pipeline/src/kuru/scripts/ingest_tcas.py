@@ -24,9 +24,9 @@ console = Console(legacy_windows=False)
 
 
 def main() -> None:
-    tcas_dir = Path("data/raw/tcas1")
+    tcas_dir = Path("data/native/tcas")
     if not tcas_dir.exists():
-        console.print("[red]data/raw/tcas1/ not found. Run kuru-download first.[/red]")
+        console.print("[red]data/native/tcas/ not found. Run kuru-download first.[/red]")
         sys.exit(1)
 
     files = sorted(
@@ -34,7 +34,7 @@ def main() -> None:
         if p.suffix.lower() in {".pdf", ".xlsx"}
     )
     if not files:
-        console.print("[yellow]No PDF or xlsx files found in data/raw/tcas1/[/yellow]")
+        console.print("[yellow]No PDF or xlsx files found in data/native/tcas/[/yellow]")
         sys.exit(0)
 
     console.print(f"\n[bold]Ingesting {len(files)} TCAS file(s) …[/bold]\n")

@@ -9,10 +9,11 @@ sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
-from dotenv import load_dotenv
 from rich.console import Console
 
-load_dotenv()
+from _env import load_project_env
+
+load_project_env(__file__)
 
 from kuru.ingestion.embedder import _get_model
 from kuru.scripts.ingest_curriculum import ingest_document, FILE_WORKERS
@@ -30,7 +31,7 @@ TARGET_FILES = [
     "ภ.บ._2569.pdf",                              # was FAIL (4,695 bloated chunks)
 ]
 
-base_dir = Path("data/raw/curriculum")
+base_dir = Path("data/scanned/curriculum")
 docs: list[Path] = []
 for fname in TARGET_FILES:
     matches = list(base_dir.rglob(fname))

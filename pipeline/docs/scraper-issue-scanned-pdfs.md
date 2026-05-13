@@ -40,8 +40,8 @@ but the fundamental scanned-PDF issue remained:
 ## Current State
 
 - Supabase is **empty** (all data cleared during debugging).
-- 260 PDFs are downloaded locally in `data/raw/curriculum/บางเขน/`.
-- TCAS data in `data/raw/tcas1/` is intact and has not been re-ingested.
+- 260 PDFs are downloaded locally in `data/native/curriculum/บางเขน/`.
+- TCAS data in `data/native/tcas/` is intact and has not been re-ingested.
 
 ## Options Going Forward
 
@@ -80,7 +80,7 @@ but validate cost with a small subset first (e.g., one faculty folder).
 
 ## Running the Full OCR Batch (Option A)
 
-260 PDFs are already downloaded in `data/raw/curriculum/บางเขน/`.
+260 PDFs are already downloaded in `data/native/curriculum/บางเขน/`.
 The ingest pipeline automatically falls back to vision OCR for scanned files.
 
 **Tested cost:** ~2 THB per 3 files → estimated ~170 THB total for all 260 PDFs.  
