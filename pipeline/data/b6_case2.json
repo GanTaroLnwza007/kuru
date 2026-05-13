@@ -1,15 +1,14 @@
 {
   "query": "What are the TCAS3 score requirements for Computer Engineering?",
-  "answer": "Hello there, น้อง! I can help you with that.\n\nFor the Computer Engineering program (วศ.บ. สาขาวิชาวิศวกรรมคอมพิวเตอร์) in TCAS Round 3, here are the score requirements I found:\n\n*   **Seats (quota):** 35\n*   **GPAX minimum:** None specified.\n*   **Exam criteria:**\n    *   A-Level: 45% weight\n    *   Applied Mathematics 1 (คณิตศาสตร์ประยุกต์ 1): 15% weight\n    *   Applied Science (วิทยาศาสตร์ประยุกต์): 15% weight\n    *   TGAT1 English Communication (TGAT1 การสื่อสารภาษาอังกฤษ): 20% weight\n\n(Source: 69-TCAS3-เกณฑ์การคัดเลือก-OK.xlsx)\n\nI hope this helps you with your application planning! Let me know if you have any other questions.",
+  "answer": "Hello there! I can help you with the TCAS admission requirements for Computer Engineering.\n\nFor **Computer Engineering (วศ.บ. สาขาวิชาวิศวกรรมคอมพิวเตอร์)** in TCAS Round 3, here's what I found:\n\n*   **Seats (quota):** 35\n*   **GPAX minimum:** None\n*   **Exam criteria:**\n    *   A-Level: 45%\n    *   Applied Mathematics 1: 15%\n    *   Applied Science: 15%\n    *   TGAT1 English Communication: 20%\n\n(Source: 69-TCAS3-เกณฑ์การคัดเลือก-OK.xlsx)\n\nI hope this helps you with your application plans! Let me know if you have any other questions.",
   "used_tcas_data": true,
   "debug_info": {
     "is_tcas_query": true,
-    "is_fee_query": false,
     "is_plo_query": false,
     "is_listing_query": false,
     "resolved_program_id": "bangkhen_ddf705a9",
-    "fetched": 15,
-    "above_threshold": 15,
+    "fetched": 25,
+    "above_threshold": 25,
     "threshold": 0.35,
     "raw_chunks": [
       {
@@ -101,18 +100,70 @@
         "section_type": "course",
         "similarity": 0.791,
         "content_preview": "ัฒนาซอฟต์แวร์ \n3(3-0-6) \n  \n(Managing Software Development) \n  \nวิชาที่ต้องเรียนมาก่อน : 01204341 \nหลักการด้านกระบวนการซ"
+      },
+      {
+        "source_file": "วศ.บ._วิศวกรรมเซมิคอนดักเตอร์_(Sandbox)_2568.pdf",
+        "section_type": "general",
+        "similarity": 0.821,
+        "content_preview": "Introduction to Mixed-Signal \nIntegrated Circuits Testing \n3 \nTechnical Elective \n3"
+      },
+      {
+        "source_file": "วศ.บ._วิศวกรรมเซมิคอนดักเตอร์_(Sandbox)_2568.pdf",
+        "section_type": "course",
+        "similarity": 0.815,
+        "content_preview": "Course \nCredit \nDesign of Radio-Frequency \nIntegrated Circuits \n3 \nAnalysis and Design of Digital \nIntegrated Circuits \n"
+      },
+      {
+        "source_file": "วศ.บ._วิศวกรรมเซมิคอนดักเตอร์_(Sandbox)_2568.pdf",
+        "section_type": "course",
+        "similarity": 0.815,
+        "content_preview": "Course \nCredit \nModel-Based Control System \nDesign \n3"
+      },
+      {
+        "source_file": "วศ.บ._วิศวกรรมเซมิคอนดักเตอร์_(Sandbox)_2568.pdf",
+        "section_type": "general",
+        "similarity": 0.81,
+        "content_preview": "Introduction to Integrated Circuit Fabrication\n3 (3-0-6) \n01239314 โครงสรางคอมพิวเตอร \nComputer Organization\n3 (3-0-6)"
+      },
+      {
+        "source_file": "วศ.บ._วิศวกรรมเซมิคอนดักเตอร์_(Sandbox)_2568.pdf",
+        "section_type": "general",
+        "similarity": 0.81,
+        "content_preview": "d><td>Electronic Material</td><td></td></tr><tr><td></td><td></td><td>Semiconductor Devices</td><td></td></tr></table>\n\n"
+      },
+      {
+        "source_file": "วศ.บ._วิศวกรรมเซมิคอนดักเตอร์_(Sandbox)_2568.pdf",
+        "section_type": "course",
+        "similarity": 0.808,
+        "content_preview": "Course \nCredit \nPrinciples of Communications \n3 \n  \n  \nSemiconductor Process \nTechnology \n3 \nหลักการสื่อสาร \nเทคโนโลยีขอ"
+      },
+      {
+        "source_file": "วศ.บ._วิศวกรรมเซมิคอนดักเตอร์_(Sandbox)_2568.pdf",
+        "section_type": "general",
+        "similarity": 0.807,
+        "content_preview": "ct I \n3 (0-9-0) \n01239499 โครงงานวิศวกรรมเซมิคอนดักเตอร II \nSemiconductor Engineering Project II \n3 (0-9-0) \n \nกลุมวิช"
+      },
+      {
+        "source_file": "วศ.บ._วิศวกรรมเซมิคอนดักเตอร์_(Sandbox)_2568.pdf",
+        "section_type": "course",
+        "similarity": 0.806,
+        "content_preview": "ข.  หมวดวิชาเฉพาะ \n \n \n \n \n109 \nหนวยกิต \nกลุมวิชาดานวิทยาศาสตรและคณิตศาสตร \n \n  27 \nหนวยกิต \n01205212 เทคนิคเชิงวิ"
+      },
+      {
+        "source_file": "วศ.บ._วิศวกรรมเซมิคอนดักเตอร์_(Sandbox)_2568.pdf",
+        "section_type": "course",
+        "similarity": 0.806,
+        "content_preview": "ข. หมวดวิชาเฉพาะ \n \n \n \n \n 109 หนวยกิต \nกลุมวิชาดานวิทยาศาสตรและคณิตศาสตร \n \n  27 \nหนวยกิต \n01205212 เทคนิคเชิงวิเ"
+      },
+      {
+        "source_file": "67BThai-10EnE-Regular สาขาวิชาวิศวกรรมสิ่งแวดล้อม (ปกติฅ ภาษาอังกฤษ).pdf",
+        "section_type": "course",
+        "similarity": 0.804,
+        "content_preview": "f General Chemistry) \n3(3-0-6) \n01417167    คณิตศาสตร์วิศวกรรม I \n                  (Engineering Mathematics I) \n3(3-0-6"
       }
     ],
-    "effective_program_id": "bangkhen_ddf705a9",
-    "tcas_records_found": 5,
+    "tcas_records_found": 15,
     "detected_round": "round3",
-    "rerank_terms": [
-      "tcas3",
-      "score",
-      "requirements",
-      "computer",
-      "engineering"
-    ],
     "chunks_used": [
       {
         "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
@@ -133,6 +184,26 @@
         "source_file": "67BThai-04CPE สาขาวิชาวิศวกรรมคอมพิวเตอร์ (ปกติ).pdf",
         "section_type": "general",
         "similarity": 0.791
+      },
+      {
+        "source_file": "วศ.บ._วิศวกรรมเซมิคอนดักเตอร์_(Sandbox)_2568.pdf",
+        "section_type": "general",
+        "similarity": 0.821
+      },
+      {
+        "source_file": "วศ.บ._วิศวกรรมเซมิคอนดักเตอร์_(Sandbox)_2568.pdf",
+        "section_type": "general",
+        "similarity": 0.81
+      },
+      {
+        "source_file": "วศ.บ._วิศวกรรมเซมิคอนดักเตอร์_(Sandbox)_2568.pdf",
+        "section_type": "general",
+        "similarity": 0.81
+      },
+      {
+        "source_file": "วศ.บ._วิศวกรรมเซมิคอนดักเตอร์_(Sandbox)_2568.pdf",
+        "section_type": "general",
+        "similarity": 0.807
       }
     ]
   }
