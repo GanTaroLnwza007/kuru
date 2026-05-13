@@ -250,5 +250,6 @@ pnpm-debug.log*
 pipeline/data/raw/
 pipeline/data/processed/
 pipeline/data/native/
+pipeline/data/scanned/
 pipeline/data/*.png
 pipeline/*.png

@@ -31,7 +31,7 @@ TARGET_FILES = [
     "ภ.บ._2569.pdf",                              # was FAIL (4,695 bloated chunks)
 ]
 
-base_dir = Path("data/native/curriculum")
+base_dir = Path("data/scanned/curriculum")
 docs: list[Path] = []
 for fname in TARGET_FILES:
     matches = list(base_dir.rglob(fname))

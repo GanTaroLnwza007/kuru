@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
-"""Copy 20 diverse registrar PDFs into a smaller native ingestion test folder."""
+"""Copy 20 diverse registrar PDFs into a smaller scanned ingestion test folder."""
 import shutil
 import sys
 from pathlib import Path
 
 sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
-source_base = Path("data/native/curriculum/บางเขน")
-sample_base = Path("data/native/curriculum-sample/บางเขน")
+source_base = Path("data/scanned/curriculum/บางเขน")
+sample_base = Path("data/scanned/curriculum-sample/บางเขน")
 
 already_copied = {
     "วศ.บ._วิศวกรรมไฟฟ้า_2565.pdf",
