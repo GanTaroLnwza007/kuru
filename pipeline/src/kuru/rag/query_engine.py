@@ -236,6 +236,56 @@ _COMPARISON_RE = re.compile(
     re.IGNORECASE,
 )
 
+
+_FOLLOWUP_PROGRAM_RE = re.compile(
+    r"\b(that|this|it|its|same)\s+program\b|\bthat\b|\bthis\b|\bits\b|โปรแกรมนี้|หลักสูตรนี้|สาขานี้|อันนี้",
+    re.IGNORECASE,
+)
+
+
+def _turns_by_role(conversation_history: list[dict], role: str) -> list[dict]:
+    return [turn for turn in conversation_history if turn.get("role") == role]
+
+
+def _resolve_program_from_history(
+    question: str,
+    conversation_history: list[dict] | None,
+    programs: list[dict],
+) -> str | None:
+    """Resolve follow-up references such as "that program" from prior turns."""
+    if not conversation_history or not _FOLLOWUP_PROGRAM_RE.search(question):
+        return None
+
+    recent_turns = conversation_history[-8:]
+
+    # Prefer the user's own previous questions. Assistant answers can contain course
+    # names such as "Software Engineering" that are not the active program.
+    for turn in reversed(_turns_by_role(recent_turns, "user")):
+        content = str(turn.get("content") or "")
+        if content.strip():
+            resolved = _resolve_program_from_query(content, programs)
+            if resolved:
+                return resolved
+
+    for turn in reversed(_turns_by_role(recent_turns, "assistant")):
+        content = str(turn.get("content") or "")
+        if not content.strip():
+            continue
+
+        # Strip course-list sections before program resolution. They often contain
+        # program-like course titles that are not the conversational subject.
+        subject_zone = re.split(
+            r"Core Course|Elective Course|Specialized|Some examples|subjects such as|courses like",
+            content,
+            maxsplit=1,
+            flags=re.IGNORECASE,
+        )[0]
+        resolved = _resolve_program_from_query(subject_zone, programs)
+        if resolved:
+            return resolved
+    return None
+
+
 def _resolve_extra_programs(question: str, programs: list[dict], exclude_id: str | None) -> list[str]:
     """Return up to 2 additional program IDs for comparison queries."""
     if not _COMPARISON_RE.search(question):
@@ -630,16 +680,30 @@ def query(
     structure_terms = _structure_search_terms(question)
     # Fetch a larger pool so re-ranking has enough material
     fetch_k = max(top_k * 3, 15)
-    all_chunks = db.similarity_search(client, q_embedding, top_k=fetch_k, program_id=program_id)
 
     # English program name resolution: if the user names a specific program in English,
     # do a targeted search filtered to that program_id and merge it to the front.
     # This fixes the case where English queries fail to retrieve Thai-named documents.
     resolved_program_id: str | None = None
-    all_programs_list: list[dict] = []
+    all_programs_list: list[dict] = db.get_programs(client) if not is_listing_query else []
     if not is_listing_query and not program_id:
-        all_programs_list = db.get_programs(client)
-        resolved_program_id = _resolve_program_from_query(question, all_programs_list)
+        resolved_program_id = _resolve_program_from_history(
+            question,
+            conversation_history,
+            all_programs_list,
+        )
+        if not resolved_program_id:
+            resolved_program_id = _resolve_program_from_query(question, all_programs_list)
+
+    search_program_id = program_id or resolved_program_id
+    all_chunks = db.similarity_search(
+        client,
+        q_embedding,
+        top_k=fetch_k,
+        program_id=search_program_id,
+    )
+
+    if not is_listing_query and not program_id:
         if resolved_program_id:
             targeted = db.similarity_search(
                 client, q_embedding, top_k=fetch_k, program_id=resolved_program_id
@@ -732,7 +796,7 @@ def query(
 
         # First try: DB-level keyword search against program_name_raw.
         # Each q_word is searched separately so every program keyword gets a slot.
-        if q_words:
+        if q_words and not tcas_records_raw:
             for w in q_words:
                 hits = db.get_tcas_records(client, program_name_search=w, limit=200)
                 if hits:
@@ -879,6 +943,7 @@ def query(
 
     # 5. Assemble context
     context_parts: list[str] = []
+    active_program_id = program_id or resolved_program_id
 
     # For broad "what programs exist" queries, prepend the programs registry
     if is_listing_query:
@@ -900,9 +965,17 @@ def query(
 
     # Prepend a coverage note when a specific program is identified, so the LLM
     # knows what the source document does and doesn't contain.
-    if resolved_program_id and all_programs_list:
-        prog = next((p for p in all_programs_list if p.get("id") == resolved_program_id), None)
+    if active_program_id and all_programs_list:
+        prog = next((p for p in all_programs_list if p.get("id") == active_program_id), None)
         if prog:
+            context_parts.append(
+                "[Active Program]\n"
+                f"program_id: {prog.get('id')}\n"
+                f"name_th: {prog.get('name_th') or ''}\n"
+                f"name_en: {prog.get('name_en') or ''}\n"
+                "Instruction: Answer the current follow-up only for this active program. "
+                "Do not switch to another program mentioned in prior assistant text or course titles."
+            )
             cov = prog.get("coverage") or {}
             notes: list[str] = []
             method = cov.get("extraction_method", "")

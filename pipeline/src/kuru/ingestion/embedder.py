@@ -32,6 +32,17 @@ def _get_model() -> SentenceTransformer:
     return _model
 
 
+def warm_up_model() -> None:
+    """Load the embedding model and run one tiny encode pass.
+
+    The first SentenceTransformer call may download/cache ~1.1 GB from Hugging
+    Face. Doing this during backend startup prevents the first user chat request
+    from paying that cold-start cost.
+    """
+    model = _get_model()
+    model.encode("query: warmup", normalize_embeddings=True, show_progress_bar=False)
+
+
 def _embed_batch(texts: list[str]) -> list[list[float]]:
     """Embed a batch of texts. multilingual-e5 wants a 'passage: ' prefix for documents."""
     prefixed = [f"passage: {t}" for t in texts]

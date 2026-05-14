@@ -27,7 +27,7 @@ The curriculum ingest path is:
 
 1. Run PyMuPDF on every PDF page.
 2. For low-yield pages, call Typhoon page OCR when `TYPHOON_API_KEY` is set.
-3. If the whole PDF has less than the scanned threshold after page extraction, mark all pages as scanned and call `ocr_extractor.extract_with_ocr()`.
+3. If the whole PDF has less than the scanned threshold after page extraction, mark all pages as scanned. The full scanned-PDF OCR implementation lives in `ocr_extractor.extract_with_ocr()`, but it is isolated and not called by the normal text extractor unless explicitly wired/invoked for a special run.
 4. Chunk the resulting text, embed locally with multilingual-e5, and upsert chunks to Supabase.
 5. Run structured extraction through Gemini text mode for program metadata, courses, PLOs, and coverage.
 6. If structured fields are still missing, run a targeted completion pass over the already-created section-tagged chunks (`plo`, `course`, `general`) before writing the `programs` row.
@@ -114,8 +114,9 @@ Going forward, normal ingestion should reduce these gaps because `kuru-ingest-mk
 ## Operational Guidance
 
 - Do not use `data/native/curriculum` for the scanned curriculum set; the local curriculum source tree is now `data/scanned/curriculum`.
-- To use direct Gemini full-document OCR, leave `OCR_MODEL=gemini-2.5-flash` or set it explicitly.
-- To route full-document OCR through OpenRouter, use a provider-prefixed value such as `OCR_MODEL=google/gemini-2.5-flash`.
+- Normal ingestion does not route every scanned/low-yield page to Gemini. It uses PyMuPDF first and Typhoon for low-yield pages when `TYPHOON_API_KEY` is set.
+- To use direct Gemini full-document OCR for a special scanned-PDF run, explicitly call/wire `ocr_extractor.extract_with_ocr()` with `OCR_MODEL=gemini-2.5-flash`.
+- To route that full-document OCR through OpenRouter, use a provider-prefixed value such as `OCR_MODEL=google/gemini-2.5-flash`.
 - Check Typhoon usage when `coverage.extraction_method` contains `typhoon_pages`.
 - For very large scans such as DVM, run a small targeted script or overnight job rather than mixing it into the main batch.
 - After any source swap or large re-ingest, re-run the cleanup/backfill scripts above and audit duplicate program names before evaluation.

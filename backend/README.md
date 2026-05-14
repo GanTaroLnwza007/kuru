@@ -26,6 +26,12 @@ Copy-Item .env.example .env
 
 `../pipeline` is required. Without this editable install, `kuru.rag.query_engine` is not importable and the chat endpoint falls back to a low-confidence stub.
 
+The backend warms up `intfloat/multilingual-e5-base` during FastAPI startup. This
+model is public, so a Hugging Face API key is not required. The first local or
+Railway startup may take longer while the ~1.1 GB model is downloaded and cached
+under the Hugging Face cache directory. Add `HUGGINGFACE_HUB_TOKEN` only if you
+switch to a private/gated Hugging Face model or hit anonymous download limits.
+
 Fill `backend/.env`:
 
 ```env
@@ -52,6 +58,19 @@ Health check:
 
 ```powershell
 curl http://localhost:8000/api/v1/health
+```
+
+Expected shape:
+
+```json
+{
+  "status": "ok",
+  "rag": {
+    "available": true,
+    "ready": true,
+    "error": null
+  }
+}
 ```
 
 ## B7 Example Request

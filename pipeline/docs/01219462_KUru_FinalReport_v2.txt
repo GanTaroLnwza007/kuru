@@ -1,0 +1,1681 @@
+﻿KASETSART UNIVERSITY
+Department of Computer Engineering, Faculty of Engineering
+
+
+FINAL PROJECT MANUSCRIPT
+01219462 — Software Engineering for AI-Enabled System
+Part A, Part B & Part C — Final Project Report
+Field
+	Value
+	Student Name(s)
+	Thanawat Tantijaroensin — 6610545294
+Phantawat Lueangsiriwattana — 6610545871
+	Project Title
+	KUru: KU Curriculum & PLO Navigator
+	Role Assignment
+	Thanawat Tantijaroensin — Data Scientist
+(embedding model, chunking strategy, RAG pipeline design, evaluation framework)
+Phantawat Lueangsiriwattana — Software Engineer
+(ingestion pipeline, FastAPI backend, Supabase schema, deployment)
+	GitHub Repository
+	https://github.com/GanTaroLnwza007/kuru
+Branch: feat/pipeline/rag-AI-Enaled
+	Dataset
+	https://drive.google.com/drive/folders/1zmvMNmCYyzxLHjJWfHfqH0Yzoa6ZDYWC
+	Submission Date
+	May 2026
+	
+
+⚠  Role assignment note: Part_A_report.md (primary) lists Thanawat = Data Scientist and Phantawat = Software Engineer. The root README.md reverses these roles. The authoritative assignment above follows Part_A_report.md.
+	
+
+________________
+
+
+  PART A — AI-Enabled System Design  
+
+
+1. Project Definition
+Task A1.1 — Project Title and Motivation
+Project Title
+KUru: KU Curriculum & PLO Navigator
+
+
+Problem Domain & Target Users
+Kasetsart University (KU) prospective students — high school leavers preparing for TCAS applications — need to query specific information about KU programs: credit requirements, course structure, Program Learning Outcomes (PLOs), and admission criteria. This information exists in official มคอ.2 curriculum documents: 20–100 page formal Thai-language PDFs, one per program. Students currently must read them manually. There is no searchable interface.
+
+
+Why AI/ML is Necessary (vs. Rule-Based Approach)
+* Vocabulary mismatch — students ask in colloquial Thai or English; PDFs use formal academic Thai terminology. Exact keyword matching cannot bridge this gap (e.g., "เรียนอะไรบ้าง" vs. "โครงสร้างหลักสูตร").
+* Cross-lingual retrieval — the student population queries in both Thai and English, but all curriculum documents are in Thai. A rule-based system has no mechanism for cross-language matching.
+* Synthesis across sections — questions like "What are the minimum credits for general education in Computer Engineering?" require combining a credit table, a section header, and program identity from different parts of the document. Keyword search returns fragments; an LLM synthesises them into a coherent answer.
+
+
+Expected Impact & Value
+Students can resolve curriculum and admission questions in under 5 seconds through natural language, without downloading or reading PDFs. This reduces the information barrier to informed TCAS program selection across the cleaned Bangkhen corpus of 57 KU program records.
+
+
+
+
+2. System Components Design
+Task A2.1 — System Objectives
+System goal: Enable KU prospective students to get accurate, grounded answers about curriculum content and TCAS admission requirements through natural language queries in Thai or English. Each objective below satisfies the MAC criteria (Measurable, Achievable, Communicable).
+
+
+Level
+	Metric
+	Target
+	How Measured
+	System goal
+	Good-answer rate (LLM-as-judge score ≥2 on 0–3 rubric)
+	≥ 80%
+	Offline current-chunk eval set (n=50)
+	System goal
+	End-to-end response latency p95
+	≤ 5,000 ms
+	FastAPI middleware per-request timing
+	Leading indicator
+	Retrieval hit rate
+	≥ 70%
+	Fraction of eval queries where correct chunk in top-k
+	Leading indicator
+	Programs queryable (chunk count > 0)
+	≥ 30 programs
+	Daily Supabase chunk count query
+	User outcome
+	Query resolved without follow-up
+	≥ 80% of rated answers
+	Thumbs-up rate in Supabase feedback table
+	Current status (v7 headline)
+	Good-answer rate
+	74% (2.26 / 3.0 avg)
+	50-question current-chunk eval set, targeted lexical rerank
+	Current status (v8 regression)
+	Good-answer rate — structured suite
+	72.7% (2.055 / 3.0 avg)
+	55-question structured fee/TCAS regression, MLflow run 8a47e44b
+	
+
+
+
+Task A2.2 — AI Component Design
+A2.2.1 — AI Problem Identification
+The system uses AI to solve two specific sub-problems:
+* Semantic retrieval across a multilingual document corpus — given a Thai or English question, find the most relevant passages from มคอ.2 PDFs across the cleaned 57-program corpus. This cannot be solved with keyword search alone due to vocabulary and language gaps.
+* Answer synthesis and grounding — given retrieved passages, generate a fluent, accurate answer that cites its sources and does not hallucinate beyond the provided context. This requires an LLM with a strict citation-grounded prompt.
+
+
+A2.2.2 — Goals, Indicators, Outcomes & Model Properties
+Property
+	Measure
+	Data Collection
+	Operationalization
+	Correctness (system goal)
+	LLM-as-judge score 0–3 per question
+	Run scripts/run_eval.py against 50-question current-chunk eval set
+	Score ≥2 = 'good answer'; target ≥80% of eval set
+	Retrieval hit rate (leading indicator)
+	Fraction of eval queries where ground-truth answer is in top-k chunks
+	Compare retrieved chunks against ground-truth answer in eval CSV
+	Hit if expected answer evidence appears in context; target ≥70%
+	User satisfaction (user outcome)
+	Thumbs-up / thumbs-down ratio
+	feedback table in Supabase, written on each user rating
+	Negative rate >30% triggers review of low-rated questions and source programs
+	Latency (system quality)
+	Time from query received to response returned (ms)
+	FastAPI middleware logs per-request timing
+	p95 ≤ 5,000ms; alert if p95 > 8,000ms
+	Coverage (system quality)
+	Number of programs with chunk_count > 100
+	Daily query: SELECT program_id, COUNT(*) FROM chunks GROUP BY program_id
+	Target ≥30 programs above threshold
+	Hallucination rate (model property)
+	Fraction of answers containing claims not in retrieved chunks
+	LLM-as-judge secondary prompt: 'Is this answer grounded in the passages?'
+	Target <10% hallucination rate
+	
+
+A2.2.3 — AI/ML Canvas
+Field
+	Detail
+	Prediction task
+	Given a natural language question (Thai/English) and optional program scope, retrieve relevant passage(s) from มคอ.2 curriculum documents and generate a grounded, cited answer
+	Input
+	User question text (Thai or English); optional program_id filter
+	Output
+	Generated answer text with inline source citations (source file + section type)
+	Corpus / Training data
+	13,910 cleaned document chunks from the Bangkhen corpus after duplicate cleanup: 57 program records. Chunking strategy and embedding model selection are the architecture decisions; chunk_size, overlap, top_k, MIN_SIMILARITY, and reranking rules are the hyperparameters tuned across experiments
+	Features
+	768-dimensional dense embeddings (intfloat/multilingual-e5-base) with asymmetric prefixes: 'passage:' for documents, 'query:' for queries
+	Model — Retriever
+	IVFFlat pgvector index, cosine similarity, probes=10, fetch 3×top_k, same-program keyword fallback, and targeted lexical reranking for structure/PLO/TCAS-style questions
+	Model — Generator
+	Google Gemini 2.5 Flash Lite through OpenRouter; strict citation-grounded prompt; response-language policy: Thai for Thai/mixed queries, English for English-only
+	Hyperparameters
+	chunk_size=2000 chars, overlap=200 chars, top_k=5, MIN_SIMILARITY=0.35, IVFFlat probes=10, fetch_multiplier=3
+	Evaluation metric
+	LLM-as-judge score (0–3 scale), good-answer rate (score ≥2), split by question type (admission / curriculum / PLO / general)
+	Offline evaluation
+	50-question synthetic eval set generated from actual Supabase chunks; 20-question fixed-seed (seed=42) sample per MLflow run
+	Online feedback
+	Thumbs up/down → feedback table → review low-rated questions and map source programs for re-ingestion
+	Known limitations
+	Dense table rows difficult to retrieve exactly; OCR-corrupted course titles create noisy questions; DVM program has interrupted chunk retry (0 chunks); กำแพงแสน / ศรีราชา campuses not yet represented
+	
+
+ℹ  No AI/ML Canvas diagram image file exists in the repository (pipeline/docs/figures/ contains only data/evaluation charts). The canvas is documented in the table above.
+	
+
+A2.2.4 — Risk Analysis for AI Component Failure
+Top-level undesired event: User receives a wrong or unhelpful answer.
+
+
+a)  REQ / ENV / SPEC Risk Specification
+Risk Type
+	Description
+	Likelihood
+	Impact
+	REQ
+	Program not ingested — no chunks exist in DB for this program
+	High
+	High
+	REQ
+	Retrieved chunks lack sufficient detail — sparse program coverage (<100 chunks; TCAS booklet used instead of full มคอ.2)
+	High
+	High
+	REQ
+	Tabular data not in chunk text — credit tables extracted as fragmented cell text by PyMuPDF, losing row/column structure
+	Medium
+	High
+	SPEC
+	Query-document vocabulary mismatch — embedding space gap between colloquial question and formal academic document text
+	Medium
+	High
+	SPEC
+	program_id not resolved — wrong program's chunks retrieved because name_th is ambiguous or missing
+	Medium
+	High
+	SPEC
+	LLM hallucination — model generates claims beyond retrieved context
+	Low
+	Critical
+	SPEC
+	Empty-result guard not triggered — chunks list non-empty but irrelevant; LLM hallucinates from wrong context
+	Low
+	Critical
+	ENV
+	TCAS records missing — query routed to tcas_records table but no records exist for this program/round
+	Medium
+	High
+	
+
+b)  Fault Tree Analysis (FTA) & Minimum Cut Sets
+  
+
+	
+
+Minimum Cut Sets identified:
+MCS
+	Cut Set
+	Category
+	Mitigation Implemented
+	MCS-1
+	Program not ingested
+	REQ
+	Ingestion pipeline with chunk-count monitoring; programs with <50 chunks flagged for re-ingestion
+	MCS-2
+	program_id resolution failure
+	SPEC
+	Token-based name matching on name_th + name_en; program_id passed explicitly in eval
+	MCS-3
+	LLM hallucination
+	SPEC
+	System prompt: 'only answer using information from the provided passages'; no-LLM guard when context is empty
+	MCS-4
+	No empty-result guard
+	SPEC
+	if not chunks and not tcas_records: return hardcoded Thai no-data message — LLM never called
+	MCS-5
+	Tabular data loss
+	REQ
+	Identified in v6/v7 stress cases; proposed fix: table-aware chunking with PyMuPDF find_tables() — NOT YET IMPLEMENTED
+	
+
+c)  Mitigation Strategies
+Failure / Cut Set
+	Mitigation Strategy
+	Status
+	MCS-1: Program not ingested
+	Re-ingestion pipeline uses PyMuPDF first, Typhoon OCR for low-yield pages, and explicit Gemini full-PDF OCR only for special scanned-PDF runs; daily chunk-count monitoring alert at <50 chunks
+	Implemented
+	MCS-2: program_id resolution failure
+	Token-based name matching on name_th + name_en fields; same-program keyword fallback in retrieval
+	Implemented
+	MCS-3: LLM hallucination
+	Strict system prompt + citation-grounded prompt; no-LLM guard; RAGAS/LLM-as-judge hallucination monitoring
+	Implemented
+	MCS-4: No empty-result guard
+	Hard short-circuit: return fixed Thai no-data message before calling LLM when chunks=0 and tcas_records=0
+	Implemented
+	MCS-5: Tabular data loss
+	Table-aware chunking with PyMuPDF find_tables(); structure/assessment/policy section tags
+	Proposed — not yet implemented
+	
+
+
+
+Task A2.3 — User Interaction Design (Intelligence Experiences)
+A2.3.1 — User Interaction Experience
+Intelligence presentation type: Automation with inline transparency.
+The system uses full automation — the user types a question and receives a generated answer without any intermediate steps or manual review. This is appropriate because the target users (prospective students) expect a conversational interface, response latency ≤5s makes automation viable, and the risk of a wrong answer is low-stakes.
+
+
+Element
+	Design Decision
+	Rationale
+	Answer text
+	Direct prose answer in the user's query language (Thai or English)
+	Matches conversational expectation; no raw chunk dumps
+	Source citations
+	Inline badges showing source filename and section type after each claim
+	Allows user to verify; reduces blind trust in generated text
+	Confidence signal
+	API returns confidence_level (high/medium/low) derived from top chunk cosine similarity
+	Honest uncertainty > hallucinated confidence
+	No-data guard
+	If no relevant chunks found, system returns fixed Thai 'ขออภัย ไม่พบข้อมูล' message; LLM not called
+	Prevents hallucination entirely when data is absent
+	Feedback
+	Thumbs up / thumbs down below each response via POST /api/v1/chat/feedback
+	Simple, low-friction; actionable monitoring signal
+	What is NOT shown to users: raw chunk text, cosine similarity scores, program_id, embedding vectors — these are internal pipeline details.
+
+
+A2.3.2 — Model Deployment Location
+Hybrid deployment: local embedding + cloud LLM.
+Component
+	Location
+	Justification
+	Embedding model
+(intfloat/multilingual-e5-base, 768-dim)
+	Local — backend server
+	Gemini embedding API has 1,000 req/day free quota — far too low for production. Local inference costs ~50ms per query with no rate constraint
+	Vector index
+(pgvector IVFFlat, 13,910 cleaned chunks)
+	Cloud — Supabase managed PostgreSQL
+	Managed scaling, persistent storage; sub-200ms search across cleaned corpus
+	LLM generator
+(Gemini 2.5 Flash Lite)
+	Cloud — OpenRouter
+	State-of-the-art Thai language generation; pay-per-token; stateless per call
+	Backend API (FastAPI, Python 3.11)
+	Backend server / cloud-ready host
+	Co-located with local embedding to avoid second network round trip
+	Frontend (Next.js App Router)
+	Web app / cloud-ready host
+	Decoupled from backend; deployable behind CDN
+	
+
+A2.3.3 — Beyond Accuracy: Additional Considerations
+Consideration
+	Design Decision
+	Target / Threshold
+	Justification
+	Prediction Speed / Latency
+	Local embedding + cloud LLM
+	p95 ≤ 5,000ms
+(embed ~50ms + pgvector ~100ms + Gemini ~2–4s)
+Alert: p95 > 8,000ms
+	Students expect near-instant response; >10s abandonment is high. Gemini dominates latency; local embedding avoids adding a second ~500ms API call
+	Model Size
+	multilingual-e5-base (278M params, ~1.1GB on disk)
+	≤ 1.2 GB on disk
+	Chosen over e5-large (560M params) — half the memory footprint; sufficient retrieval quality for Thai/English mixed queries
+	Throughput / Concurrency
+	Stateless query pipeline; no session state
+	50 RPM (OpenRouter Gemini tier ceiling)
+	Stateless design enables horizontal scaling: multiple FastAPI instances share the same Supabase vector store without coordination
+	Cost
+	Local embedding = $0/query; Gemini Flash Lite via OpenRouter < $0.01 per typical query
+	< $0.01/query
+	For a student-facing advisory tool, cost per query must be near-zero to be viable without per-user charging
+	Multilingual Robustness
+	multilingual-e5 trained on 100+ languages including Thai
+	Cross-lingual cosine sim > 0.85 for Thai/English paraphrases
+	Retrieval quality on Thai-English mixed queries confirmed empirically; Thai-only models lack English cross-lingual capability
+	
+
+A2.3.4 — Model Composition (Sequential Pipeline — 2 AI Components)
+Stage
+	Component
+	Input
+	Output
+	Failure Mode
+	1
+	intfloat/multilingual-e5-base
+(Dense Retriever — bi-encoder)
+	Raw question text
+(prefixed 'query:')
+	768-dim normalized embedding vector
+	Model fails to load → pipeline aborts (no fallback)
+	—
+	pgvector IVFFlat cosine search
+(deterministic, non-ML)
+	Embedding vector
+	Top-24 candidate chunks
+	DB unavailable → 500 error
+	—
+	PyThaiNLP token overlap re-ranker
+(deterministic heuristic, non-ML)
+	Top-24 chunks + query tokens
+	Top-5 re-ranked chunks (PLO/structure boosted)
+	Gracefully degrades to raw similarity order
+	2
+	Gemini 2.5 Flash Lite via OpenRouter
+(Answer Generator — LLM)
+	Top-5 chunks (plain text) + original question + system prompt
+	Grounded answer with citations
+	OpenRouter unavailable → 'service temporarily unavailable'
+	Composition pattern: Sequential (pipeline). Guard between components: if Component 1 returns zero chunks AND zero TCAS records, Component 2 is NOT called — hardcoded no-data message returned instead. No parallel composition — the re-ranker is deterministic, not an ML model.
+
+
+
+
+Task A2.4 — Feedback Collection and Model Monitoring
+Feedback Mechanism
+Each generated response includes a thumbs up / thumbs down rating button. On click, the following record is written to the feedback table in Supabase via POST /api/v1/chat/feedback:
+feedback(
+  id          UUID PRIMARY KEY,
+  session_id  TEXT,
+  question    TEXT,
+  answer      TEXT,
+  rating      SMALLINT,  -- +1 (thumbs up) or -1 (thumbs down)
+  created_at  TIMESTAMPTZ
+)
+
+
+Monitoring Metrics & Tools
+Metric
+	Tool
+	Alert Threshold
+	Frequency
+	Negative feedback rate per program
+	Daily Supabase query aggregating feedback table
+	> 30% negative → inspect low-rated questions and source programs
+	Daily
+	Good-answer rate (offline LLM-as-judge)
+	scripts/run_eval.py — Gemini 2.5 Flash Lite judge
+	< 60% good answers (score ≥ 2 of 3)
+	Per major pipeline change
+	Empty-result (no-data guard) rate
+	Application logs: count no-data responses / total queries
+	> 20% → corpus coverage gap; ingest more programs
+	Weekly
+	Response latency p95
+	FastAPI middleware per-request timing log
+	p95 > 8,000ms → investigate embedding or OpenRouter latency
+	Real-time
+	Chunk count per program
+	Supabase: SELECT program_id, COUNT(*) FROM chunks GROUP BY program_id
+	< 50 chunks → flag as low-coverage
+	Weekly
+	
+
+Feedback → Retraining Pipeline
+For a RAG pipeline, re-ingestion is the functional equivalent of model retraining — updating the indexed vector store with better-extracted chunks directly improves retrieval quality without changing model weights. The pipeline is triggered manually (not automated CI/CD):
+1. User thumbs-down accumulates in Supabase feedback table.
+2. Daily aggregation: programs where negative_rate > 30% are queued for re-ingestion.
+3. If chunk_count < 100: re-ingest full มคอ.2 PDF using PyMuPDF first, Typhoon OCR for low-yield pages, and explicit Gemini full-PDF OCR only for special scanned-PDF runs.
+4. If chunk_count ≥ 100: investigate chunking quality (tabular extraction, section boundary detection).
+5. Run VACUUM ANALYZE on chunks table → rebuild IVFFlat index.
+6. Re-run eval set for affected programs → compare before/after score → log in eval_results.md.
+
+
+Eval Set Iteration History
+Iteration
+	Avg Score
+	Good (≥2)
+	Key Change
+	v1 baseline
+	1.30 / 3.0
+	40%
+	No program_id scoping; decontextualised eval questions
+	v2 (query fix)
+	1.85 / 3.0
+	65%
+	program_id scoping + program-named questions in eval set
+	v3 (re-ingest)
+	1.80 / 3.0
+	65%
+	Full มคอ.2 PDFs (10× more chunks for engineering programs)
+	v4 (cleanup diagnostic)
+	1.34 / 3.0
+	46%
+	Invalid benchmark — 14 eval rows used stale program IDs removed by duplicate cleanup
+	v5 (ID remap + retrieval fix)
+	2.02 / 3.0
+	64%
+	Remapped cleanup IDs; added curriculum-structure retrieval fixes
+	v6 (fresh current chunks)
+	2.04 / 3.0
+	70%
+	Regenerated eval set from current chunks after cleanup
+	v7 (targeted lexical rerank)
+	2.26 / 3.0
+	74%
+	Added targeted reranking; filtered OCR-corrupted generated questions
+	v7 stress (filtered)
+	1.92 / 3.0
+	62%
+	Harder filtered stress set — not a same-set regression
+	v8 (fee/TCAS regression)
+	2.055 / 3.0
+	72.7%
+	Added structured fee and TCAS regression questions; MLflow run 8a47e44b
+	
+
+
+
+________________
+
+
+  PART B — Proof-of-Concept ML Model Implementation  
+All Jupyter notebooks, MLflow artifacts, and screenshots are submitted via the GitHub repository (branch: feat/pipeline/rag-AI-Enaled). Content below is sourced directly from the notebooks, eval_results.md, and pipeline docs.
+
+
+Task B-1 — Input Data Description and Exploration
+Dataset Overview
+Field
+	Value
+	Dataset Name / Source
+	มคอ.2 (TQF2) curriculum PDFs — official KU program specifications, scraped from https://registrar.ku.ac.th/cur/all (~270 public PDF links for Bangkhen).
+Secondary: TCAS Round 1 & Round 3 admission PDFs/XLSX. Google Drive: https://drive.google.com/drive/folders/1zmvMNmCYyzxLHjJWfHfqH0Yzoa6ZDYWC
+	Total Chunks (cleaned)
+	13,910 chunks after duplicate cleanup
+	Programs
+	69 in database → 57 Bangkhen program records after duplicate cleanup;
+66 programs had chunks at notebook run time (pre-cleanup)
+	TCAS Records
+	2,524 structured records (1,463 Round 1 + 1,061 Round 3)
+	Target Variable
+	None — RAG system with no classification label. Retrieval correctness (correct chunk in top-k) and LLM-as-judge score (0–3) are the evaluation targets.
+	Train / Val / Test Split
+	Not applicable. All 13,910 chunks form the indexed knowledge base. Evaluation uses 50-question synthetic eval set (data/eval_set_v6_current_chunks.csv); 20-question fixed-seed sample (seed=42) per MLflow run.
+	Sensitive Data
+	None — all source material is official public KU curriculum and admission information. No demographic data, no PII.
+	
+
+section_type Distribution
+section_type
+	Count
+	Percentage
+	general
+	10,219
+	73.5% (includes overview, objectives, structure)
+	course
+	4,938
+	35.5% (course descriptions, prerequisites, credits)
+	plo
+	2,592
+	18.6% (Program Learning Outcomes — sparse in engineering faculties)
+	admission
+	278
+	2.0% (TCAS criteria chunks)
+	
+
+
+
+⚠  Counts above reflect the notebook's exploratory snapshot (pre-cleanup). Sum (17,027) exceeds cleaned total (13,910) — notebook was run before or during the duplicate cleanup process.
+	
+
+
+
+Feature Descriptions (chunks table)
+Feature Name
+	Data Type
+	Range / Categories
+	Description
+	id
+	UUID
+	Auto-generated
+	Primary key
+	program_id
+	TEXT
+	~57 distinct values (e.g., bangkhen_ddf705a9)
+	Foreign key to programs table
+	section_type
+	TEXT
+	{general, course, plo, admission}
+	Document section classification — used for retrieval routing and re-ranking boosts
+	source_file
+	TEXT
+	~200 filenames
+	Source PDF filename — used for citation badges
+	content
+	TEXT
+	1–2,000 chars
+	Chunk text (character-based chunking with 200-char overlap)
+	embedding
+	VECTOR(768)
+	float32, cosine-normalized
+	intfloat/multilingual-e5-base output — used for pgvector similarity search
+	created_at
+	TIMESTAMPTZ
+	Apr–May 2026
+	Ingestion timestamp
+	content_len (derived)
+	INT
+	computed
+	Character length of content field
+	
+
+Key Distribution Insights
+* Avg chunk length: ~888 chars; Median: ~402 chars — right-skewed distribution. Large table chunks (~5,000 chars) from course prerequisite tables pull the mean upward.
+* Coverage quality distribution: poor (<50 chunks): 17 programs; sparse (50–100): 7 programs; adequate (100–300): 23 programs; rich (>300): 19 programs. ~42 of 66 programs have ≥100 chunks.
+* PLO coverage gap: PLO sections absent from ~60% of programs — especially engineering faculties that submitted compact course-catalog format without a dedicated PLO chapter.
+* OCR failure rate: ~25% on scanned PDFs. Normal re-ingestion uses PyMuPDF first and Typhoon OCR for low-yield scanned/image pages; full Gemini OCR is an explicit special-run option for difficult fully scanned PDFs.
+* DVM program (bangkhen_vet_9ea52f52): 870-page PDF; retry was interrupted after clearing old chunks. Currently 0 chunks — requires dedicated re-ingest run.
+* Total text ingested: ~16.01 M characters across all chunks.
+
+
+Large-Scale Data Strategy
+Not applicable at current scale. 13,910 chunks fit entirely in Supabase with a standard pgvector IVFFlat index (lists configurable, probes=10). Pagination is used during data loading (1,000 rows per page). Cleanup scripts (cleanup_program_duplicates.py, backfill_program_metadata.py) are run after any re-ingest. VACUUM ANALYZE is run after large re-ingestion. If corpus grows beyond ~50,000 chunks, index type would migrate from IVFFlat to HNSW for better recall at higher cardinality.
+
+
+Sensitive Features & Fairness Handling
+Sensitive Feature
+	Potential Bias Risk
+	Handling Approach
+	No traditional PII attributes (age, gender, ethnicity) in corpus
+	N/A for demographic fairness
+	All source material is official public KU curriculum documents. No student identity data ingested.
+	Program coverage imbalance (17/66 programs < 50 chunks)
+	Under-served programs receive lower-quality answers — students interested in those programs are disadvantaged
+	Programs with <50 chunks flagged for re-ingestion priority. Coverage quality categories tracked and reported.
+	section_type imbalance (PLO: 18.6% of chunks)
+	PLO-related questions structurally under-served relative to general and course questions
+	PLO queries activate is_plo_query boost in re-ranking (+5 score bonus) to surface PLO-tagged chunks. When no PLO data exists, system inserts honest coverage note.
+	Language bias (all documents in Thai)
+	Non-Thai or English-only queries may receive lower-quality retrieval
+	multilingual-e5-base handles Thai/English code-switching. Both name_th and name_en indexed in program resolver.
+	
+
+Figures Generated (B1 notebook)
+Filename
+	Location
+	Content
+	B1_section_distribution.png
+	pipeline/docs/figures/
+	Pie chart of chunks by section type; bar chart by degree level
+	B1_chunks_per_program.png
+	pipeline/docs/figures/
+	Horizontal bar chart of chunk count per program with 100-chunk threshold line
+	B1_chunk_lengths.png
+	pipeline/docs/figures/
+	Histogram of chunk length distribution + boxplot by section type
+	B1_coverage_heatmap.png
+	pipeline/docs/figures/
+	Heatmap of section-type chunk counts per bachelor program
+	B1_ingestion_timeline.png
+	pipeline/docs/figures/
+	Bar + cumulative line chart of chunks added by ingestion date
+	
+
+
+
+Task B-2 — Model Training Implementation
+Data Preprocessing (all steps in order)
+7. Load eval CSV (data/eval_set_v2.csv, 50 rows); validate required columns: question, ground_truth_answer, question_type, program_id, section_type.
+8. Fill missing values: question_type → 'unknown', section_type → 'unknown', program_id → ''.
+9. Encode question_type as integer label: 0=admission, 1=curriculum, 2=general, 3=plo.
+10. Sample 20 questions with fixed seed (RANDOM_SEED=42, SAMPLE_SIZE=20) for MLflow runs.
+11. PDF text extraction — PyMuPDF page.get_text() first; low-yield pages route to Typhoon OCR when `TYPHOON_API_KEY` is available; full Gemini OCR is isolated for explicit scanned-PDF runs.
+12. Character-based chunking — 2,000-char chunks, 200-char overlap, section-boundary aware.
+13. Section type classification — deterministic regex: TCAS/GPAX keywords → admission; PLO headers → plo; course code pattern → course; fallback → general.
+14. Embedding — intfloat/multilingual-e5-base; docs prefixed 'passage:', queries prefixed 'query:'; 768-dim float32, cosine-normalized.
+15. Indexing — bulk insert into Supabase pgvector; VACUUM ANALYZE; IVFFlat index with probes=10.
+
+
+Model Architecture & Hyperparameters
+Model type: RAG pipeline — dense retriever (bi-encoder) + LLM generator. Not a discriminative classifier; no weights are trained or fine-tuned. The hyperparameters below govern the retrieval and generation stages.
+Hyperparameter / Setting
+	Value
+	Rationale
+	chunk_size
+	2,000 characters
+	Balances context richness with embedding quality; too-large chunks dilute the embedding signal
+	chunk_overlap
+	200 characters
+	Prevents information loss at chunk boundaries
+	embed_dim
+	768
+	Fixed by multilingual-e5-base architecture
+	embed_prefix_doc
+	passage:
+	Required asymmetric prefix for document encoding
+	embed_prefix_query
+	query:
+	Required asymmetric prefix for query encoding
+	index_type
+	IVFFlat
+	Sufficient at current scale (~13K chunks); HNSW planned for >50K
+	index_probes
+	10
+	Balances recall vs. query latency
+	fetch_multiplier
+	3 (fetches 3×top_k candidates)
+	Ensures re-ranker has enough candidates to surface PLO and admission chunks
+	top_k (production)
+	5
+	Selected via MLflow experimentation
+	min_similarity
+	0.35
+	Minimum cosine similarity threshold for context inclusion
+	generator_model
+	google/gemini-2.5-flash-lite
+	Best Thai generation quality at pay-per-token pricing via OpenRouter
+	temperature
+	0.2
+	Low temperature for factual, grounded answers
+	max_conversation_history
+	5 turns
+	Limits context window usage for multi-turn sessions
+	
+
+MLflow Experiment Runs (Retrieval Configuration Comparison)
+Experiment: kuru-rag-hyperparameter-search | MLflow version: 3.12.0 | DB: sqlite:///pipeline/mlflow.db
+Run Name
+	top_k
+	min_similarity
+	Avg Score
+	% Good (≥2)
+	Score 3
+	Score 2
+	Score 1
+	Score 0
+	Run ID
+	baseline
+	5
+	0.35
+	1.75
+	65.0%
+	8
+	5
+	1
+	6
+	a1f18e3e15dd4a45b92ed2d5587d5f66
+	wider_retrieval
+	8
+	0.30
+	1.85
+	65.0%
+	9
+	4
+	2
+	5
+	ee4cb640650e441286b81f36d824c234
+	strict_threshold
+	5
+	0.45
+	1.80
+	65.0%
+	9
+	4
+	1
+	6
+	dc5a79aa2a7f482f86b4aeb0c4c90478
+	
+
+Final Results (v7 Headline + v8 Regression — from eval_results.md)
+Metric
+	v7 Headline (n=50)
+	v8 Structured Regression (n=55)
+	Run name
+	latest_submission_headline_v7_rerank_74pct
+	v8_structured_tcas_fees
+	MLflow Run ID
+	(backfilled run)
+	8a47e44b6c034bbcb83f697ecfdfe603
+	Average score
+	2.26 / 3.0
+	2.055 / 3.0
+	Good answers (score ≥ 2)
+	74%
+	72.7%
+	Score distribution
+	3=30, 2=7, 1=9, 0=4
+	3=26, 2=14, 1=7, 0=8
+	Curriculum avg
+	2.23 (n=30)
+	2.029 (n=34)
+	Admission avg
+	2.09 (n=11)
+	2.091 (n=11)
+	PLO avg
+	2.40 (n=5)
+	2.000 (n=3)
+	General avg
+	2.75 (n=4)
+	—
+	Fee avg
+	—
+	2.500 (n=2)
+	TCAS avg
+	—
+	2.000 (n=3)
+	API cost
+	~$0.0197
+	~$0.0228
+	Target (≥ 80%)
+	Not yet met (74%)
+	Not yet met (72.7%)
+	
+
+Note: RAGAS framework metrics were NOT used. The custom LLM-as-judge rubric was chosen because it directly grades Thai/English KU-specific correctness, structured TCAS/fee evidence, and missing-data behavior — capabilities not covered by standard RAGAS metrics.
+
+
+Figures Generated (B2 notebook)
+Filename
+	Location
+	Content
+	B2_experiment_comparison.png
+	pipeline/docs/figures/
+	Bar charts comparing avg_score and % good answers across 3 MLflow experiments
+	B2_score_distribution.png
+	pipeline/docs/figures/
+	Stacked bar chart of score distribution (0/1/2/3) per experiment
+	B2_score_by_qtype.png
+	pipeline/docs/figures/
+	Avg score by question type (curriculum/admission) per experiment
+	
+
+
+
+Task B-3 — Model Fairness Analysis
+Applicability Statement
+This is not demographic fairness — the dataset contains no protected demographic attributes (age, gender, ethnicity, socioeconomic status). All source material is official public KU curriculum and admission information. The relevant fairness axis is coverage disparity: programs or section types with sparse, OCR-noisy, or table-heavy chunks receive worse answers than well-covered programs. The B3 analysis measures whether the RAG system performs equally across section types and programs.
+
+
+Sources of Bias
+Source
+	Description
+	Magnitude
+	Coverage imbalance across programs
+	17/66 programs have <50 chunks; most-indexed program has 1,299 chunks — a 100× disparity. Students querying under-represented programs receive lower-quality answers.
+	High — affects ~26% of programs
+	section_type imbalance (PLO: 18.6%)
+	PLO content is structurally under-served. PLO questions are the most educationally valuable query type but appear in only 18.6% of chunks.
+	Structural — affects all PLO queries
+	OCR quality variance (~25% failure)
+	Scanned PDFs produce artifacts; some programs have near-zero extractable text after OCR, giving them effectively zero knowledge base.
+	High — affects programs with scanned-only มคอ.2 PDFs
+	Language bias (all documents in Thai)
+	English program name translations vary in quality and completeness.
+	Moderate — may disadvantage English-only queries
+	Chunking boundary bias
+	Credit and course tables fragmented across chunk boundaries, splitting related information.
+	Low-moderate — affects course-structure questions across all programs uniformly
+	
+
+Fairness Metrics
+Metric
+	Formula
+	Value
+	Acceptable?
+	Coefficient of Variation (CV) by section_type
+	σ(avg_score per section) / μ(avg_score)
+	0.394 (moderate; range 0.20–0.40)
+	Borderline — PLO boost required
+	Avg score — general sections
+	Mean LLM-as-judge score on general-type eval questions
+	3.0 / 3.0 (n=2, baseline run)
+	Yes
+	Avg score — course sections
+	Mean LLM-as-judge score on course-type eval questions
+	1.7 / 3.0 (n=10, baseline run)
+	No — under-served
+	Avg score — admission sections
+	Mean LLM-as-judge score on admission-type eval questions
+	1.5 / 3.0 (n=8, baseline run)
+	Borderline
+	Avg score — PLO sections (v7)
+	Mean LLM-as-judge score on PLO-type eval questions
+	2.40 / 3.0 (n=5, v7 run)
+	Improving with PLO boost
+	
+
+Bias Mitigation Approaches
+* Re-ingestion priority queue: programs with <50 chunks flagged in data/coverage_report.md and queued for PyMuPDF + Typhoon low-yield page OCR, with explicit Gemini full-PDF OCR reserved for difficult fully scanned PDFs.
+* PLO query boosting: when is_plo_query=True detected, re-ranker applies +5 score bonus to PLO-tagged chunks over general chunks of similar cosine similarity.
+* Honest coverage notes: when no PLO data exists for a queried program, system injects a Thai-language coverage note into the prompt rather than allowing hallucination.
+* Campus scope guard: under-served campuses (กำแพงแสน, ศรีราชา) documented as out-of-scope with hard no-data guard message.
+* Language-neutral retrieval: multilingual-e5-base encodes Thai and English queries in the same embedding space; both name_th and name_en indexed in program resolver.
+Fairness figure: pipeline/docs/figures/B3_fairness_heatmap.png — avg score by section type and experiment across all 3 MLflow runs.
+
+
+
+
+Task B-4 — Model Versioning and Experimentation
+Experiment Setup
+Item
+	Value
+	MLflow version
+	3.12.0 (confirmed in B2 notebook output)
+	Experiment name
+	kuru-rag-hyperparameter-search
+	SQLite DB path
+	pipeline/mlflow.db (opened as sqlite:///mlflow.db from pipeline/ directory)
+	Fixed params across all runs
+	embed_model=intfloat/multilingual-e5-base, generator=google/gemini-2.5-flash-lite,
+chunk_size=2000, chunk_overlap=200, index_probes=10, fetch_multiplier=3
+	
+
+All MLflow Runs — Retrieval Configuration Comparison (B2 notebook)
+Run Name
+	top_k
+	min_similarity
+	avg_score
+	pct_good
+	avg_curriculum
+	avg_admission
+	Run ID
+	baseline
+	5
+	0.35
+	1.75
+	65.0%
+	—
+	—
+	a1f18e3e15dd4a45b92ed2d5587d5f66
+	wider_retrieval
+	8
+	0.30
+	1.85
+	65.0%
+	—
+	—
+	ee4cb640650e441286b81f36d824c234
+	strict_threshold
+	5
+	0.45
+	1.80
+	65.0%
+	—
+	—
+	dc5a79aa2a7f482f86b4aeb0c4c90478
+	
+
+Backfilled Historical Eval Runs (scripts/log_eval_results_to_mlflow.py)
+Run Name
+	Eval Set
+	avg_score
+	pct_good
+	v1_baseline_unscoped
+	data/eval_set.csv
+	1.30
+	40%
+	v2_program_named_eval
+	data/eval_set_v2.csv
+	1.85
+	65%
+	v3_full_pdf_reingest
+	data/eval_set_v2.csv
+	1.80
+	65%
+	v4_ingestion_cleanup
+	data/eval_set_v2.csv
+	1.34
+	46%
+	v5_remap_retrieval_fix
+	data/eval_set_v3_after_cleanup.csv
+	2.02
+	64%
+	latest_submission_headline_v7_rerank_74pct
+	data/eval_set_v6_current_chunks.csv
+	2.26
+	74%
+	v7_filtered_rerank_stress
+	data/eval_set_v7_filtered_current_chunks.csv
+	1.92
+	62%
+	v8_structured_tcas_fees
+	data/eval_set_v8_structured.csv
+	2.055
+	72.7%
+	
+
+Final Model Selection Justification
+Selected model: v8 structured RAG (run name: v8_structured_tcas_fees, MLflow run ID: 8a47e44b6c034bbcb83f697ecfdfe603).
+Rationale: v8 is selected for deployment because it combines the v7 targeted lexical rerank retrieval path with TCAS relinking, structured fee grounding, and Thai/English response-policy fixes needed for real frontend use. It is the most representative benchmark of real user behavior (curriculum + TCAS + fee + PLO questions). The headline v7 benchmark (74%) uses only the clean current-chunk eval set; v8's broader scope (72.7%) reflects the harder real-use regression cases including the negative SKE fee case that previously hallucinated Accountancy tuition. The v8 fee and TCAS slices pass at ≥2.0 avg score — the critical threshold for factual admission guidance.
+
+
+MLflow Screenshots
+Filename
+	Location
+	Content
+	B4_mlflow_experiments_list.png
+	pipeline/screenshots/mlflow/
+	Experiment list / full run table showing all runs in kuru-rag-hyperparameter-search
+	B4_mlflow_metrics_comparison.png
+	pipeline/screenshots/mlflow/
+	Metrics comparison charts across all runs (avg_score, pct_good)
+	B4_mlflow_run_overview.png
+	pipeline/screenshots/mlflow/
+	Headline run overview — latest_submission_headline_v7_rerank_74pct detail page
+	B4_mlflow_artifacts.png
+	pipeline/screenshots/mlflow/
+	Artifacts tab of the headline run showing logged eval result CSV
+	
+
+  
+
+	
+
+  
+
+	
+
+
+
+Task B-5 — Model Explainability
+Explainability Methods Used
+Traditional SHAP and LIME are not directly applicable to a generative retrieval pipeline. Six RAG-native explainability techniques are implemented in the B5 notebook:
+Method
+	RAG Equivalent
+	Implementation
+	Query-type flag analysis
+	Decision rule trace
+	Regex-based flags (is_tcas_query, is_plo_query, is_listing_query) shown per query
+	Retrieval funnel
+	Data flow + filter log
+	Fetched → above_threshold → used_in_context counts per case
+	Chunk contribution chart
+	SHAP bar chart
+	Cosine similarity score per retrieved chunk, colour-coded by section_type
+	Token importance via embedding ablation
+	SHAP token attribution
+	Leave-one-out: importance(t) = 1 − cos(full_embedding, ablated_embedding)
+	Source attribution
+	Prediction explanation
+	Per-source-file chunk count and avg similarity
+	Hyperparameter sensitivity
+	Global model explanation
+	Delta-from-baseline and score-distribution shift across B2 MLflow runs
+	
+
+Token Importance Table — All Cases
+Case 1 — Curriculum: "What courses will I take in Computer Engineering?"
+Rank
+	Token
+	Importance (1 − cosine)
+	1
+	Engineering
+	0.0821
+	2
+	Computer
+	0.0743
+	3
+	courses
+	0.0512
+	4
+	take
+	0.0187
+	5
+	will
+	0.0073
+	6
+	I
+	0.0041
+	7
+	What
+	0.0038
+	8
+	in
+	0.0022
+	
+
+Case 2 — TCAS: "What are the TCAS3 score requirements for Computer Engineering?"
+Rank
+	Token
+	Importance (1 − cosine)
+	1
+	TCAS3
+	0.1142
+	2
+	requirements
+	0.0834
+	3
+	Computer
+	0.0712
+	4
+	Engineering
+	0.0698
+	5
+	score
+	0.0643
+	6
+	are
+	0.0089
+	7
+	What
+	0.0071
+	8
+	the
+	0.0034
+	9
+	for
+	0.0028
+	
+
+Case 3 — PLO (Thai): "หลักสูตรวิศวกรรมโยธา-ชลประทาน มี PLO อะไรบ้าง"
+Rank
+	Token
+	Importance (1 − cosine)
+	1
+	วิศวกรรมโยธา
+	0.1387
+	2
+	ชลประทาน
+	0.1204
+	3
+	PLO
+	0.0978
+	4
+	หลักสูตร
+	0.0621
+	5
+	มี
+	0.0143
+	6
+	อะไรบ้าง
+	0.0089
+	
+
+Domain Interpretation
+* Program name is the most powerful retrieval signal. 'Engineering' (0.0821) and 'Computer' (0.0743) in Case 1; 'วิศวกรรมโยธา' (0.1387) and 'ชลประทาน' (0.1204) in Case 3. In all three cases, recognising the program name focused the search on the correct program's documents.
+* 'TCAS3' token dominates the embedding direction (importance 0.1142, highest across all cases), confirming that round-aware retrieval correctly prioritises round3 records over round1 records.
+* 'วิศวกรรมโยธา' and 'ชลประทาน' together achieve the highest individual token importance (0.139 and 0.120), reflecting how both compound parts together distinguish Civil Engineering - Irrigation from plain Civil Engineering.
+* Confidence is uniformly HIGH across all three cases because the program was successfully resolved. When resolution fails, similarity typically drops below 0.50.
+* Targeted lexical reranking was more impactful for the current production model than simply widening the retrieval window (wider_retrieval top_k=8 vs. production top_k=5).
+* Admission queries are consistently harder than curriculum queries across all experiments — reflecting the heterogeneous format of TCAS PDFs.
+
+
+
+
+Task B-6 — Prediction Reasoning
+Reasoning Mechanism
+Multi-stage explainability: token importance (embedding ablation) + retrieval funnel + chunk contribution chart + plain-language narrative. For each query, the output includes: (1) which query-type flags activated, (2) how many chunks were fetched/filtered/used, (3) top contributing chunks with similarity scores, and (4) a plain-language explanation of why the answer was constructed as it was.
+
+
+Case 1 — Curriculum Query (English)
+Field
+	Detail
+	Input (exact)
+	"What courses will I take in Computer Engineering?"
+	Program resolved
+	bangkhen_ddf705a9 (Computer Engineering, via English substring matching)
+	Flags activated
+	is_tcas_query=False, is_plo_query=False, is_listing_query=False
+	Retrieval
+	Fetched=15, Above threshold (0.35)=12, Used in context=5; top chunk similarity=0.724
+	Prediction (first 300 chars)
+	"Great news — I found quite a bit of information about the Computer Engineering curriculum! Here's what I know... The Computer Engineering program at Kasetsart University (Bangkhen) covers a strong foundation in both theory and practice. In your first two years, you'll build fundamentals in: Mathematics (Calculus, Linear Algebra, Discrete Math)"
+	Confidence level
+	HIGH (top similarity 0.724 ≥ 0.65)
+	Top 3 tokens
+	1. Engineering: 0.0821
+2. Computer: 0.0743
+3. courses: 0.0512
+	Plain-language explanation
+	"The system recognised 'Computer Engineering' in your question and focused its search on that program's documents only. No special routing was needed — standard curriculum search. Of 15 candidate passages retrieved, 3 were too weakly related (similarity <0.35) and discarded. The top 5 passages were sent to the AI. The most relevant passage came from 'วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf' (similarity: 0.724). Confidence level: HIGH."
+	
+
+Case 2 — TCAS Admission + Round Detection (English)
+Field
+	Detail
+	Input (exact)
+	"What are the TCAS3 score requirements for Computer Engineering?"
+	Program resolved
+	bangkhen_ddf705a9 (Computer Engineering)
+	Flags activated
+	is_tcas_query=True, detected_round=round3; 3 'course'-type chunks removed from context to prevent prerequisite hallucination
+	Retrieval
+	Fetched=15, Above threshold=9, Used in context=3; tcas_records_found=5 structured records from tcas_records table
+	Prediction (first 300 chars)
+	"Here's what I found for TCAS Round 3 (Direct Admission) for Computer Engineering at KU Bangkhen! Round 3 — Direct Admission (รับตรงร่วมกัน): Seats available: 30, GPAX minimum: 2.75, Required exams: TGAT (Thai General Aptitude Test) + TPAT3 (Science & Technology), Score weights: TGAT 30%, TPAT3 70%"
+	Confidence level
+	HIGH (top similarity 0.681 ≥ 0.65)
+	Top 3 tokens
+	1. TCAS3: 0.1142
+2. requirements: 0.0834
+3. Computer: 0.0712
+	Plain-language explanation
+	"The system recognised 'Computer Engineering' and focused on that program. Your question was recognised as an admission/TCAS query (detected round: round3). The system fetched 5 structured admission records from the database. Curriculum course chunks were excluded to avoid confusion. Of 15 candidate passages, 6 were too weakly related and discarded. Most relevant passage: 'วิศวกรรมคอมพิวเตอร์_bangkhen_mko2.pdf' (similarity: 0.681). Confidence level: HIGH."
+	
+
+Case 3 — PLO Query (Thai)
+Field
+	Detail
+	Input (exact)
+	"หลักสูตรวิศวกรรมโยธา-ชลประทาน มี PLO อะไรบ้าง"
+	Program resolved
+	bangkhen_civil_irr_a3b9 (Civil Engineering - Irrigation, via Thai token matching: 'วิศวกรรมโยธา' + 'ชลประทาน' ≥4 chars)
+	Flags activated
+	is_plo_query=True (PLO section-type chunks receive +5 re-ranking boost)
+	Retrieval
+	Fetched=15, Above threshold=8, Used in context=5; top chunk similarity=0.791
+	Prediction (first 300 chars)
+	"ผมพบข้อมูล PLO ของหลักสูตรวิศวกรรมโยธา-ชลประทานครับ! ผลลัพธ์การเรียนรู้ที่คาดหวัง (PLOs) — PLO1: ความรู้ด้านคณิตศาสตร์ วิทยาศาสตร์ และวิศวกรรมพื้นฐาน เพื่อนำไปใช้แก้ปัญหาวิศวกรรมได้ PLO2: สามารถออกแบบ วิเคราะห์ และแก้ปัญหาทางวิศวกรรมโยธาและชลประทานที่ซับซ้อนได้"
+	Confidence level
+	HIGH (top similarity 0.791 ≥ 0.65)
+	Top 3 tokens
+	1. วิศวกรรมโยธา: 0.1387
+2. ชลประทาน: 0.1204
+3. PLO: 0.0978
+	Plain-language explanation
+	"The system recognised the program via Thai token matching ('วิศวกรรมโยธา', 'ชลประทาน') and focused on that program's documents. Your question was recognised as a PLO (learning outcomes) query — sections labelled 'plo' were ranked higher. Of 15 candidate passages, 7 were too weakly related and discarded. Most relevant passage: 'วิศวกรรมโยธา-ชลประทาน_bangkhen_mko2.pdf' (similarity: 0.791). Confidence level: HIGH."
+	
+
+
+
+  
+  
+  
+  
+
+	
+
+Task B-7 — Model Deployment as a Service
+Framework & Versions
+Component
+	Version / Detail
+	Framework
+	FastAPI ≥0.115.0, Uvicorn ≥0.32.0 (with standard extras)
+	Python
+	3.11 (MLmodel artifact) / 3.12-compatible (backend pyproject.toml)
+	Pydantic
+	≥2.9.0 with pydantic-settings ≥2.6.0
+	Supabase client
+	≥2.10.0
+	MLflow
+	≥2.14.0 (pipeline); 3.12.0 confirmed in notebook output
+	Base URL
+	http://localhost:8000/api/v1
+	Model artifact
+	backend/mlartifacts/MLmodel + pipeline_config.json
+	
+
+API Endpoint Documentation
+Method
+	Path
+	Request Format
+	Response
+	Description
+	GET
+	/api/v1/health
+	None
+	{"status": "ok"}
+	Health check
+	POST
+	/api/v1/chat
+	ChatRequest JSON
+	ChatResponse JSON
+	Submit question to RAG pipeline
+	POST
+	/api/v1/chat/feedback
+	FeedbackRequest JSON
+	{"ok": true}
+	Submit thumbs-up/down rating
+	GET
+	/api/v1/programs/search
+	Query params: q, faculty, limit
+	ProgramSearchResult JSON
+	Search and list programs
+	GET
+	/api/v1/programs/{identifier}
+	Path param: program hash or slug
+	ProgramDetail JSON
+	Program detail — PLOs + TCAS rounds
+	
+
+POST /api/v1/chat — Request Schema (ChatRequest):
+{
+  "message":              string   (required, max 2000 chars — Thai or English question)
+  "program_context_id":   string?  (optional — pre-seed retrieval to a specific program)
+  "session_id":           string?  (optional UUID — auto-generated if omitted)
+  "conversation_history": [{"role": "user|assistant", "content": "string"}]  (last ≤5 turns)
+}
+
+
+POST /api/v1/chat — Response Schema (ChatResponse):
+{
+  "data": {
+    "answer":           string   — grounded Thai or English answer from Gemini
+    "session_id":       string   — UUID echoed back (auto-generated if not provided)
+    "confidence_level": "high" | "medium" | "low"
+                                  (≥0.5 → high, ≥0.35 → medium, else low)
+    "sources": [{
+      "source_file":   string   — source PDF filename
+      "section_type":  string   — "course"|"plo"|"admission"|"general"
+      "similarity":    float    — cosine similarity score (0.0–1.0)
+    }]
+    "used_tcas_data":  boolean  — whether structured TCAS records were injected
+  },
+  "sources": [],
+  "error":  null | string
+}
+
+
+POST /api/v1/chat/feedback — Request Schema:
+{
+  "session_id":  string   (required)
+  "question":   string   (required)
+  "answer":     string   (required)
+  "rating":     integer  (1 = helpful, -1 = not helpful)
+}
+Response: 200 OK → {"ok": true}
+
+
+HTTP Error Specifications
+Status
+	Trigger
+	Response Body
+	200 OK
+	Successful request
+	{"data": {...}, "error": null}
+	404 Not Found
+	GET /programs/{id} — program not in DB
+	{"data": null, "sources": [], "error": "Program not found"}
+	422 Unprocessable Entity
+	Missing required field (e.g. message)
+	Pydantic default: {"detail": [{"msg": "field required", "loc": ["body", "message"]}]}
+	500 Internal Server Error
+	Supabase or OpenRouter unreachable
+	{"data": null, "error": "DB connection failed"}
+	
+
+Deployment Validation — Example Request/Response
+All 4 scenarios validated in B7 notebook (Scenarios 1–3 live or pre-recorded; Scenario 4 = feedback submission):
+Scenario
+	Status
+	confidence_level
+	used_tcas_data
+	sources
+	Pass
+	Scenario 1 — Curriculum (English)
+	200 OK
+	high
+	False
+	5 chunks
+	✓
+	Scenario 2 — TCAS + round detection
+	200 OK
+	high
+	True
+	3 chunks
+	✓
+	Scenario 3 — PLO query (Thai)
+	200 OK
+	high
+	False
+	5 chunks
+	✓
+	Feedback submission
+	200 OK
+	N/A
+	N/A
+	—
+	✓
+	
+
+Example curl (Scenario 1):
+curl -X POST http://localhost:8000/api/v1/chat \
+  -H "Content-Type: application/json" \
+  -d '{"message":"What courses will I take in Computer Engineering?",
+       "session_id":"b7-test-session-001","conversation_history":[]}'
+
+
+Scalability Considerations
+Concern
+	Current State
+	Scaling Path
+	Horizontal scaling
+	Stateless API — multiple FastAPI instances share Supabase pgvector without coordination
+	Load balancer (Railway / AWS ALB); Railway autoscaling rule: scale when CPU >70% for >60s
+	Embedding model
+	Loaded once per worker at startup (1.1 GB). ~10 concurrent requests before queuing.
+	Dedicated Triton Inference Server or vLLM if embedding becomes bottleneck
+	Response caching
+	Not yet implemented. High cache-hit potential for common TCAS queries.
+	Redis cache keyed on hash(question + program_id), TTL=1 hour; est. 40–60% hit rate during peak TCAS season
+	Batching
+	Single query per request. Batch eval uses asyncio.gather() in eval scripts.
+	Expose batch endpoint (/api/v1/chat/batch) for counselor bulk-query use cases
+	Rate limiting
+	Not yet implemented at API layer. OpenRouter ceiling: ~60 RPM.
+	slowapi token-bucket middleware capped at 50 RPM per IP
+	Vector DB scaling
+	Supabase pgvector at ~13K chunks — query latency ~100ms with IVFFlat (probes=10)
+	Migrate from IVFFlat to HNSW index if chunks exceed ~50K
+	
+
+
+
+________________
+
+
+  PART C — UI-Model Interface  
+
+
+Task C-1 — UI Design
+⚠  No dedicated C1 UI design document or mockup image files exist in the repository (pipeline/docs/figures/ contains only data/evaluation charts). C1 is reconstructed from Part_A_report.md (A2.3.1), README.md, and backend/README.md.
+	
+
+Application Screens
+Screen
+	Description
+	Landing / Home
+	Entry point with program discovery and navigation to Chat, Explore, and RIASEC flows
+	Chat page
+	/chat — conversational RAG interface; users type questions in Thai or English; answers appear as prose chat bubbles with source citation badges
+	Program Explorer
+	Program cards with TCAS round UI; integrates with GET /api/v1/programs/search and GET /api/v1/programs/{id}
+	RIASEC flow
+	Personality-based program recommendation; multi-step questionnaire
+	Portfolio flow
+	Additional screens for portfolio-based Round 1 applicants
+	
+
+How AI Predictions are Presented
+* Answer text rendered as direct prose in the user's query language (Thai for Thai/mixed queries; English for English-only queries).
+* Source citation badges (source_file + section_type) displayed inline after factual claims, allowing verification.
+* confidence_level badge (high / medium / low) shown on each response, derived from top chunk cosine similarity.
+* used_tcas_data indicator informs the user when structured TCAS records were used rather than curriculum text.
+* Fixed Thai no-data message ('ขออภัย ไม่พบข้อมูลเกี่ยวกับหลักสูตรนี้ในฐานข้อมูลของเรา') returned when empty-result guard triggers — LLM is not called.
+User Feedback
+Thumbs up / thumbs down buttons below each response. Single click — no form required. Writes rating (+1 or -1) to the Supabase feedback table via POST /api/v1/chat/feedback.
+
+
+
+
+Task C-2 — UI-Model Interface Design
+Sequence Diagram — End-to-End Flow (UI → API → Model → UI)
+The following Mermaid source is from pipeline/docs/C2_interface_contract.md:
+sequenceDiagram
+    actor User
+    participant FE as Frontend (Next.js)
+    participant API as FastAPI /api/v1
+    participant RAG as RAG Engine
+    participant DB as Supabase pgvector
+    participant LLM as Gemini (OpenRouter)
+
+
+    Note over User,LLM: CHAT FLOW
+    User->>FE: types question
+    FE->>API: POST /chat (ChatRequest)
+    API->>API: Pydantic validate
+    API->>RAG: query(question, program_id, history)
+    RAG->>RAG: embed query (multilingual-e5)
+    RAG->>DB: match_chunks RPC (vector, top_k=5)
+    DB-->>RAG: chunks + similarity scores
+    opt TCAS query detected
+        RAG->>DB: get_tcas_records(program, round)
+        DB-->>RAG: structured TCAS records
+    end
+    RAG->>RAG: rerank + filter (min_sim=0.35)
+    RAG->>LLM: chat.completions (context + question)
+    LLM-->>RAG: generated answer
+    RAG-->>API: RAGResult(answer, sources, used_tcas)
+    API->>API: compute confidence_level
+    API-->>FE: 200 ChatResponse JSON
+    FE->>FE: render answer + confidence badge + sources
+    FE-->>User: answer displayed
+
+
+    Note over User,LLM: FEEDBACK FLOW
+    User->>FE: thumbs up / down
+    FE->>API: POST /chat/feedback (FeedbackRequest)
+    API->>DB: INSERT INTO feedback
+    DB-->>API: ok
+    API-->>FE: 200 {"ok": true}
+
+
+    Note over User,LLM: ERROR CASES
+    FE->>API: POST /chat (missing message field)
+    API-->>FE: 422 Unprocessable Entity
+    FE->>API: POST /chat (DB unavailable)
+    API->>RAG: query(...)
+    RAG->>DB: match_chunks RPC
+    DB-->>RAG: connection error
+    API-->>FE: 500 Internal Server Error
+
+
+GET /api/v1/programs/search — Query Parameters
+Parameter
+	Type
+	Default
+	Description
+	q
+	string
+	""
+	Search string (matches Thai or English name)
+	faculty
+	string | null
+	null
+	Filter by faculty name
+	limit
+	integer
+	100
+	Max results (1–200)
+	
+
+GET /api/v1/programs/search — Response Schema (ProgramSummary)
+Field
+	Type
+	Description
+	id
+	string
+	Hash-based primary key
+	slug
+	string
+	URL-friendly identifier
+	name_th
+	string
+	Program name in Thai
+	name_en
+	string
+	Program name in English
+	faculty_th
+	string
+	Faculty name in Thai
+	faculty_en
+	string
+	Faculty name in English
+	degree
+	string
+	Degree type
+	campus
+	string
+	Campus name
+	match_score
+	float
+	Relevance score (0.0–1.0)
+	year_by_year_vibe
+	string
+	Thai summary of year-by-year experience
+	
+
+GET /api/v1/programs/{identifier} — Extended Fields (ProgramDetail)
+Field
+	Type
+	Description
+	plos
+	PloItem[]
+	[{"code": "PLO1", "description_th": "..."}]
+	tcas_rounds
+	TcasRound[]
+	[{"round": "round3", "quota": 30, "min_score": 2.75}]
+	
+
+
+
+Task C-3 — Interface Testing
+Testing Approach
+Manual black-box testing against the live FastAPI backend at http://localhost:8000. All requests are POST /api/v1/chat with Content-Type: application/json. Three scenarios cover the three main pipeline branches: curriculum retrieval, TCAS round detection, and unknown program (no-data guard).
+
+
+Scenario 1 — Normal Curriculum Query
+Goal: Verify that a plain curriculum question returns a grounded answer with confidence_level 'high' or 'medium' and at least one source chunk.
+POST /api/v1/chat
+{
+  "message": "What courses will I take in Computer Engineering?",
+  "program_context_id": null,
+  "session_id": null,
+  "conversation_history": []
+}
+#
+	Assertion
+	Expected
+	Actual Result
+	1
+	HTTP status
+	200
+	✓ 200 OK
+	2
+	data.confidence_level
+	'high' or 'medium'
+	✓ 'high'
+	3
+	data.sources length
+	≥ 1
+	✓ 5 chunks
+	4
+	data.used_tcas_data
+	false
+	✓ False
+	5
+	data.answer
+	non-empty string
+	✓ Pass
+	6
+	data.session_id
+	valid UUID string
+	✓ Pass
+	7
+	error field
+	null
+	✓ null
+	Overall: PASS — confirmed in B7 notebook output.
+
+
+Scenario 2 — TCAS Round Query (expects used_tcas_data: true)
+Goal: Verify that a TCAS admission question triggers structured TCAS record lookup and returns used_tcas_data: true.
+POST /api/v1/chat
+{
+  "message": "What are the TCAS3 score requirements for Computer Engineering?",
+  "program_context_id": null,
+  "session_id": null,
+  "conversation_history": []
+}
+#
+	Assertion
+	Expected
+	Actual Result
+	1
+	HTTP status
+	200
+	✓ 200 OK
+	2
+	data.used_tcas_data
+	true
+	✓ True
+	3
+	data.sources length
+	≥ 1
+	✓ 3 chunks
+	4
+	data.confidence_level
+	'high' or 'medium'
+	✓ 'high'
+	5
+	data.answer
+	non-empty string
+	✓ Pass
+	6
+	error field
+	null
+	✓ null
+	Overall: PASS — confirmed in B7 notebook output.
+
+
+Scenario 3 — Unknown Program (expects low confidence / no-data message)
+Goal: Verify that a query about a non-existent program returns confidence_level: 'low' and an honest no-data message — not a hallucinated answer.
+POST /api/v1/chat
+{
+  "message": "What are the admission requirements for the Quantum Robotics Engineering program?",
+  "program_context_id": null,
+  "session_id": null,
+  "conversation_history": []
+}
+#
+	Assertion
+	Expected
+	Actual Result
+	1
+	HTTP status
+	200
+	⚠ Not executed live (C3 doc defines expected behavior only)
+	2
+	data.confidence_level
+	'low'
+	Expected: 'low'
+	3
+	data.used_tcas_data
+	false
+	Expected: False
+	4
+	data.answer
+	Non-empty Thai no-data message
+	Expected: 'ขออภัย ไม่พบข้อมูล...'
+	5
+	data.answer does NOT contain invented specifics
+	No fabricated scores or course names
+	Guard: if not chunks and not tcas_records → hardcoded message; LLM not called
+	6
+	error field
+	null
+	Expected: null
+	
+
+⚠  Scenario 3 was not executed live in the B7 notebook. C3_interface_testing.md defines the expected behavior and guard logic, but no recorded actual result exists. The no-LLM short-circuit guard is implemented in code: if chunks=0 and tcas_records=0, system returns hardcoded Thai message without calling Gemini.
+	Challenges and Resolutions
+Challenge
+	Root Cause
+	Resolution
+	RAG not wired in backend stub
+	When kuru pipeline package not installed, chat.py returns stub (confidence_level='low', empty sources)
+	Detectable by checking data.sources==[] — requires uv run kuru-ingest-mko for บางเขน first
+	TCAS keyword detection edge cases
+	Phrases like 'apply knowledge' or 'qualify for' can trigger TCAS regex on curriculum queries
+	Unit tests added for TCAS_KEYWORDS regex covering edge cases; secondary round validator cross-checks detected_round against available records
+	Low similarity for sparse programs
+	Programs with few chunks may score below 0.35 min_similarity → confidence='low' even for valid questions
+	Programs flagged for re-ingestion when <50 chunks; normal re-ingest uses PyMuPDF + Typhoon low-yield page OCR, with explicit Gemini full-PDF OCR reserved for special scanned-PDF runs
+	
+
+
+
+
+
+AI Usage Disclosure
+AI Tool
+	Usage in This Project
+	GitHub Copilot
+	Boilerplate FastAPI endpoint definitions, pytest fixtures, and JavaScript/TypeScript component scaffolding. All generated code reviewed and understood by the team.
+	Claude (Anthropic)
+	Report writing assistance, grammar and clarity improvements, structured documentation prompts, submission audit against manuscript criteria, and final project report compilation. All technical content verified against codebase.
+	Gemini 2.5 Flash Lite
+	(1) RAG answer generator in the live KUru system via OpenRouter. (2) LLM-as-judge in the offline evaluation pipeline (pipeline/scripts/run_eval.py), scoring answers 0–3 on the custom rubric. This is an integral part of the system and experiment workflow.
+	All architectural decisions, evaluation design, pipeline implementation, data ingestion, and hyperparameter choices were made by the team. All submitted code has been reviewed and can be explained by the team members.

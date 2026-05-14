@@ -1,0 +1,124 @@
+KUru
+MVP Evaluation Plan
+Recommendation System — MVP Scope
+Thanawat Tantijaroensin 6610545294  |  Phantawat Luengsiriwattana 6610545871
+Department of Computer Engineering, Faculty of Engineering, Kasetsart University
+1. Purpose
+This document defines the evaluation plan for KUru's MVP recommendation system. It specifies which use cases are in scope for the current development phase, which have been explicitly cut and why, the quantitative and qualitative metrics used to assess each in-scope feature, the methodology for constructing the evaluation test set, and the phased timeline for conducting evaluations.
+This plan is the single reference for what constitutes a passing MVP. Features not listed as in scope should not be evaluated or built in the current phase.
+2. MVP Feature Scope
+The table below summarises all use cases from the SRS, their inclusion status in the MVP, and the evaluation method applied. Green rows are fully in scope. Yellow rows are partially in scope with explicit capability boundaries. Red rows are cut from the MVP and deferred to Phase 2.
+2.1 Partial Scope Boundaries
+UC-03 — PLO Chart
+In scope as a static PLO bar or radar chart displayed on the program detail page, showing the skill profile a program develops. The student interest profile overlay is out of scope because it requires a populated RIASEC vector from UC-01 to be available at render time, which creates a dependency on the full recommendation pipeline being wired end-to-end. The overlay is deferred to Phase 2.
+UC-05 — TCAS Admission Guide
+In scope only as: (1) the TCAS section on each program detail page, drawing from the 2,524 ingested TCAS records in Supabase; and (2) TCAS Q&A handled by the KUru Advisor chatbot (UC-04). The standalone filterable TCAS guide page with cross-faculty comparison is out of scope for the MVP.
+3. Features Explicitly Cut from MVP
+The following use cases are explicitly excluded from the MVP scope. They must not be treated as gaps during evaluation. Each entry includes the reason for deferral and the condition that must be met before Phase 2 implementation begins.
+4. Evaluation Metrics
+KUru's MVP is evaluated across two categories: automated quantitative metrics applied to the AI pipelines, and human-centred qualitative metrics applied via user testing. All targets are taken directly from the SRS Section 4.3.3 unless otherwise noted.
+4.1 MRR and NDCG@5 — Recommendation Ranking Quality
+Mean Reciprocal Rank (MRR) measures where the first correct program appears in the ranked output. For a profile whose correct program appears at rank 1, the reciprocal rank is 1.0; at rank 2 it is 0.5; at rank 5 it is 0.2. MRR is the mean of these values across all test profiles. A target of MRR > 0.60 means the correct program appears within the top 2 results on average.
+NDCG@5 (Normalised Discounted Cumulative Gain at rank 5) penalises correct programs that appear lower in the list more heavily than those at the top. It is reported alongside MRR to capture cases where MRR is high but lower-ranked results are poor.
+Both metrics are computed on the manually curated test set described in Section 5. Because Pipeline B2 is the only signal in the simplified MVP (Neo4j Pipeline B1 is not yet populated), the baseline comparison is a keyword-only ilike search, not the full two-pipeline system described in the SRS.
+4.2 RAGAS — RAG Pipeline Quality
+The RAGAS framework provides automated evaluation of the retrieval-augmented generation pipeline without requiring human annotation of every answer. Two metrics are used:
+Faithfulness measures whether every claim in a generated answer or explanation can be traced back to a retrieved มคอ.2 chunk. A faithfulness score of 1.0 means every claim is grounded; 0.0 means all claims are hallucinated. Target: > 0.80.
+Answer Relevancy measures the semantic similarity between the generated answer and the original question, penalising off-topic or incomplete responses. Target: > 0.75.
+RAGAS is applied to UC-04 (chatbot answers) and UC-08 (recommendation explanations) independently. Both use the same pgvector corpus and Gemini 2.5 Flash generation model, so a shared faithfulness baseline is expected.
+4.3 SUS Score and Task Completion Rate
+The System Usability Scale (SUS) is a 10-item Likert questionnaire administered after each user testing session. Scores range from 0 to 100. A score above 70 is considered acceptable; above 85 is excellent. The target of SUS > 70 applies across all MVP features collectively.
+Task completion rate is measured specifically for UC-01: the percentage of test participants who complete all 12 steps of the RIASEC elicitation without abandoning the flow. A target of > 80% completion indicates the interface is accessible to the high school student audience.
+5. Evaluation Test Set
+Automated metrics (MRR, NDCG@5, RAGAS) require a curated test set. The test set is constructed manually by the development team before the evaluation sprint and validated by the project advisor or senior SKE students.
+5.1 Profile Construction Guidelines
+Each synthetic profile must represent a distinct, realistic RIASEC type combination. The following distribution is recommended to cover the space of KU faculties:
+High R + I: Engineering faculties (CPE, ME, EE)
+High I + A: Architecture, Design
+High S + E: Business, Education
+High C + E: Accounting, Finance
+High I + C: Science, Statistics
+Mixed profiles (no dominant type): used to test robustness of the ranking under ambiguity
+Profiles with a dealbreaker filter applied (one dimension zeroed out) must be included to verify that the filter correctly suppresses programs dependent on that dimension.
+5.2 Ground Truth Validation
+Ground-truth program matches are validated by at least one of the following:
+The project advisor (Aj. Jitti Niramitranon), who has domain knowledge of KU program content
+Senior SKE students (Year 3 or Year 4) who have direct experience of KU program selection
+Cross-reference with the program's PLO keywords in the ingested มคอ.2 corpus
+A profile is included in the final test set only when the ground-truth match has been confirmed by at least one validator. Disputed profiles are excluded.
+6. Evaluation Timeline
+Evaluations are conducted in five phases aligned with the build order defined in the project schedule. Each phase produces a concrete output that feeds into the next.
+Phase 5 (User Testing) is the final gate before project submission. All automated metric targets must be met before user testing sessions are scheduled, so that participants interact with a system that has already passed its quantitative thresholds.
+7. MVP Pass / Fail Criteria
+The MVP is considered passing if ALL of the following conditions are met simultaneously:
+If any single condition is not met, the relevant feature is flagged for remediation before final submission. The project report must include the actual scores for all six conditions alongside the targets.
+8. Out-of-Scope Statement
+The following capabilities are explicitly not evaluated in the MVP and must not appear in the evaluation report as gaps or missing features:
+UC-06 Career Explorer — O*NET matching and career card display
+UC-07 Behavioural Blending — alpha mechanism and interaction log-based re-ranking
+UC-10 Program Comparison View — side-by-side comparison of pinned programs
+UC-11 Curriculum Timeline Visualiser — year-by-year course structure display
+UC-12 Portfolio Readiness Checker — document upload and gap analysis
+Neo4j Pipeline B1 — PLO graph-based curriculum matching (schema exists, population deferred)
+PLO spider chart student profile overlay — static PLO chart only, no RIASEC vector overlay
+Standalone TCAS guide page — TCAS data accessible via chatbot and program detail page only
+Saved Profile Dashboard — requires persistent login and session management
+TCAS Deadline Tracker — requires persistent login and push notification infrastructure
+Collaborative filtering across users — deferred pending sufficient interaction log data
+KUru — MVP Evaluation Plan  |  Department of Computer Engineering, Kasetsart University  |  Academic Year 2568
+
+[TABLE 1]
+Use Case || Feature || MVP Status || Evaluation Method
+UC-01 || Interest Discovery (RIASEC Elicitation) || IN SCOPE || Completion Rate, SUS Score
+UC-02 || Program Recommendation Engine (simplified, Pipeline B2 only) || IN SCOPE || MRR > 0.60, NDCG@5
+UC-04 || KUru Advisor Chatbot (RAG) || IN SCOPE || RAGAS Faithfulness > 0.80, Answer Relevancy > 0.75
+UC-08 || Recommendation Explanation ("Why this program?") || IN SCOPE || RAGAS Faithfulness > 0.80, SUS Qualitative
+UC-09 || Semantic Program Search || IN SCOPE || SUS Score > 70
+UC-03 || PLO Chart (static, no student overlay) || PARTIAL || SUS Qualitative
+UC-05 || TCAS Admission Guide (detail page + chatbot only) || PARTIAL || RAGAS, SUS Qualitative
+UC-06 || Career Explorer (O*NET matching) || CUT — Phase 2 || —
+UC-07 || Behavioural Blending (alpha mechanism) || CUT — Phase 2 || —
+UC-10 || Program Comparison View || CUT — Phase 2 || —
+UC-11 || Curriculum Timeline Visualiser || CUT — Phase 2 || —
+UC-12 || Portfolio Readiness Checker || CUT — Phase 2 || —
+
+[TABLE 2]
+UC || Feature || Reason Cut from MVP || Phase 2 Condition
+UC-06 || Career Explorer (O*NET matching) || No quantitative evaluation metric available within project timeline. Career relevance is subjective and cannot be measured without longitudinal survey data. || Implement after user base is large enough to run structured career-match satisfaction surveys.
+UC-07 || Behavioural Blending (alpha mechanism) || Requires returning registered users across multiple sessions to demonstrate value. Alpha decay toward 0.2 cannot be validated in a one-semester testing window. || Introduce in Phase 2 once interaction log has at least 3 months of real user data. Alpha integration point is already reserved in the recommendation pipeline.
+UC-10 || Program Comparison View || Non-blocking; depends on pin tray being complete first. Adds UI complexity without contributing to core recommendation or chatbot evaluation. || Implement once Program Explorer (UC-09) and pin tray are stable.
+UC-11 || Curriculum Timeline Visualiser || Requires structured per-year course extraction from มคอ.2 as a separate ingestion layer. Out of scope for current ingestion pipeline milestone. || Implement in Phase 2 once course-structure extraction is added to the ingestion pipeline.
+UC-12 || Portfolio Readiness Checker || Requires per-faculty portfolio criteria schemas for all target programs. Data collection is not yet complete and Gemini structured extraction requires a separate evaluation framework. || Implement in Phase 2, starting with the top 10 programs. Criteria documents must be received from all target faculties first.
+
+[TABLE 3]
+Metric || What It Measures || Target || Applies To || Tool / Method
+MRR || Whether the correct program appears near the top of the ranked list (reciprocal of rank) || MRR > 0.60 || UC-02 || Manual curated test set (30–50 profiles)
+NDCG@5 || Ranking quality of top 5 results, weighted by relevance position || As high as possible; reported alongside MRR || UC-02 || Manual curated test set (30–50 profiles)
+RAGAS Faithfulness || Proportion of claims in generated explanation grounded in retrieved curriculum context || > 0.80 || UC-04, UC-08 || RAGAS framework, automated
+RAGAS Answer Relevancy || Semantic similarity between chatbot answer and the original question || > 0.75 || UC-04 || RAGAS framework, automated
+Task Completion Rate || Percentage of test participants who complete the 12-step RIASEC elicitation without dropping off || > 80% || UC-01 || Moderated user testing (10–15 participants)
+SUS Score || System Usability Scale — overall perceived usability across all MVP features || > 70 (Acceptable) || All MVP features || SUS questionnaire post-session
+
+[TABLE 4]
+Item || Description || Source || Quantity
+Student interest profiles || Synthetic RIASEC vectors constructed to represent distinct vocational types (e.g., high-I low-E for engineering; high-S high-A for education/design) || Manually authored by development team || 30–50 profiles
+Ground-truth program matches || For each profile, a ranked list of 3–5 KU programs validated as correct matches || Validated by faculty advisor or senior SKE students familiar with KU programs || 1 per profile
+TCAS Q&A pairs || Question–expected answer pairs for chatbot evaluation covering curriculum, admission, and PLO queries in Thai and English || Authored from มคอ.2 documents and TCAS records || 30–50 pairs
+Negative examples || Profiles whose top-ranked program should NOT be a specific faculty — used to check false positives || Derived from profiles with strong dealbreaker filter applied || 10 profiles
+
+[TABLE 5]
+Phase || Activity || Output || Milestone
+1 — Baseline || Verify end-to-end RAG pipeline. Run RAGAS on 30 Q&A pairs against current pgvector corpus. || Faithfulness and Answer Relevancy baseline scores || Before starting UC-01 / UC-02 build
+2 — Search Quality || Replace ilike search with pgvector embedding search. Manually evaluate 20 Thai-language queries for semantic correctness. || Pass / fail per query; identify top failure modes || After semantic search implementation (UC-09)
+3 — Recommendation Accuracy || Construct 30–50 synthetic profiles with ground-truth matches. Run through Pipeline B2. Compute MRR and NDCG@5. || MRR score and NDCG@5 score vs. target thresholds || After UC-02 implementation
+4 — Explanation Faithfulness || Run RAGAS Faithfulness on Gemini-generated explanations for top-5 recommended programs per profile. || Faithfulness score for UC-08 explanations || After UC-08 implementation
+5 — User Testing || Moderated sessions with 10–15 high school students or KU first-year students. Task script covers UC-01, UC-02, UC-04, UC-09. SUS questionnaire post-session. || Task completion rate, SUS score per participant, qualitative feedback themes || Final evaluation sprint (Feb–Mar 2027)
+
+[TABLE 6]
+# || Condition || Target || Measured By
+1 || RAGAS Faithfulness for chatbot answers (UC-04) || > 0.80 || RAGAS automated eval on 30–50 Q&A pairs
+2 || RAGAS Answer Relevancy for chatbot answers (UC-04) || > 0.75 || RAGAS automated eval on 30–50 Q&A pairs
+3 || RAGAS Faithfulness for recommendation explanations (UC-08) || > 0.80 || RAGAS automated eval on 30–50 profiles
+4 || MRR for program recommendation ranking (UC-02) || > 0.60 || Manual test set of 30–50 profiles
+5 || RIASEC elicitation task completion rate (UC-01) || > 80% || Moderated user testing, 10–15 participants
+6 || SUS score across all MVP features || > 70 || SUS questionnaire, 10–15 participants

@@ -29,6 +29,21 @@ v7 targeted lexical rerank
 + Thai/English response policy
 ```
 
+## AI Provider Scope
+
+Use this wording when explaining the POC:
+
+| System path | Main model/provider used | Notes |
+|-------------|--------------------------|-------|
+| Query embeddings | `intfloat/multilingual-e5-base` local model | No Hugging Face API key required for the public model. |
+| RAG answer generation | `google/gemini-2.5-flash-lite` via OpenRouter | This is the live chatbot generator and the model named in B7. |
+| LLM-as-judge eval | Gemini Flash Lite via OpenRouter | Used by the custom 0-3 eval rubric. |
+| Structured extraction | Gemini text mode | Used for program metadata, courses, PLOs, TCAS/fee normalization. |
+| OCR repair for low-yield pages | Typhoon OCR | This handled most recent targeted re-ingest OCR pages. |
+| Full scanned-PDF OCR | Isolated/manual path in `ocr_extractor.py` | Not the normal ingestion path unless explicitly invoked/configured. |
+
+So the accurate short version is: **Gemini is the generator/judge/structured extractor; Typhoon is the OCR repair model; e5 is the retriever.**
+
 Use these metrics in the report/demo:
 
 | Benchmark | MLflow run | Result | Purpose |
@@ -190,3 +205,4 @@ Operational ingestion status: `pipeline/docs/current-ingestion-state.md`.
 - `backend/mlartifacts/MLmodel` and `backend/mlartifacts/pipeline_config.json` are the B7 model artifact equivalent for the deployed RAG pipeline.
 - The best single endpoint to test the model is `POST /api/v1/chat`.
 - The most grader-friendly route through the repo is: `Part_B_alignment.md` -> notebooks -> MLflow screenshots -> backend endpoint.
+- Chat answers render source citation chips, but the POC does not yet support clicking a citation to open the exact PDF page or extracted chunk. Treat this as a documented Phase 2 trust/transparency improvement, not a missing B5/C3 requirement.

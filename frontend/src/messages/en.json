@@ -92,7 +92,7 @@
     "typingIndicator": "KUru is typing...",
     "mockBadge": "⚠️ Demo mode",
     "sources": "Sources",
-    "errorSend": "Failed to send. Please try again.",
+    "errorSend": "The backend may still be starting or loading the retrieval model. Please wait a moment and try again.",
     "loading": "Preparing response...",
     "fallbackWarning": "This information was not found in the KU database. Please verify at admissions.ku.ac.th"
   },
