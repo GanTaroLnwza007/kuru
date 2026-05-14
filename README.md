@@ -412,8 +412,8 @@ curl -X POST http://localhost:8000/api/v1/chat \
 
 | Name | Student ID | Role | Responsibilities |
 |---|---|---|---|
-| Phantawat Lueangsiriwattana | 6610545871 | Data Scientist | RAG pipeline, embedding, MLflow experiments, evaluation, fairness analysis, Jupyter notebooks |
-| Thanawat Tantijaroensin | 6610545294 | Software Engineer | FastAPI backend, Next.js frontend, Supabase schema, Railway/Vercel deployment, API testing |
+| Thanawat Tantijaroensin | 6610545294 | Data Scientist | Embedding model selection, chunking strategy, RAG pipeline design, evaluation framework |
+| Phantawat Lueangsiriwattana | 6610545871 | Software Engineer | Ingestion pipeline, FastAPI backend, Supabase schema, deployment |
 
 ## AI Usage Disclosure
 
