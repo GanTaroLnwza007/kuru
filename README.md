@@ -163,9 +163,9 @@ No Dockerfile or docker-compose file is present in this repository.
 | `SUPABASE_SERVICE_ROLE_KEY` | Optional | Backend setting available for privileged Supabase operations | Supabase dashboard → Settings → API |
 | `DATABASE_URL` | Required for schema setup/VACUUM | Direct PostgreSQL URL used by `kuru-setup-db` and post-ingest `VACUUM ANALYZE` | Supabase dashboard → Database |
 | `OPENROUTER_API_KEY` | Yes for RAG answers/eval | OpenRouter key for Gemini generation and optional OCR routing | openrouter.ai → Keys |
-| `GEMINI_API_KEY` | Yes for structured extraction | Google Gemini key for structured extraction and direct Gemini OCR | Google AI Studio |
-| `TYPHOON_API_KEY` | Optional but recommended for scanned PDFs | Typhoon OCR key for low-yield scanned pages | Typhoon/OpenTyphoon console |
-| `OCR_MODEL` | Optional | OCR model; default in pipeline is `gemini-2.5-flash` | Set in `.env` if changing OCR route |
+| `GEMINI_API_KEY` | Yes for structured extraction | Google Gemini key for structured extraction and explicit full-PDF OCR runs | Google AI Studio |
+| `TYPHOON_API_KEY` | Optional but recommended for scanned PDFs | Typhoon OCR key for low-yield scanned/image pages during normal ingestion | Typhoon/OpenTyphoon console |
+| `OCR_MODEL` | Optional | Full-PDF OCR model used only by the isolated/manual scanned-PDF OCR path | Set in `.env` if changing OCR route |
 | `GENERATION_MODEL` | Optional | RAG answer model; default is `google/gemini-2.5-flash-lite` | OpenRouter model ID |
 | `LLM_MODEL` | Optional | Gemini text model for structured extraction; default is `gemini-2.5-flash-lite` | Google model ID |
 | `NEO4J_URI` | Optional | Neo4j database URI for graph setup | Neo4j Aura |

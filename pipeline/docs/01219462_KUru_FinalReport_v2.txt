@@ -248,7 +248,7 @@ Failure / Cut Set
 	Mitigation Strategy
 	Status
 	MCS-1: Program not ingested
-	Re-ingestion pipeline with OCR_MODEL=gemini-2.5-flash for scanned PDFs; daily chunk-count monitoring alert at <50 chunks
+	Re-ingestion pipeline uses PyMuPDF first, Typhoon OCR for low-yield pages, and explicit Gemini full-PDF OCR only for special scanned-PDF runs; daily chunk-count monitoring alert at <50 chunks
 	Implemented
 	MCS-2: program_id resolution failure
 	Token-based name matching on name_th + name_en fields; same-program keyword fallback in retrieval
@@ -427,7 +427,7 @@ Feedback → Retraining Pipeline
 For a RAG pipeline, re-ingestion is the functional equivalent of model retraining — updating the indexed vector store with better-extracted chunks directly improves retrieval quality without changing model weights. The pipeline is triggered manually (not automated CI/CD):
 1. User thumbs-down accumulates in Supabase feedback table.
 2. Daily aggregation: programs where negative_rate > 30% are queued for re-ingestion.
-3. If chunk_count < 100: re-ingest full มคอ.2 PDF with OCR_MODEL=gemini-2.5-flash (higher-quality OCR).
+3. If chunk_count < 100: re-ingest full มคอ.2 PDF using PyMuPDF first, Typhoon OCR for low-yield pages, and explicit Gemini full-PDF OCR only for special scanned-PDF runs.
 4. If chunk_count ≥ 100: investigate chunking quality (tabular extraction, section boundary detection).
 5. Run VACUUM ANALYZE on chunks table → rebuild IVFFlat index.
 6. Re-run eval set for affected programs → compare before/after score → log in eval_results.md.
@@ -575,7 +575,7 @@ Key Distribution Insights
 * Avg chunk length: ~888 chars; Median: ~402 chars — right-skewed distribution. Large table chunks (~5,000 chars) from course prerequisite tables pull the mean upward.
 * Coverage quality distribution: poor (<50 chunks): 17 programs; sparse (50–100): 7 programs; adequate (100–300): 23 programs; rich (>300): 19 programs. ~42 of 66 programs have ≥100 chunks.
 * PLO coverage gap: PLO sections absent from ~60% of programs — especially engineering faculties that submitted compact course-catalog format without a dedicated PLO chapter.
-* OCR failure rate: ~25% on scanned PDFs. gemini-2.5-flash-lite fails on poor scans; higher-quality gemini-2.5-flash model is used for re-ingestion of low-coverage programs.
+* OCR failure rate: ~25% on scanned PDFs. Normal re-ingestion uses PyMuPDF first and Typhoon OCR for low-yield scanned/image pages; full Gemini OCR is an explicit special-run option for difficult fully scanned PDFs.
 * DVM program (bangkhen_vet_9ea52f52): 870-page PDF; retry was interrupted after clearing old chunks. Currently 0 chunks — requires dedicated re-ingest run.
 * Total text ingested: ~16.01 M characters across all chunks.
 
@@ -631,7 +631,7 @@ Data Preprocessing (all steps in order)
 8. Fill missing values: question_type → 'unknown', section_type → 'unknown', program_id → ''.
 9. Encode question_type as integer label: 0=admission, 1=curriculum, 2=general, 3=plo.
 10. Sample 20 questions with fixed seed (RANDOM_SEED=42, SAMPLE_SIZE=20) for MLflow runs.
-11. PDF text extraction — PyMuPDF page.get_text() for native-text PDFs; Gemini Files API OCR fallback for scanned pages (detected by char_count < 100 per page).
+11. PDF text extraction — PyMuPDF page.get_text() first; low-yield pages route to Typhoon OCR when `TYPHOON_API_KEY` is available; full Gemini OCR is isolated for explicit scanned-PDF runs.
 12. Character-based chunking — 2,000-char chunks, 200-char overlap, section-boundary aware.
 13. Section type classification — deterministic regex: TCAS/GPAX keywords → admission; PLO headers → plo; course code pattern → course; fallback → general.
 14. Embedding — intfloat/multilingual-e5-base; docs prefixed 'passage:', queries prefixed 'query:'; 768-dim float32, cosine-normalized.
@@ -847,7 +847,7 @@ Metric
 	
 
 Bias Mitigation Approaches
-* Re-ingestion priority queue: programs with <50 chunks flagged in data/coverage_report.md and queued for re-ingestion with higher-quality OCR model (gemini-2.5-flash).
+* Re-ingestion priority queue: programs with <50 chunks flagged in data/coverage_report.md and queued for PyMuPDF + Typhoon low-yield page OCR, with explicit Gemini full-PDF OCR reserved for difficult fully scanned PDFs.
 * PLO query boosting: when is_plo_query=True detected, re-ranker applies +5 score bonus to PLO-tagged chunks over general chunks of similar cosine similarity.
 * Honest coverage notes: when no PLO data exists for a queried program, system injects a Thai-language coverage note into the prompt rather than allowing hallucination.
 * Campus scope guard: under-served campuses (กำแพงแสน, ศรีราชา) documented as out-of-scope with hard no-data guard message.
@@ -1662,7 +1662,7 @@ Challenge
 	Unit tests added for TCAS_KEYWORDS regex covering edge cases; secondary round validator cross-checks detected_round against available records
 	Low similarity for sparse programs
 	Programs with few chunks may score below 0.35 min_similarity → confidence='low' even for valid questions
-	Programs flagged for re-ingestion when <50 chunks; OCR_MODEL upgraded to gemini-2.5-flash for re-ingest
+	Programs flagged for re-ingestion when <50 chunks; normal re-ingest uses PyMuPDF + Typhoon low-yield page OCR, with explicit Gemini full-PDF OCR reserved for special scanned-PDF runs
 	
 
 

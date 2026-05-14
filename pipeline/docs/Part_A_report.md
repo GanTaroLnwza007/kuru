@@ -81,6 +81,7 @@ The system uses AI to solve two specific sub-problems:
 | **Features** | 768-dimensional dense embeddings (intfloat/multilingual-e5-base) with asymmetric prefixes: `passage:` for documents, `query:` for queries |
 | **Model — retriever** | IVFFlat pgvector index, cosine similarity, probes=10, fetch 3×top_k, same-program keyword fallback, and targeted lexical reranking for structure/PLO/TCAS-style questions |
 | **Model — generator** | Google Gemini 2.5 Flash Lite through OpenRouter for RAG answer generation; strict citation-grounded prompt |
+| **OCR / extraction support** | PyMuPDF extracts native text; Typhoon OCR repairs low-yield image pages during normal ingestion; Gemini text mode extracts structured program metadata and TCAS/fee fields |
 | **Hyperparameters** | chunk_size=2000 chars, overlap=200 chars, top_k=5, MIN_SIMILARITY=0.35, IVFFlat probes=10 |
 | **Evaluation metric** | LLM-as-judge score (0–3 scale), good-answer rate (score ≥2), split by question type (admission / curriculum) |
 | **Offline evaluation** | 50-question synthetic eval set generated from actual Supabase chunks; optional fixed-seed sampling for faster smoke runs |
@@ -251,7 +252,7 @@ feedback table (Supabase)
 Low-rated questions / source programs
     │
     ├── If chunks < 100: re-ingest with full มคอ.2 from data/scanned/curriculum
-    │   (upgraded OCR model: gemini-2.5-flash)
+    │   (PyMuPDF first, Typhoon for low-yield pages; explicit Gemini full-PDF OCR only for special scanned-PDF runs)
     │
     └── If chunks ≥ 100: investigate chunking quality
         (tabular extraction, section boundary detection)
