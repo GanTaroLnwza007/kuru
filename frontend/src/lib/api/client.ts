@@ -126,11 +126,12 @@ async function apiRequest<TRequest, TResponse>(
 }
 
 export const realApiClient = {
-  searchPrograms({ q = "", faculty, limit = 20 }: SearchProgramsParams): Promise<ProgramSearchResult> {
+  searchPrograms({ q = "", faculty, limit = 20, offset = 0 }: SearchProgramsParams): Promise<ProgramSearchResult> {
     const params = new URLSearchParams();
     if (q) params.set("q", q);
     if (faculty) params.set("faculty", faculty);
     params.set("limit", String(limit));
+    if (offset > 0) params.set("offset", String(offset));
 
     return apiRequest({
       path: `/programs/search?${params.toString()}`,
