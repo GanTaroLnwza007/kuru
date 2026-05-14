@@ -48,6 +48,8 @@ function MatchRing({ value, size = 64, dark = false }: { value: number; size?: n
   );
 }
 
+const PAGE_SIZE = 20;
+
 // ── Types ───────────────────────────────────────────────────────
 type EnrichedProgram = ProgramSummary & {
   match: number | null;
@@ -462,7 +464,10 @@ export default function ExplorePage() {
 
   const [query, setQuery] = useState("");
   const [inputValue, setInputValue] = useState("");
-  const [allPrograms, setAllPrograms] = useState<ProgramSummary[]>([]);
+  const [page, setPage] = useState(1);
+  const [pagePrograms, setPagePrograms] = useState<ProgramSummary[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [pinnedProgramsMap, setPinnedProgramsMap] = useState<Record<string, ProgramSummary>>({});
   const [{ isLoading, error }, dispatchFetch] = useReducer(fetchReducer, { isLoading: true, error: null });
 
   const [riasecFilter, setRiasecFilter] = useState<RiasecDim | "">("");
@@ -476,19 +481,20 @@ export default function ExplorePage() {
   useEffect(() => {
     let cancelled = false;
     dispatchFetch({ type: "start" });
-    apiClient.searchPrograms({ q: query }).then((r) => {
+    apiClient.searchPrograms({ q: query, limit: PAGE_SIZE, offset: (page - 1) * PAGE_SIZE }).then((r) => {
       if (!cancelled) {
-        setAllPrograms(r.data.results);
+        setPagePrograms(r.data.results);
+        setTotalCount(r.data.total);
         dispatchFetch({ type: "success" });
       }
     }).catch(() => {
       if (!cancelled) dispatchFetch({ type: "error", message: "โหลดข้อมูลไม่สำเร็จ" });
     });
     return () => { cancelled = true; };
-  }, [query]);
+  }, [query, page]);
 
   const programs = useMemo(() => {
-    let list = allPrograms.map((p) => {
+    let list = pagePrograms.map((p: ProgramSummary) => {
       const rich = RICH_PROGRAMS[p.slug] ?? RICH_PROGRAMS[p.id];
       const match = rich && riasecScores
         ? computeProgramMatch(rich.riasec, riasecScores, rich.baseFit)
@@ -496,15 +502,15 @@ export default function ExplorePage() {
       return { ...p, match, rich } as EnrichedProgram;
     });
 
-    if (riasecFilter) list = list.filter((p) => p.rich?.riasec.includes(riasecFilter));
+    if (riasecFilter) list = list.filter((p: EnrichedProgram) => p.rich?.riasec.includes(riasecFilter));
 
-    if (sortKey === "match") list.sort((a, b) => (b.match ?? 0) - (a.match ?? 0));
-    else if (sortKey === "seats") list.sort((a, b) => (b.rich?.seats ?? 0) - (a.rich?.seats ?? 0));
+    if (sortKey === "match") list.sort((a: EnrichedProgram, b: EnrichedProgram) => (b.match ?? 0) - (a.match ?? 0));
+    else if (sortKey === "seats") list.sort((a: EnrichedProgram, b: EnrichedProgram) => (b.rich?.seats ?? 0) - (a.rich?.seats ?? 0));
 
     return list;
-  }, [allPrograms, riasecFilter, sortKey, riasecScores]);
+  }, [pagePrograms, riasecFilter, sortKey, riasecScores]);
 
-  const matchedCount = programs.filter((p) => p.match !== null && p.match >= 70).length;
+  const matchedCount = programs.filter((p: EnrichedProgram) => p.match !== null && p.match >= 70).length;
   const riasecCode = riasecScores
     ? Object.entries(riasecScores).sort(([, a], [, b]) => b - a).slice(0, 3).map(([k]) => k).join("")
     : null;
@@ -512,13 +518,21 @@ export default function ExplorePage() {
   const isDefault = sortKey === "match" && !riasecFilter && !query;
   const isDirty = !!riasecFilter || !!query;
 
-  const togglePin = useCallback((id: string) => {
+  const togglePin = useCallback((id: string, program?: ProgramSummary) => {
     setPinnedIds((prev) => prev.includes(id) ? prev.filter((x) => x !== id) : prev.length < 3 ? [...prev, id] : prev);
+    if (program) {
+      setPinnedProgramsMap((prev) => {
+        if (prev[id]) { const next = { ...prev }; delete next[id]; return next; }
+        return { ...prev, [id]: program };
+      });
+    }
   }, []);
 
-  const handleSearch = () => setQuery(inputValue.trim());
-  const handleClearSearch = () => { setInputValue(""); setQuery(""); searchRef.current?.focus(); };
-  const handleResetAll = () => { setRiasecFilter(""); setInputValue(""); setQuery(""); };
+  const handleSearch = () => { setPage(1); setQuery(inputValue.trim()); };
+  const handleClearSearch = () => { setInputValue(""); setPage(1); setQuery(""); searchRef.current?.focus(); };
+  const handleResetAll = () => { setRiasecFilter(""); setInputValue(""); setPage(1); setQuery(""); };
+
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE);
 
   const sortLabels: Record<SortKey, string> = { match: "เข้ากับคุณ", seats: "ที่นั่งมาก", popular: "ยอดนิยม" };
 
@@ -557,7 +571,7 @@ export default function ExplorePage() {
                 {" "}เดา
               </h1>
               <p style={{ fontSize: 18, lineHeight: 1.6, color: "rgba(255,255,255,0.6)", maxWidth: 540, margin: 0 }}>
-                เรียงทั้ง {isLoading ? "—" : allPrograms.length} หลักสูตรของ{" "}
+                เรียงทั้ง {isLoading ? "—" : totalCount} หลักสูตรของ{" "}
                 <em style={{ fontStyle: "italic", color: "rgba(255,255,255,0.9)", fontWeight: 400 }}>ม.เกษตรศาสตร์</em>{" "}
                 ตามบุคลิก RIASEC ของคุณ — ปักหมุดได้สูงสุด 3 หลักสูตรเพื่อนำไปเทียบกัน
               </p>
@@ -582,8 +596,8 @@ export default function ExplorePage() {
               </div>
               <div style={{ position: "relative", zIndex: 1, display: "grid", gridTemplateColumns: "repeat(3,1fr)" }}>
                 {[
-                  { lbl: "หลักสูตร", v: isLoading ? "—" : String(allPrograms.length), sub: "" },
-                  { lbl: "เข้ากับคุณ", v: riasecScores ? String(matchedCount) : "—", sub: riasecScores ? `/${allPrograms.length}` : "" },
+                  { lbl: "หลักสูตร", v: isLoading ? "—" : String(totalCount), sub: "" },
+                  { lbl: "เข้ากับคุณ", v: riasecScores ? String(matchedCount) : "—", sub: riasecScores ? `/${totalCount}` : "" },
                   { lbl: "RIASEC", v: riasecCode ?? "—", sub: "" },
                 ].map((cell, i) => (
                   <div key={i} style={{
@@ -693,7 +707,7 @@ export default function ExplorePage() {
             </span>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap", flex: 1 }}>
               {pinnedIds.map((id) => {
-                const p = allPrograms.find((x) => x.id === id);
+                const p = pinnedProgramsMap[id];
                 if (!p) return null;
                 return (
                   <span key={id} style={{ background: "#fff", padding: "7px 8px 7px 14px", borderRadius: 999, fontSize: 13, fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 4, border: "1px solid rgba(0,166,81,0.2)", color: "var(--ink)" }}>
@@ -726,7 +740,7 @@ export default function ExplorePage() {
             <h2 style={{ fontWeight: 800, fontSize: "clamp(28px,3.4vw,42px)", lineHeight: 1, letterSpacing: "-0.03em", margin: 0 }}>
               <span style={{ color: "var(--ink)" }}>{isLoading ? "…" : programs.length}</span>
               <span style={{ fontStyle: "italic", fontWeight: 400, color: "var(--ink-3)", margin: "0 6px" }}>— จาก</span>
-              <span style={{ color: "var(--ink-3)", fontWeight: 700 }}>{allPrograms.length} หลักสูตร</span>
+              <span style={{ color: "var(--ink-3)", fontWeight: 700 }}>{totalCount} หลักสูตร</span>
             </h2>
           </div>
           {/* .sort-toggle */}
@@ -789,20 +803,83 @@ export default function ExplorePage() {
         ) : (
           // .grid (12-col, gap 18px)
           <div style={{ display: "grid", gridTemplateColumns: "repeat(12,1fr)", gap: 18 }}>
-            {programs.map((p, i) => {
-              const isFeatured = isDefault && i === 0;
-              // span-8 for featured, span-4 for rest (responsive handled by max-width queries)
+            {programs.map((p: EnrichedProgram, i: number) => {
+              const isFeatured = isDefault && i === 0 && page === 1;
               const colSpan = isFeatured ? "span 8 / span 8" : "span 4 / span 4";
+              const globalRank = (page - 1) * PAGE_SIZE + i + 1;
               return (
                 <div key={p.id} style={{ gridColumn: colSpan }}>
                   {isFeatured ? (
-                    <FeaturedCard program={p} rank={i + 1} pinned={pinnedIds.includes(p.id)} onPin={() => togglePin(p.id)} />
+                    <FeaturedCard program={p} rank={globalRank} pinned={pinnedIds.includes(p.id)} onPin={() => togglePin(p.id, p)} />
                   ) : (
-                    <ProgramCard program={p} rank={i + 1} pinned={pinnedIds.includes(p.id)} onPin={() => togglePin(p.id)} />
+                    <ProgramCard program={p} rank={globalRank} pinned={pinnedIds.includes(p.id)} onPin={() => togglePin(p.id, p)} />
                   )}
                 </div>
               );
             })}
+          </div>
+        )}
+
+        {/* ── PAGINATION ────────────────────────────────────────── */}
+        {!isLoading && totalPages > 1 && (
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 40 }}>
+            <button
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              disabled={page === 1}
+              style={{
+                width: 40, height: 40, borderRadius: "50%", border: "1px solid",
+                borderColor: page === 1 ? "var(--line-soft)" : "var(--line)",
+                background: "#fff", color: page === 1 ? "var(--ink-4)" : "var(--ink-2)",
+                display: "grid", placeItems: "center", cursor: page === 1 ? "default" : "pointer",
+                transition: "all 200ms", minHeight: 0, minWidth: 0,
+              }}
+              aria-label="หน้าก่อนหน้า"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M15 18 9 12l6-6" /></svg>
+            </button>
+
+            {Array.from({ length: totalPages }, (_, idx) => idx + 1)
+              .filter((n) => n === 1 || n === totalPages || Math.abs(n - page) <= 1)
+              .reduce<(number | "…")[]>((acc, n, i, arr) => {
+                if (i > 0 && (n as number) - (arr[i - 1] as number) > 1) acc.push("…");
+                acc.push(n);
+                return acc;
+              }, [])
+              .map((n, i) =>
+                n === "…" ? (
+                  <span key={`ellipsis-${i}`} style={{ width: 40, textAlign: "center", color: "var(--ink-4)", fontSize: 14, fontWeight: 600 }}>…</span>
+                ) : (
+                  <button
+                    key={n}
+                    onClick={() => setPage(n as number)}
+                    style={{
+                      width: 40, height: 40, borderRadius: "50%", border: "1px solid",
+                      borderColor: page === n ? "var(--ink)" : "var(--line)",
+                      background: page === n ? "var(--ink)" : "#fff",
+                      color: page === n ? "#fff" : "var(--ink-2)",
+                      fontWeight: 700, fontSize: 14, cursor: "pointer",
+                      transition: "all 200ms", minHeight: 0, minWidth: 0,
+                    }}
+                  >
+                    {n}
+                  </button>
+                )
+              )}
+
+            <button
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={page === totalPages}
+              style={{
+                width: 40, height: 40, borderRadius: "50%", border: "1px solid",
+                borderColor: page === totalPages ? "var(--line-soft)" : "var(--line)",
+                background: "#fff", color: page === totalPages ? "var(--ink-4)" : "var(--ink-2)",
+                display: "grid", placeItems: "center", cursor: page === totalPages ? "default" : "pointer",
+                transition: "all 200ms", minHeight: 0, minWidth: 0,
+              }}
+              aria-label="หน้าถัดไป"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M9 18l6-6-6-6" /></svg>
+            </button>
           </div>
         )}
 
@@ -874,7 +951,7 @@ export default function ExplorePage() {
       )}
 
       {showCompare && pinnedIds.length > 0 && (
-        <CompareModal programIds={pinnedIds} programs={allPrograms} onClose={() => setShowCompare(false)} />
+        <CompareModal programIds={pinnedIds} programs={Object.values(pinnedProgramsMap)} onClose={() => setShowCompare(false)} />
       )}
     </>
   );

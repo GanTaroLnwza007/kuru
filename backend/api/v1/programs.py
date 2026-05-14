@@ -116,7 +116,8 @@ def _row_to_plo(p: dict) -> PloItem | None:
 async def search_programs(
     q: str = Query(default=""),
     faculty: str | None = Query(default=None),
-    limit: int = Query(default=100, ge=1, le=200),
+    limit: int = Query(default=20, ge=1, le=200),
+    offset: int = Query(default=0, ge=0),
 ) -> ApiResponse[ProgramSearchResult]:
     sb = get_supabase()
     db_query = sb.table("programs").select(
@@ -126,23 +127,26 @@ async def search_programs(
     if q:
         db_query = db_query.or_(f"name_th.ilike.%{q}%,name_en.ilike.%{q}%")
 
-    # Fetch more than `limit` so the slug post-filter doesn't starve results
+    # Fetch all matching rows so we can compute the real total and paginate
     response = db_query.order("name_th").limit(500).execute()
     rows = response.data or []
-    # Restrict to the 20 curated programs (those with a slug assigned)
+    # Restrict to programs that have a slug and a display name
     rows = [r for r in rows if r.get("slug") and (r.get("name_th") or r.get("name_en"))]
 
-    results = [_row_to_summary(row) for row in rows[:limit]]
+    all_summaries = [_row_to_summary(row) for row in rows]
 
     if faculty:
         fl = faculty.lower()
-        results = [
-            r for r in results
+        all_summaries = [
+            r for r in all_summaries
             if fl in r.faculty_en.lower() or fl in r.faculty_th.lower()
         ]
 
+    total = len(all_summaries)
+    results = all_summaries[offset : offset + limit]
+
     return ApiResponse[ProgramSearchResult](
-        data=ProgramSearchResult(results=results, total=len(results)),
+        data=ProgramSearchResult(results=results, total=total),
         sources=[
             SourceChunk(
                 table="programs",

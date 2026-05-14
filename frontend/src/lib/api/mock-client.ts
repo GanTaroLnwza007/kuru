@@ -26,6 +26,7 @@ export type SearchProgramsParams = {
   q?: string;
   faculty?: string;
   limit?: number;
+  offset?: number;
 };
 
 export type MockApiClient = {
@@ -47,13 +48,14 @@ export type MockApiClient = {
 };
 
 export const mockApiClient: MockApiClient = {
-  async searchPrograms({ q = "", faculty, limit = 20 }) {
+  async searchPrograms({ q = "", faculty, limit = 20, offset = 0 }) {
     await delay(SIMULATED_DELAY_MS);
 
-    const results = searchMockPrograms(q, faculty).slice(0, limit);
+    const all = searchMockPrograms(q, faculty);
+    const results = all.slice(offset, offset + limit);
 
     return {
-      data: { results, total: results.length },
+      data: { results, total: all.length },
       sources: MOCK_SEARCH_SOURCES,
       isMock: true,
     };
