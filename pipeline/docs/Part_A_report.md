@@ -85,7 +85,7 @@ The system uses AI to solve two specific sub-problems:
 | **Evaluation metric** | LLM-as-judge score (0–3 scale), good-answer rate (score ≥2), split by question type (admission / curriculum) |
 | **Offline evaluation** | 50-question synthetic eval set generated from actual Supabase chunks; optional fixed-seed sampling for faster smoke runs |
 | **Online feedback** | Thumbs up/down → `feedback` table → review low-rated questions and map source programs for re-ingestion |
-| **Known limitations** | Dense table rows are still difficult to retrieve exactly; OCR-corrupted course titles can create noisy questions; DVM has a known interrupted chunk retry; กำแพงแสน / ศรีราชา campuses are not yet fully represented |
+| **Known limitations** | Dense table rows are still difficult to retrieve exactly; OCR-corrupted course titles can create noisy questions; source citation chips are visible but not yet clickable to the exact PDF/page/chunk; DVM has a known interrupted chunk retry; กำแพงแสน / ศรีราชา campuses are not yet fully represented |
 
 #### A2.2.4 — Fault Tree Analysis (FTA)
 
@@ -148,12 +148,14 @@ The system uses full automation — the user types a question and receives a gen
 | Element | Design decision | Rationale |
 |---------|----------------|-----------|
 | Answer text | Direct prose answer in the user's query language (Thai or English) | Matches conversational expectation; no raw chunk dumps |
-| Source citations | Inline badges showing source filename and section type after each claim | Allows user to verify; reduces blind trust in generated text |
+| Source citations | Inline badges showing source filename and section type after each claim | Shows provenance and reduces blind trust in generated text |
 | Confidence signal | If no relevant chunks found, system returns a fixed "ไม่พบข้อมูล" message instead of generating | Honest uncertainty > hallucinated confidence |
 | Feedback | Thumbs up / thumbs down below each response | Simple, low-friction; actionable signal for monitoring |
 | Coverage note | If retrieved evidence is weak or missing, the API returns low confidence or a fixed no-data message | Sets correct expectations before the user asks follow-ups |
 
-**What is NOT shown to the user:** raw chunk text, similarity scores, program_id, embedding vectors. These are internal pipeline details that add noise without benefit to a student user.
+**Current citation limitation:** The POC UI shows citation chips with source filename, section type, and confidence/similarity context, but the chips are not yet clickable source viewers. This is a transparency UX limitation, not a grounding failure: the backend still returns the retrieved source metadata used to generate the answer. The Phase 2 improvement is to attach `chunk_id`, page number, and/or source URL to each citation so a user can open the original PDF page or a source-preview side panel.
+
+**What is NOT shown to the user:** raw chunk text, program_id, embedding vectors. These are internal pipeline details that add noise without benefit to a student user. Similarity/confidence is summarized visually rather than exposed as a primary student-facing control.
 
 #### A2.3.2 — Where the Model Lives
 

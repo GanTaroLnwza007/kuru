@@ -190,3 +190,4 @@ Operational ingestion status: `pipeline/docs/current-ingestion-state.md`.
 - `backend/mlartifacts/MLmodel` and `backend/mlartifacts/pipeline_config.json` are the B7 model artifact equivalent for the deployed RAG pipeline.
 - The best single endpoint to test the model is `POST /api/v1/chat`.
 - The most grader-friendly route through the repo is: `Part_B_alignment.md` -> notebooks -> MLflow screenshots -> backend endpoint.
+- Chat answers render source citation chips, but the POC does not yet support clicking a citation to open the exact PDF page or extracted chunk. Treat this as a documented Phase 2 trust/transparency improvement, not a missing B5/C3 requirement.

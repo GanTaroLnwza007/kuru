@@ -102,6 +102,8 @@ All successful responses are wrapped in `ApiResponse<T>`:
 | `section_type` | `string` | `"course"`, `"plo"`, `"admission"`, or `"general"` |
 | `similarity` | `float` | Cosine similarity score (0.0–1.0) |
 
+**POC source-inspection boundary:** In the current UI, these fields render as citation chips so users can see where an answer came from. The chips are provenance indicators, not clickable document viewers. The API does not yet return `chunk_id`, page number, or `source_url`, so the frontend cannot deep-link to the exact PDF page or extracted chunk. Phase 2 should extend `ChatSourceChunk` with source-inspection fields before implementing clickable citations.
+
 **Example response:**
 ```json
 {
